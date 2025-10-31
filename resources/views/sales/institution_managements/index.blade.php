@@ -1,0 +1,90 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="mb-0">Institutions</h4>
+            <a href="{{ route('sales.institution_managements.create') }}" class="btn btn-primary">Add Institution</a>
+        </div>
+
+        @if (session('success_message'))
+            <div class="alert alert-success">{{ session('success_message') }}</div>
+        @endif
+
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive p-3">
+                    <table id="institutionTable" class="table table-striped table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Board</th>
+                                <th>Contact</th>
+                                <th>Pincode</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($institutions as $institution)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $institution->name }}</td>
+                                    <td>{{ $institution->type }}</td>
+                                    <td>{{ $institution->board }}</td>
+                                    <td>{{ $institution->contact_number }}</td>
+                                    <td>{{ $institution->pincode }}</td>
+                                    <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('sales.institution_managements.edit', $institution->id) }}"
+                                            class="btn btn-sm btn-primary" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-info" onclick="viewInstitution({{ $institution->id }})" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">No institutions found.</td>
+                                </tr>
+                            @endforelse
+
+                            <div class="d-flex justify-content-center">
+                                {{ $institutions->links() }}
+                            </div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Bootstrap 5 DataTables CSS -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+      <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Initialize DataTable -->
+    <script>
+        $(document).ready(function() {
+            $('#institutionTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 20, 30, 50, 100],
+                "ordering": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": [6] } // Disable sorting for Actions column
+                ]
+            });
+        });
+    </script>
+@endsection
+
