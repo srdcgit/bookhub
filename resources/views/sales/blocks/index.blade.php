@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
 
     <!-- Custom CSS -->
-    <style>
+    <style> 
         .page-header {
             background: #274472;
             color: #fff;
