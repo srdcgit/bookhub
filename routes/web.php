@@ -462,7 +462,7 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
             'edit'   => 'sales.institution_managements.edit',
             'update' => 'sales.institution_managements.update',
             'destroy' => 'sales.institution_managements.destroy',
-        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        ]);
 
 // Sales Students Management (similar to Admin)
 Route::resource('students', 'StudentController')->names([

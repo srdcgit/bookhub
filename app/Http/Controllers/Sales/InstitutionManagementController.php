@@ -19,7 +19,7 @@ class InstitutionManagementController extends Controller
         // $id=Auth::guard('sales')->user()->name;
         $institutions = InstitutionManagement::orderBy('id', 'desc')->paginate(20);
 
-        return view('sales.institution_managements.index', compact('institutions'));
+        return view ('sales.institution_managements.index', compact('institutions'));
     }
 
     public function create()
@@ -65,6 +65,9 @@ class InstitutionManagementController extends Controller
         Session::put('page', 'sales.institution_managements');
 
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
+        if (!$institution) {
+            return response()->json(['error' => 'Institution not found'], 404);
+        }
 
         return view('sales.institution_managements.edit')->with(compact('institution'));
     }
