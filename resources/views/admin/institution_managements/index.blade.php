@@ -62,7 +62,7 @@
                 </div>
                 <a href="{{ url('admin/institution-managements/create') }}" class="add-institution-btn">
                     <i class="fas fa-plus"></i>
-                    Add New Institution {{ $id }}
+                    Add New Institution 
                 </a>
             </div>
 

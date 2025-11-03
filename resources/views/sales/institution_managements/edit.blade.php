@@ -342,10 +342,6 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
-
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-cube form-icon"></i>
@@ -369,6 +365,11 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
+
+                    </div>
+
+
+
                         {{-- <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-check-circle form-icon"></i>

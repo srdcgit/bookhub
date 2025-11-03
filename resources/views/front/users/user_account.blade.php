@@ -635,9 +635,9 @@
                                             <select id="user-country" name="country">
                                                 <option value="">Select Country</option>
                                                 @foreach ($countries as $country)
-                                                    <option value="{{ $country['country_name'] }}"
-                                                        @if ($country['country_name'] == Auth::user()->country) selected @endif>
-                                                        {{ $country['country_name'] }}
+                                                    <option value="{{ $country->name }}"
+                                                        @if ($country->name == Auth::user()->country) selected @endif>
+                                                        {{ $country->name }}
                                                     </option>
                                                 @endforeach
                                             </select>

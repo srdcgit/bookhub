@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BookRequest;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Country;
 use App\Models\HeaderLogo;
 use App\Models\Language;
 use App\Models\Product;
@@ -225,7 +226,7 @@ class UserController extends Controller
             return view('front.users.forgot_password');
         }
     }
-    
+
     public function userAccount(Request $request)
     {
         $condition = session('condition', 'new');
@@ -243,7 +244,7 @@ class UserController extends Controller
         $logos          = HeaderLogo::all();
         $language       = Language::get();
         $requestedBooks = BookRequest::where('requested_by_user', Auth::id())->orderBy('created_at', 'desc')->get();
-        $countries      = \App\Models\Country::where('status', 1)->get()->toArray();
+        $countries = Country::all();
         $user           = Auth::user();
 
         // ----- THIS HANDLES POST from the FORM -----

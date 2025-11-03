@@ -342,10 +342,6 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
-
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-cube form-icon"></i>
@@ -359,6 +355,9 @@
                             @enderror
                         </div>
 
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-mail-bulk form-icon"></i>
@@ -378,6 +377,7 @@
                                 <option value="1" {{ (old('status', $institution->status) == 1) ? 'selected' : '' }}>Active</option>
                                 <option value="0" {{ (old('status', $institution->status) == 0) ? 'selected' : '' }}>Inactive</option>
                             </select>
+                        </div>
                     </div>
 
                     <div class="form-group text-center mt-4">

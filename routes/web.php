@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BookAttributeController;
 use App\Http\Controllers\Admin\BookRequestsController;
 use App\Http\Controllers\Admin\EditionController;
+use App\Http\Controllers\Admin\InstitutionManagementController;
 use App\Http\Controllers\Admin\ProductsController as AdminProductsController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Front\BookRequestController;
 use App\Http\Controllers\Front\IndexController;
 use App\Http\Controllers\Front\ProductsController;
@@ -455,54 +457,44 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
 
         // Sales Institution Management (similar to Admin)
         Route::resource('institution-managements', 'InstitutionManagementController')->names([
-            'index'  => 'sales.institution_managements.index',
-            'create' => 'sales.institution_managements.create',
-            'store'  => 'sales.institution_managements.store',
-            'show'   => 'sales.institution_managements.show',
-            'edit'   => 'sales.institution_managements.edit',
-            'update' => 'sales.institution_managements.update',
+            'index'   => 'sales.institution_managements.index',
+            'create'  => 'sales.institution_managements.create',
+            'store'   => 'sales.institution_managements.store',
+            'show'    => 'sales.institution_managements.show',
+            'edit'    => 'sales.institution_managements.edit',
+            'update'  => 'sales.institution_managements.update',
             'destroy' => 'sales.institution_managements.destroy',
         ]);
 
 // Sales Students Management (similar to Admin)
-Route::resource('students', 'StudentController')->names([
-    'index'  => 'sales.students.index',
-    'create' => 'sales.students.create',
-    'store'  => 'sales.students.store',
-    'show'   => 'sales.students.show',
-    'edit'   => 'sales.students.edit',
-    'update' => 'sales.students.update',
-    'destroy' => 'sales.students.destroy',
-])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        Route::resource('students', 'StudentController')->names([
+            'index'   => 'sales.students.index',
+            'create'  => 'sales.students.create',
+            'store'   => 'sales.students.store',
+            'show'    => 'sales.students.show',
+            'edit'    => 'sales.students.edit',
+            'update'  => 'sales.students.update',
+            'destroy' => 'sales.students.destroy',
+        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
 // Sales Blocks Management (similar to Admin)
-Route::resource('blocks', 'BlockController')->names([
-    'index'  => 'sales.blocks.index',
-    'create' => 'sales.blocks.create',
-    'store'  => 'sales.blocks.store',
-    'show'   => 'sales.blocks.show',
-    'edit'   => 'sales.blocks.edit',
-    'update' => 'sales.blocks.update',
-    'destroy' => 'sales.blocks.destroy',
-])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        Route::resource('blocks', 'BlockController')->names([
+            'index'   => 'sales.blocks.index',
+            'create'  => 'sales.blocks.create',
+            'store'   => 'sales.blocks.store',
+            'show'    => 'sales.blocks.show',
+            'edit'    => 'sales.blocks.edit',
+            'update'  => 'sales.blocks.update',
+            'destroy' => 'sales.blocks.destroy',
+        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
 // AJAX routes for cascading location dropdowns (outside admin middleware for AJAX access)
-Route::get('institution-countries', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
-Route::get('institution-states', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getStates'])->name('institution_states');
-Route::get('institution-districts', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
-Route::get('institution-blocks', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
-
-
-
-
-
-
-
-
-
-
-
-
+        Route::get('institution-countries', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
+        Route::get('institution-states', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getStates'])->name('institution_states');
+        Route::get('institution-districts', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
+        Route::get('institution-blocks', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
+        Route::get('/institution-classes', [InstitutionManagementController::class, 'getClasses'])
+            ->name('institution_classes');
 
 
     });

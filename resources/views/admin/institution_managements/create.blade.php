@@ -180,7 +180,7 @@
                 <div class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-plus-circle"></i>
-                        Add New Institution {{ $id }}
+                        Add New Institution 
                     </h1>
                     <p class="page-subtitle">Create a new institution record for your system</p>
                 </div>
@@ -336,9 +336,6 @@
                                     <div class="error-message">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-mail-bulk form-icon"></i>
@@ -351,6 +348,7 @@
                                 @enderror
                             </div>
                         </div>
+
 
                         <div class="form-group text-center mt-4">
                             <a href="{{ url('admin/institution-managements') }}" class="btn-cancel">

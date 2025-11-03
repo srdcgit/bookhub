@@ -187,9 +187,6 @@
                         </div>
                         <div class="detail-value">{{ $institution->district ? $institution->district->name : 'N/A' }}</div>
                     </div>
-                </div>
-
-                <div class="detail-row">
                     <div class="detail-group">
                         <div class="detail-label">
                             <i class="fas fa-cube detail-icon"></i>
@@ -197,7 +194,9 @@
                         </div>
                         <div class="detail-value">{{ $institution->block ? $institution->block->name : 'N/A' }}</div>
                     </div>
+                </div>
 
+                <div class="detail-row">
                     <div class="detail-group">
                         <div class="detail-label">
                             <i class="fas fa-mail-bulk detail-icon"></i>
@@ -205,17 +204,16 @@
                         </div>
                         <div class="detail-value">{{ $institution->pincode }}</div>
                     </div>
-                </div>
-
-                <div class="detail-group">
-                    <div class="detail-label">
-                        <i class="fas fa-check-circle detail-icon"></i>
-                        Status
+                    <div>
+                        <div class="detail-label">
+                            <i class="fas fa-check-circle detail-icon"></i>
+                            Status
+                        </div>
+                        <div class="detail-value">{{ $institution->status ? 'Active' : 'Inactive' }}</div>
+                        @if($institution->status == 0)
+                            <div class="text-danger">This institution is inactive. Please activate it to make it visible to students.</div>
+                        @endif
                     </div>
-                    <div class="detail-value">{{ $institution->status ? 'Active' : 'Inactive' }}</div>
-                    @if($institution->status == 0)
-                        <div class="text-danger">This institution is inactive. Please activate it to make it visible to students.</div>
-                    @endif
                 </div>
 
                 @if($institution->institutionClasses && $institution->institutionClasses->count() > 0)
