@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BookRequestsController;
 use App\Http\Controllers\Admin\EditionController;
 use App\Http\Controllers\Admin\InstitutionManagementController;
 use App\Http\Controllers\Admin\ProductsController as AdminProductsController;
+use App\Http\Controllers\Admin\SalesExecutiveController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -49,6 +50,10 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::post('update-vendor-commission', 'AdminController@updateVendorCommission');
 
         Route::get('admins/{type?}', 'AdminController@admins');                                // In case the authenticated user (logged-in user) is superadmin, admin, subadmin, vendor these are the three Admin Management URLs depending on the slug. The slug is the `type` column in `admins` table which can only be: superadmin, admin, subadmin, or vendor    // Used an Optional Route Parameters (or Optional Route Parameters) using a '?' question mark sign, for in case that there's no any {type} passed, the page will show ALL superadmins, admins, subadmins and vendors at the same page
+        // Sales Executives Management
+        Route::get('admins/sales-executive', [SalesExecutiveController::class, 'index'])->name('salesexecutives.index');
+        Route::match(['get','post'], 'add-edit-sales-executive/{id?}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'addEdit'])->name('sales_executives.add_edit');
+        Route::get('delete-sales-executive/{id}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'delete'])->name('sales_executives.delete');
         Route::match(['get', 'post'], 'add-edit-admin/{id?}', 'AdminController@addEditAdmin'); // Add or Edit Admin // the slug (Route Parameter) {id?} is an Optional Parameter, so if it's passed, this means Edit/Update the Admin, and if not passed, this means Add an Admin
         Route::get('delete-admin/{id}', 'AdminController@deleteAdmin');                        // Delete an Admin
         Route::get('view-vendor-details/{id}', 'AdminController@viewVendorDetails');           // View further 'vendor' details inside Admin Management table (if the authenticated user is superadmin, admin or subadmin)
@@ -454,6 +459,10 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
     Route::group(['middleware' => ['sales']], function () {
         Route::get('dashboard', 'SalesExecutiveAuthController@dashboard')->name('sales.dashboard');
         Route::post('logout', 'SalesExecutiveAuthController@logout')->name('sales.logout');
+
+        // Sales Executive Profile
+        Route::get('profile', 'ProfileController@edit')->name('sales.profile.edit');
+        Route::post('profile', 'ProfileController@update')->name('sales.profile.update');
 
         // Sales Institution Management (similar to Admin)
         Route::resource('institution-managements', 'InstitutionManagementController')->names([
