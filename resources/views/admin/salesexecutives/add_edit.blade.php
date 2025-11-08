@@ -20,42 +20,48 @@
                                 </div>
                             @endif
 
-                            <form method="POST" action="{{ url('admin/add-edit-sales-executive' . (isset($salesExecutive) ? '/' . $salesExecutive->id : '')) }}">
+                            <form method="POST"
+                                action="{{ url('admin/add-edit-sales-executive' . (isset($salesExecutive) ? '/' . $salesExecutive->id : '')) }}">
                                 @csrf
 
                                 <div class="form-group">
                                     <label>Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control" value="{{ old('name', $salesExecutive->name ?? '') }}" required>
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ old('name', $salesExecutive->name ?? '') }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Email <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" value="{{ old('email', $salesExecutive->email ?? '') }}" required>
+                                    <input type="email" name="email" class="form-control"
+                                        value="{{ old('email', $salesExecutive->email ?? '') }}" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Phone <span class="text-danger">*</span></label>
-                                    <input type="text" name="phone" class="form-control" value="{{ old('phone', $salesExecutive->phone ?? '') }}" required>
+                                    <input type="text" name="phone" class="form-control"
+                                        value="{{ old('phone', $salesExecutive->phone ?? '') }}" required>
                                 </div>
 
                                 @if (!isset($salesExecutive))
-                                <div class="form-group">
-                                    <label>Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Confirm Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password_confirmation" class="form-control" required>
-                                </div>
+                                    <div class="form-group">
+                                        <label>Password <span class="text-danger">*</span></label>
+                                        <input type="password" name="password" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm Password <span class="text-danger">*</span></label>
+                                        <input type="password" name="password_confirmation" class="form-control" required>
+                                    </div>
                                 @else
-                                <div class="form-group">
-                                    <label>New Password</label>
-                                    <input type="password" name="password" class="form-control" placeholder="Leave blank to keep current">
-                                </div>
+                                    <div class="form-group">
+                                        <label>New Password</label>
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="Leave blank to keep current">
+                                    </div>
                                 @endif
 
-                                <button type="submit" class="btn btn-primary">{{ isset($salesExecutive) ? 'Update' : 'Create' }}</button>
-                                <a href="{{ route('sales_executives.index') }}" class="btn btn-light">Cancel</a>
+                                <button type="submit"
+                                    class="btn btn-primary">{{ isset($salesExecutive) ? 'Update' : 'Create' }}</button>
+                                <a href="{{ route('salesexecutives.index') }}" class="btn btn-light">Cancel</a>
                             </form>
                         </div>
                     </div>
@@ -64,5 +70,3 @@
         </div>
     </div>
 @endsection
-
-

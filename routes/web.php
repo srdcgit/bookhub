@@ -49,11 +49,12 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         // Update the vendor's commission percentage (by the Admin) in `vendors` table (for every vendor on their own) in the Admin Panel in admin/admins/view_vendor_details.blade.php (Commissions module: Every vendor must pay a certain commission (that may vary from a vendor to another) for the website owner (admin) on every item sold, and it's defined by the website owner (admin))
         Route::post('update-vendor-commission', 'AdminController@updateVendorCommission');
 
-        Route::get('admins/{type?}', 'AdminController@admins');                                // In case the authenticated user (logged-in user) is superadmin, admin, subadmin, vendor these are the three Admin Management URLs depending on the slug. The slug is the `type` column in `admins` table which can only be: superadmin, admin, subadmin, or vendor    // Used an Optional Route Parameters (or Optional Route Parameters) using a '?' question mark sign, for in case that there's no any {type} passed, the page will show ALL superadmins, admins, subadmins and vendors at the same page
-        // Sales Executives Management
-        Route::get('admins/sales-executive', [SalesExecutiveController::class, 'index'])->name('salesexecutives.index');
+        // Sales Executives Management - Must be BEFORE admins/{type?} route to prevent route conflicts
+        Route::get('sales-executive', [SalesExecutiveController::class, 'index'])->name('salesexecutives.index');
         Route::match(['get','post'], 'add-edit-sales-executive/{id?}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'addEdit'])->name('sales_executives.add_edit');
         Route::get('delete-sales-executive/{id}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'delete'])->name('sales_executives.delete');
+
+        Route::get('admins/{type?}', 'AdminController@admins');                                // In case the authenticated user (logged-in user) is superadmin, admin, subadmin, vendor these are the three Admin Management URLs depending on the slug. The slug is the `type` column in `admins` table which can only be: superadmin, admin, subadmin, or vendor    // Used an Optional Route Parameters (or Optional Route Parameters) using a '?' question mark sign, for in case that there's no any {type} passed, the page will show ALL superadmins, admins, subadmins and vendors at the same page
         Route::match(['get', 'post'], 'add-edit-admin/{id?}', 'AdminController@addEditAdmin'); // Add or Edit Admin // the slug (Route Parameter) {id?} is an Optional Parameter, so if it's passed, this means Edit/Update the Admin, and if not passed, this means Add an Admin
         Route::get('delete-admin/{id}', 'AdminController@deleteAdmin');                        // Delete an Admin
         Route::get('view-vendor-details/{id}', 'AdminController@viewVendorDetails');           // View further 'vendor' details inside Admin Management table (if the authenticated user is superadmin, admin or subadmin)

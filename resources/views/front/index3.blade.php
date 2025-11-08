@@ -202,7 +202,7 @@
     <!--Swiper Banner End-->
 
     <!-- Client Start-->
-    <div class="bg-white py-5">
+    {{-- <div class="bg-white py-5">
         <div class="container">
             <!--Client Swiper -->
             <div class="swiper client-swiper">
@@ -225,7 +225,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Client End-->
 
     <!--Recommend Section Start-->
@@ -750,7 +750,7 @@
     <!-- Special Offer End -->
 
     <!-- Testimonial -->
-    <section class="content-inner-2 testimonial-wrapper">
+    {{-- <section class="content-inner-2 testimonial-wrapper">
         <div class="container">
             <div class="testimonial">
                 <div class="section-head book-align">
@@ -934,7 +934,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
     <!-- Testimonial End -->
 
     <!-- Latest News -->

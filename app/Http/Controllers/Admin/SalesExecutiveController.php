@@ -14,7 +14,7 @@ class SalesExecutiveController extends Controller
     {
         Session::put('page', 'view_sales');
         $title = 'Sales Executives';
-        $salesExecutives = SalesExecutive::all()->toArray();
+        $salesExecutives = SalesExecutive::all(); // Remove toArray() to keep as collection for object access
         return view('admin.salesexecutives.index', compact('salesExecutives', 'title'));
     }
 
@@ -67,7 +67,7 @@ class SalesExecutiveController extends Controller
             if (! $isEdit) {
                 $payload['password'] = Hash::make($validated['password']);
                 SalesExecutive::create($payload);
-                return redirect()->route('sales_executives.index')->with('success_message', 'Sales Executive added successfully!');
+                return redirect()->route('salesexecutives.index')->with('success_message', 'Sales Executive added successfully!');
             }
 
             // Do not overwrite password on edit unless provided
@@ -76,7 +76,7 @@ class SalesExecutiveController extends Controller
             }
 
             $salesExecutive->update($payload);
-            return redirect()->route('sales_executives.index')->with('success_message', 'Sales Executive updated successfully!');
+            return redirect()->route('salesexecutives.index')->with('success_message', 'Sales Executive updated successfully!');
         }
 
         return view('admin.salesexecutives.add_edit', compact('salesExecutive'));

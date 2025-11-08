@@ -9,10 +9,12 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h4 class="card-title mb-0">{{ $title }}</h4>
-                                <a href="{{ url('admin/add-edit-sales-executive') }}" class="btn btn-primary">
-                                    <i class="mdi mdi-plus"></i> Add Sales Executive
+                                <a href="{{ route('sales_executives.add_edit') }}"
+                                    class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                                    <i class="mdi mdi-plus fs-5"></i>Add Sales Executive
                                 </a>
                             </div>
+
 
                             @if (Session::has('success_message'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -43,11 +45,15 @@
                                                 <td>{{ $se->phone }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center" style="gap: 10px;">
-                                                        <a href="{{ url('admin/add-edit-sales-executive/' . $se->id) }}" title="Edit">
+                                                        <a href="{{ route('sales_executives.add_edit', $se->id) }}"
+                                                            title="Edit">
                                                             <i style="font-size: 20px" class="mdi mdi-pencil"></i>
                                                         </a>
-                                                        <a href="{{ url('admin/delete-sales-executive/' . $se->id) }}" title="Delete" onclick="return confirm('Delete this sales executive?');">
-                                                            <i style="font-size: 20px; color: #e74c3c;" class="mdi mdi-delete"></i>
+                                                        <a href="{{ route('sales_executives.delete', $se->id) }}"
+                                                            title="Delete"
+                                                            onclick="return confirm('Delete this sales executive?');">
+                                                            <i style="font-size: 20px; color: #e74c3c;"
+                                                                class="mdi mdi-delete"></i>
                                                         </a>
                                                     </div>
                                                 </td>
@@ -63,7 +69,8 @@
         </div>
         <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2022. All rights reserved.</span>
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2022. All rights
+                    reserved.</span>
             </div>
         </footer>
     </div>
@@ -73,15 +80,16 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(function(){
+        $(function() {
             $('#sales-table').DataTable({
                 pageLength: 10,
-                lengthMenu: [5,10,25,50,100],
+                lengthMenu: [5, 10, 25, 50, 100],
                 ordering: true,
-                columnDefs: [ { orderable: false, targets: [4] } ]
+                columnDefs: [{
+                    orderable: false,
+                    targets: [4]
+                }]
             });
         });
     </script>
 @endsection
-
-
