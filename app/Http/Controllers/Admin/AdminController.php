@@ -16,6 +16,8 @@ use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorsBankDetail;
 use App\Models\VendorsBusinessDetail;
+use App\Models\ContactUs;
+use App\Models\ContactReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -471,7 +473,7 @@ class AdminController extends Controller
             Session::put('page', 'view_' . strtolower($title));
 
         } else { // if there's no $type is passed, show ALL of the admins, subadmins and vendors
-            $title = 'All Admins/Vendors/Sales';
+            $title = 'All Admins/Vendors';
             // $sales = $sales->get()->toArray();
 
             // Correcting issues in the Skydash Admin Panel Sidebar using Session
@@ -746,4 +748,93 @@ class AdminController extends Controller
 
         return redirect('admin/admins')->with('success_message', 'Admin deleted successfully!');
     }
+
+    public function contactQueries()
+    {
+        Session::put('page', 'contact_queries');
+        
+        $queries = ContactUs::with('replies')->orderBy('created_at', 'desc')->get()->toArray();
+        
+        return view('admin.contact_queries.index')->with(compact('queries'));
+    }
+
+    public function updateContactStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            ContactUs::where('id', $data['query_id'])->update(['status' => $data['status']]);
+
+            return response()->json([
+                'status' => $data['status'],
+                'query_id' => $data['query_id'],
+            ]);
+        }
+    }
+
+    public function updateContactReply(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+            $data = $request->all();
+            
+            // Get current query status
+            $currentQuery = ContactUs::where('id', $id)->first();
+            $wasResolved = $currentQuery && $currentQuery->status == 'resolved';
+            
+            // If query is already resolved and admin is just changing status, admin_reply is optional
+            $rules = [
+                'status' => 'required|in:pending,resolved,in_progress',
+            ];
+            
+            $customMessages = [
+                'status.required' => 'Status is required',
+            ];
+            
+            // Only require admin_reply if query is not already resolved or if status is being changed to resolved
+            if (!$wasResolved || ($data['status'] == 'resolved' && !$wasResolved)) {
+                $rules['admin_reply'] = 'required';
+                $customMessages['admin_reply.required'] = 'Reply is required';
+            }
+            
+            $this->validate($request, $rules, $customMessages);
+            
+            // Update main admin_reply field (for backward compatibility)
+            // Only update admin_reply if it's provided
+            $updateData = ['status' => $data['status']];
+            if (!empty($data['admin_reply'])) {
+                $updateData['admin_reply'] = $data['admin_reply'];
+            }
+            ContactUs::where('id', $id)->update($updateData);
+            
+            // Only create a new reply entry if admin is providing a new reply message
+            if (!empty($data['admin_reply'])) {
+                // Also save to replies table for conversation thread
+                ContactReply::create([
+                    'contact_us_id' => $id,
+                    'reply_by' => 'admin',
+                    'message' => $data['admin_reply'],
+                ]);
+            }
+            
+            if ($data['status'] == 'resolved') {
+                return redirect('admin/contact-queries')->with('success_message', 'Query resolved successfully!');
+            } else {
+                return redirect('admin/contact-queries')->with('success_message', 'Reply updated successfully!');
+            }
+        }
+        
+        $query = ContactUs::with('replies')->where('id', $id)->first();
+        $query = $query ? $query->toArray() : [];
+        
+        return view('admin.contact_queries.reply')->with(compact('query'));
+    }
+
+    public function deleteContactQuery($id)
+    {
+        ContactUs::where('id', $id)->delete();
+
+        return redirect('admin/contact-queries')->with('success_message', 'Query deleted successfully!');
+    }
+
+   
 }

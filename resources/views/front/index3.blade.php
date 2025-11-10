@@ -1088,40 +1088,48 @@
     </section>
     <!-- Feature Box End -->
 
-    <!-- Newsletter -->
-    <section class="py-5 newsletter-wrapper"
-        style="background-image: url('images/background/bg1.jpg'); background-size: cover;">
+    <!-- Sales Executive CTA -->
+    <section class="py-5" style="background-image: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);">
         <div class="container">
-            <div class="subscride-inner">
-                <div
-                    class="row style-1 justify-content-xl-between justify-content-lg-center align-items-center text-xl-start text-center">
-                    <div class="col-xl-7 col-lg-12">
-                        <div class="section-head mb-0">
-                            <h2 class="title text-white my-lg-3 mt-0">Subscribe our newsletter for newest books updates
-                            </h2>
+            <div class="row align-items-center text-white g-4">
+                <div class="col-xl-7 col-lg-7">
+                    <h2 class="display-6 text-white fw-semibold mb-3">Become a BookHub Sales Executive</h2>
+                    <p class="lead mb-4">Help schools and institutions discover the right books while earning attractive commissions, marketing support, and exclusive incentives from BookHub.</p>
+                    <div class="d-flex flex-column flex-md-row gap-3">
+                        <div class="d-flex align-items-center">
+                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i class="fa-solid fa-chart-line fs-4"></i></span>
+                            <div>
+                                <h5 class="mb-1 text-white">Grow your network</h5>
+                                <small class="text-white-50">Connect with schools, colleges, and book lovers in your city.</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i class="fa-solid fa-coins fs-4"></i></span>
+                            <div>
+                                <h5 class="mb-1 text-white">Earn more, faster</h5>
+                                <small class="text-white-50">Enjoy competitive payouts and performance bonuses.</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xl-5 col-lg-6">
-                        <form class="dzSubscribe style-1" action="script/mailchamp.php" method="post">
-                            <div class="dzSubscribeMsg"></div>
-                            <div class="form-group">
-                                <div class="input-group mb-0">
-                                    <input name="dzEmail" required="required" type="email"
-                                        class="form-control bg-transparent text-white" placeholder="Your Email Address">
-                                    <div class="input-group-addon">
-                                        <button name="submit" value="Submit" type="submit"
-                                            class="btn btn-primary btnhover">
-                                            <span>SUBSCRIBE</span>
-                                            <i class="fa-solid fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                </div>
+                <div class="col-xl-5 col-lg-5">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-body p-4">
+                            <h4 class="fw-semibold mb-3 text-primary">Register today</h4>
+                            <p class="mb-4 text-muted">Fill out a short application and our onboarding team will connect with you within 48 hours.</p>
+                            <a href="{{ route('sales.register') }}" class="btn btn-primary btnhover w-100">
+                                Join as Sales Executive
+                                <i class="fa-solid fa-arrow-right ms-2"></i>
+                            </a>
+                            <div class="d-flex align-items-center mt-4">
+                                <span class="text-primary me-3"><i class="fa-solid fa-circle-check"></i></span>
+                                <small class="text-muted">Trusted by {{ number_format(App\Models\SalesExecutive::count()) }}+ executives across India.</small>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Newsletter End -->
+    <!-- Sales Executive CTA End -->
 @endsection

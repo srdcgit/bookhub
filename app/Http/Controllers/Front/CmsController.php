@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContactUs;
 use App\Models\HeaderLogo;
 use App\Models\Language;
 use App\Models\Section;
@@ -58,6 +59,15 @@ class CmsController extends Controller
                 'comment' => $data['message']
             ];
 
+            // Save to database
+            ContactUs::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'subject' => $data['subject'],
+                'message' => $data['message'],
+                'status' => 'pending',
+            ]);
+
             \Illuminate\Support\Facades\Mail::send('emails.inquiry', $messageData, function ($message) use ($email) {
                 $message->to($email)->subject('Inquiry from a user');
             });
@@ -72,6 +82,11 @@ class CmsController extends Controller
             return redirect()->back()->with('success_message', $message);
         }
 
+
+        $logos     = HeaderLogo::first();
+        $sections  = Section::all();
+        $language  = Language::get();
+        $condition = session('condition', 'new');
 
         return view('front.pages.contact',compact('condition', 'sections', 'language', 'logos'));
     }

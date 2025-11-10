@@ -1,143 +1,103 @@
 {{-- This page is rendered by contact() method inside Front/CmsController.php --}}
-@extends('front.layout.layout')
-
+@extends('front.layout.layout3')
 
 @section('content')
-    <!-- Page Introduction Wrapper -->
-    <div class="page-style-a">
-        <div class="container">
-            <div class="page-intro">
-                <h2>Contact Us</h2>
-                <ul class="bread-crumb">
-                    <li class="has-separator">
-                        <i class="ion ion-md-home"></i>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li class="is-marked">
-                        <a href="contact.html">Contact Us</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<!-- Page Introduction Wrapper -->
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-white px-3 py-2">
+            <li class="breadcrumb-item">
+                <i class="ion ion-md-home"></i>
+                <a href="{{ url('/') }}" class="text-decoration-none">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+        </ol>
+    </nav>
+    <div class="text-center mb-5">
+        <h2 class="display-4 font-weight-bold">Contact Us</h2>
     </div>
-    <!-- Page Introduction Wrapper /- -->
-    <!-- Contact-Page -->
-    <div class="page-contact u-s-p-t-80">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                    <div class="touch-wrapper">
-                        <h1 class="contact-h1">Get In Touch With Us</h1>
-
-
-                        {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}    
-                        {{-- Determining If An Item Exists In The Session (using has() method): https://laravel.com/docs/9.x/session#determining-if-an-item-exists-in-the-session --}}
-                        @if (Session::has('error_message')) <!-- Check AdminController.php, updateAdminPassword() method -->
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error:</strong> {{ Session::get('error_message') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-
-
-                        {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}    
-                        @if ($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-
-                                @php
-                                    echo implode('', $errors->all('<div>:message</div>'))
-                                @endphp
-
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-
-                        {{-- Displaying The Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors AND https://laravel.com/docs/9.x/blade#validation-errors --}} 
-                        {{-- Determining If An Item Exists In The Session (using has() method): https://laravel.com/docs/9.x/session#determining-if-an-item-exists-in-the-session --}}
-                        {{-- Our Bootstrap success message in case of updating admin password is successful: --}}
-                        {{-- Displaying Success Message --}}
-                        @if (Session::has('success_message')) <!-- Check vendorRegister() method in Front/VendorController.php -->
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>Success:</strong> {{ Session::get('success_message') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-
-                        <form action="{{ url('contact') }}" method="post">
-                            @csrf {{-- Preventing CSRF Requests: https://laravel.com/docs/9.x/csrf#preventing-csrf-requests --}}
-
-                            <div class="group-inline u-s-m-b-30">
-                                <div class="group-1 u-s-p-r-16">
-                                    <label for="contact-name">Your Name
-                                        <span class="astk">*</span>
-                                    </label>
-                                    <input type="text" id="contact-name" class="text-field" placeholder="Name" name="name" value="{{ old('name') }}"> {{-- Retrieving Old Input: https://laravel.com/docs/9.x/requests#retrieving-old-input --}}
-                                </div>
-                                <div class="group-2">
-                                    <label for="contact-email">Your Email
-                                        <span class="astk">*</span>
-                                    </label>
-                                    <input type="email" id="contact-email" class="text-field" placeholder="Email" name="email" value="{{ old('email') }}"> {{-- Retrieving Old Input: https://laravel.com/docs/9.x/requests#retrieving-old-input --}}
-                                </div>
-                            </div>
-                            <div class="u-s-m-b-30">
-                                <label for="contact-subject">Subject
-                                    <span class="astk">*</span>
-                                </label>
-                                <input type="text" id="contact-subject" class="text-field" placeholder="Subject" name="subject" value="{{ old('subject') }}"> {{-- Retrieving Old Input: https://laravel.com/docs/9.x/requests#retrieving-old-input --}}
-                            </div>
-                            <div class="u-s-m-b-30">
-                                <label for="contact-message">Message:</label>
-                                <span class="astk">*</span>
-                                <textarea class="text-area" id="contact-message" name="message">{{ old('message') }}</textarea> {{-- Retrieving Old Input: https://laravel.com/docs/9.x/requests#retrieving-old-input --}}
-                            </div>
-                            <div class="u-s-m-b-30">
-                                <button type="submit" class="button button-outline-secondary">Send Message</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                    <div class="information-about-wrapper">
-                        <h1 class="contact-h1">Information About Us</h1>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora, voluptate. Architecto aspernatur, culpa cupiditate deserunt dolore eos facere in, incidunt omnis quae quam quos, similique sunt tempore vel vero.
-                        </p>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora, voluptate. Architecto aspernatur, culpa cupiditate deserunt dolore eos facere in, incidunt omnis quae quam quos, similique sunt tempore vel vero.
-                        </p>
-                    </div>
-                    <div class="contact-us-wrapper">
-                        <h1 class="contact-h1">Contact Us</h1>
-                        <div class="contact-material u-s-m-b-16">
-                            <h6>Location</h6>
-                            <span>10 Salah Salem St.</span>
-                            <span>Cairo, Egypt</span>
+    <div class="row">
+        <!-- Contact form -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">Get In Touch With Us</h3>
+                    @if (Session::has('error_message'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error:</strong> {{ Session::get('error_message') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="contact-material u-s-m-b-16">
-                            <h6>Email</h6>
-                            <span>developers@computerscience.com</span>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {!! implode('', $errors->all('<div>:message</div>')) !!}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="contact-material u-s-m-b-16">
-                            <h6>Telephone</h6>
-                            <span>+201122237359</span>
+                    @endif
+
+                    @if (Session::has('success_message'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success:</strong> {{ Session::get('success_message') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                    </div>
+                    @endif
+
+                    <form action="{{ url('contact') }}" method="post" class="mt-3">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="contact-name" class="form-label">Your Name <span class="text-danger">*</span></label>
+                            <input type="text" id="contact-name" class="form-control" name="name" placeholder="Name" value="{{ old('name') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact-email" class="form-label">Your Email <span class="text-danger">*</span></label>
+                            <input type="email" id="contact-email" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact-subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                            <input type="text" id="contact-subject" class="form-control" name="subject" placeholder="Subject" value="{{ old('subject') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact-message" class="form-label">Message <span class="text-danger">*</span></label>
+                            <textarea id="contact-message" class="form-control" name="message" rows="5" placeholder="Your message here...">{{ old('message') }}</textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary w-100 py-2">Send Message</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="u-s-p-t-80">
-            <div id="map"></div>
+        <!-- Contact info -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Information About Us</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora...</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora...</p>
+                    <hr>
+                    <h5 class="mt-4 mb-3">Contact Details</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span class="ms-2">10 Salah Salem St., Cairo, Egypt</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope text-primary"></i>
+                            <span class="ms-2">developers@computerscience.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone-alt text-primary"></i>
+                            <span class="ms-2">+201122237359</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Contact-Page /- -->
+    <!-- Map section -->
+    <div class="mt-5">
+        <div id="map" style="width: 100%; height: 350px; border-radius:0.5rem; box-shadow:0 0 15px rgba(0,0,0,0.1);"></div>
+    </div>
+</div>
 @endsection

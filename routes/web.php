@@ -294,6 +294,13 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::get('product/{id}/editions', [BookAttributeController::class, 'getEditions']);
         Route::post('book-attribute', [BookAttributeController::class, 'store']);
 
+        // Contact Us Queries
+        Route::get('contact-queries', 'AdminController@contactQueries');
+        Route::post('update-contact-status', 'AdminController@updateContactStatus');
+        Route::match(['get', 'post'], 'contact-queries/reply/{id}', 'AdminController@updateContactReply');
+        Route::get('delete-contact-query/{id}', 'AdminController@deleteContactQuery');
+
+
     });
 });
 
@@ -385,6 +392,12 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
     // Render the Contact Us page (front/pages/contact.blade.php) using GET HTTP Requests, or the HTML Form Submission using POST HTTP Requests
     Route::match(['get', 'post'], 'contact', 'CmsController@contact');
 
+    // Render the About Us page (front/pages/about.blade.php) using GET HTTP Requests, or the HTML Form Submission using POST HTTP Requests
+    Route::match(['get', 'post'], 'about', 'UserController@about');
+
+    // Render the Privacy Policy page (front/pages/privacy_policy.blade.php) using GET HTTP Requests, or the HTML Form Submission using POST HTTP Requests
+    Route::match(['get', 'post'], 'privacy-policy', 'UserController@privacyPolicy');
+
     // Add a Newsletter Subscriber email HTML Form Submission in front/layout/footer.blade.php when clicking on the Submit button (using an AJAX Request/Call)
     Route::post('add-subscriber-email', 'NewsletterController@addSubscriber');
 
@@ -398,6 +411,9 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
 
         // User Account Update Password HTML Form submission via AJAX. Check front/js/custom.js
         Route::post('user/update-password', 'UserController@userUpdatePassword')->name('updatePassword');
+
+        // User reply to contact query
+        Route::post('user/query/{id}/reply', 'UserController@replyToQuery')->name('user.query.reply');
 
                                                                                              // Coupon Code redemption (Apply coupon) / Coupon Code HTML Form submission via AJAX in front/products/cart_items.blade.php, check front/js/custom.js
         Route::post('/apply-coupon', 'ProductsController@applyCoupon')->name('applyCoupon'); // Important Note: We added this route here as a protected route inside the 'auth' middleware group because ONLY logged in/authenticated users are allowed to redeem Coupons!

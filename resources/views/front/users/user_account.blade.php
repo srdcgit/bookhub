@@ -91,6 +91,10 @@
             content: '🚪';
         }
 
+        .nav-my-queries::before {
+            content: '💬';
+        }
+
         .woocommerce-MyAccount-content {
             padding: 40px;
             background: white;
@@ -403,10 +407,39 @@
                 grid-template-columns: 1fr;
             }
 
-            .account-info-grid {
-                grid-template-columns: 1fr;
-            }
+        .account-info-grid {
+            grid-template-columns: 1fr;
         }
+    }
+
+    /* Accordion Custom Styles */
+    .accordion-button {
+        box-shadow: none !important;
+        font-weight: 500;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #f8f9fa !important;
+        color: #333 !important;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none !important;
+        border-color: #e5e5e5 !important;
+    }
+
+    .accordion-item {
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        transform: rotate(180deg);
+    }
     </style>
 
     <div class="woocommerce-account">
@@ -435,6 +468,11 @@
                                     <a href="#change-password" class="nav-change-password nav-link" id="change-password-tab"
                                         data-bs-toggle="tab" role="tab" aria-controls="change-password"
                                         aria-selected="false">Change Password</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a href="#my-queries" class="nav-my-queries nav-link" id="my-queries-tab"
+                                        data-bs-toggle="tab" role="tab" aria-controls="my-queries"
+                                        aria-selected="false">My Queries</a>
                                 </li>
 
                                 <!-- Logout link -->
@@ -704,6 +742,147 @@
                                             <button type="submit" class="woocommerce-Button">Update password</button>
                                         </div>
                                     </form>
+                                </div>
+
+                                <!-- My Queries Tab -->
+                                <div class="tab-pane fade" id="my-queries" role="tabpanel"
+                                    aria-labelledby="my-queries-tab">
+                                    <div class="woocommerce-account-header">
+                                        <h1>My Contact Queries</h1>
+                                        <p>View the status and replies for all your contact form submissions.</p>
+                                    </div>
+
+                                    @if (session('success_message'))
+                                        <div class="woocommerce-message">{{ session('success_message') }}</div>
+                                    @endif
+
+                                    @if (session('error_message'))
+                                        <div class="woocommerce-error">{{ session('error_message') }}</div>
+                                    @endif
+
+                                    @if ($contactQueries->isEmpty())
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon">💬</div>
+                                            <h3>No queries yet</h3>
+                                            <p>You haven't submitted any contact queries yet.</p>
+                                            <a href="{{ url('/contact') }}" class="woocommerce-Button">Contact Us</a>
+                                        </div>
+                                    @else
+                                        <!-- Accordion Style Query Display -->
+                                        <div class="accordion" id="queriesAccordion" style="margin-top: 20px;">
+                                            @foreach ($contactQueries as $key => $query)
+                                                @php
+                                                    $collapseId = 'collapse' . $query->id;
+                                                    $headingId = 'heading' . $query->id;
+                                                    // Expand first query or if status is not resolved, collapse resolved queries by default
+                                                    $isExpanded = ($key == 0 && $query->status != 'resolved') || ($key == 0 && $query->status == 'resolved' && $contactQueries->count() == 1);
+                                                @endphp
+                                                
+                                                <div class="accordion-item" style="border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                                                    <h2 class="accordion-header" id="{{ $headingId }}">
+                                                        <button class="accordion-button {{ $isExpanded ? '' : 'collapsed' }}" type="button" 
+                                                                data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" 
+                                                                aria-expanded="{{ $isExpanded ? 'true' : 'false' }}" 
+                                                                aria-controls="{{ $collapseId }}"
+                                                                style="background: #f8f9fa; padding: 15px 20px;">
+                                                            <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                                                                <div style="flex: 1;">
+                                                                    <strong style="color: #333; font-size: 16px; display: block; margin-bottom: 5px;">{{ $query->subject }}</strong>
+                                                                    <small style="color: #666; font-size: 13px;">Submitted on {{ $query->created_at->format('M d, Y h:i A') }}</small>
+                                                                </div>
+                                                                <div style="margin-left: 15px;">
+                                                                    @if ($query->status == 'pending')
+                                                                        <span class="status-badge status-pending">Pending</span>
+                                                                    @elseif ($query->status == 'in_progress')
+                                                                        <span class="status-badge" style="background: #cce5ff; color: #004085; border: 1px solid #b3d7ff;">In Progress</span>
+                                                                    @elseif ($query->status == 'resolved')
+                                                                        <span class="status-badge status-available">Resolved</span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    
+                                                    <div id="{{ $collapseId }}" 
+                                                         class="accordion-collapse collapse {{ $isExpanded ? 'show' : '' }}" 
+                                                         aria-labelledby="{{ $headingId }}" 
+                                                         data-bs-parent="#queriesAccordion">
+                                                        <div class="accordion-body" style="padding: 20px; background: #fff;">
+                                                            <!-- Original Query -->
+                                                            <div style="background: #f0f7ff; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #0073aa;">
+                                                                <strong style="color: #0073aa; display: block; margin-bottom: 8px;">Your Original Message:</strong>
+                                                                <p style="margin: 0; color: #333; line-height: 1.6;">{{ $query->message }}</p>
+                                                                <small style="color: #999; display: block; margin-top: 8px;">{{ $query->created_at->format('F d, Y h:i A') }}</small>
+                                                            </div>
+
+                                                            <!-- Admin Reply (if exists in admin_reply field) -->
+                                                            @if ($query->admin_reply)
+                                                                <div style="background: #e8f5e9; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #28a745;">
+                                                                    <strong style="color: #28a745; display: block; margin-bottom: 8px;">👨‍💼 Admin Reply:</strong>
+                                                                    <p style="margin: 0; color: #333; line-height: 1.6;">{{ $query->admin_reply }}</p>
+                                                                    <small style="color: #999; display: block; margin-top: 8px;">{{ $query->updated_at->format('F d, Y h:i A') }}</small>
+                                                                </div>
+                                                            @endif
+
+                                                            <!-- Conversation Thread (Replies) -->
+                                                            @if ($query->replies && $query->replies->count() > 0)
+                                                                <div style="margin-bottom: 15px;">
+                                                                    <strong style="color: #333; display: block; margin-bottom: 10px; font-size: 14px;">Conversation Thread:</strong>
+                                                                    <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                                                                        @foreach ($query->replies as $reply)
+                                                                            @if ($reply->reply_by == 'admin')
+                                                                                <div style="background: #e8f5e9; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #28a745;">
+                                                                                    <strong style="color: #28a745; display: block; margin-bottom: 5px; font-size: 13px;">👨‍💼 Admin:</strong>
+                                                                                    <p style="margin: 0; color: #333; line-height: 1.6; font-size: 14px;">{{ $reply->message }}</p>
+                                                                                    <small style="color: #999; display: block; margin-top: 5px; font-size: 12px;">{{ $reply->created_at->format('F d, Y h:i A') }}</small>
+                                                                                </div>
+                                                                            @else
+                                                                                <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #2196f3;">
+                                                                                    <strong style="color: #2196f3; display: block; margin-bottom: 5px; font-size: 13px;">👤 You:</strong>
+                                                                                    <p style="margin: 0; color: #333; line-height: 1.6; font-size: 14px;">{{ $reply->message }}</p>
+                                                                                    <small style="color: #999; display: block; margin-top: 5px; font-size: 12px;">{{ $reply->created_at->format('F d, Y h:i A') }}</small>
+                                                                                </div>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                            <!-- Reply Form or Resolved Message -->
+                                                            @if ($query->status == 'resolved')
+                                                                <div style="background: #d4edda; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745; text-align: center;">
+                                                                    <div style="font-size: 48px; margin-bottom: 15px;">✅</div>
+                                                                    <h5 style="color: #155724; margin-bottom: 10px; font-weight: 600;">Query Resolved Successfully!</h5>
+                                                                    <p style="margin: 0; color: #155724; font-size: 16px;">Admin has successfully resolved your query. If you have any further questions, please feel free to submit a new query.</p>
+                                                                </div>
+                                                            @elseif ($query->admin_reply || ($query->replies && $query->replies->where('reply_by', 'admin')->count() > 0))
+                                                                <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e5e5e5;">
+                                                                    <h5 style="margin-bottom: 15px; color: #333;">Reply to Admin</h5>
+                                                                    <form action="{{ route('user.query.reply', $query->id) }}" method="POST">
+                                                                        @csrf
+                                                                        <div class="woocommerce-form-row woocommerce-form-row--wide">
+                                                                            <label>Your Reply <span class="required">*</span></label>
+                                                                            <textarea name="message" rows="4" class="woocommerce-form" style="width: 100%; padding: 12px; border: 2px solid #e5e5e5; border-radius: 4px; font-size: 16px;" required minlength="10" placeholder="Type your reply here..."></textarea>
+                                                                            @error('message')
+                                                                                <small style="color: #e74c3c; display: block; margin-top: 5px;">{{ $message }}</small>
+                                                                            @enderror
+                                                                        </div>
+                                                                        <div class="woocommerce-form-row">
+                                                                            <button type="submit" class="woocommerce-Button">Send Reply</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            @else
+                                                                <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107;">
+                                                                    <p style="margin: 0; color: #856404;">Your query is being reviewed. We'll get back to you soon.</p>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

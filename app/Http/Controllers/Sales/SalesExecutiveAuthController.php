@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use App\Models\SalesExecutive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,8 @@ class SalesExecutiveAuthController extends Controller
 {
     public function showLogin()
     {
-        return view('sales.login');
+        $logos    = HeaderLogo::first();
+        return view('sales.login', compact('logos'));
     }
 
     public function login(Request $request)
@@ -34,7 +36,8 @@ class SalesExecutiveAuthController extends Controller
 
     public function showRegister()
     {
-        return view('sales.register');
+        $logos    = HeaderLogo::first();
+        return view('sales.register', compact('logos'));
     }
 
     public function register(Request $request)
@@ -60,7 +63,8 @@ class SalesExecutiveAuthController extends Controller
 
     public function dashboard()
     {
-        return view('sales.dashboard', [
+        $logos    = HeaderLogo::first();
+        return view('sales.dashboard', compact('logos'), [
             'user' => auth('sales')->user()
         ]);
     }

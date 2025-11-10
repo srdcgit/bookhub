@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\BookRequest;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\ContactUs;
+use App\Models\ContactReply;
 use App\Models\Country;
 use App\Models\HeaderLogo;
 use App\Models\Language;
@@ -244,6 +246,7 @@ class UserController extends Controller
         $logos          = HeaderLogo::all();
         $language       = Language::get();
         $requestedBooks = BookRequest::where('requested_by_user', Auth::id())->orderBy('created_at', 'desc')->get();
+        $contactQueries = ContactUs::with('replies')->where('email', Auth::user()->email)->orderBy('created_at', 'desc')->get();
         $countries = Country::all();
         $user           = Auth::user();
 
@@ -278,7 +281,7 @@ class UserController extends Controller
 
         // For GET request: Show the form
         return view('front.users.user_account')->with(compact(
-            'user', 'countries', 'condition', 'footerProducts', 'category', 'logos', 'sections', 'language', 'requestedBooks'
+            'user', 'countries', 'condition', 'footerProducts', 'category', 'logos', 'sections', 'language', 'requestedBooks', 'contactQueries'
         ));
     }
 
@@ -307,6 +310,55 @@ class UserController extends Controller
 
         // If GET request, just show form (optional)
         return view('front.users.change_password');
+    }
+
+    public function replyToQuery(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string|min:10',
+        ], [
+            'message.required' => 'Reply message is required',
+            'message.min' => 'Reply must be at least 10 characters',
+        ]);
+
+        // Verify the query belongs to the logged-in user
+        $query = ContactUs::where('id', $id)
+            ->where('email', Auth::user()->email)
+            ->first();
+
+        if (!$query) {
+            return redirect()->back()->with('error_message', 'Query not found or you do not have permission to reply.');
+        }
+
+        // Create reply
+        ContactReply::create([
+            'contact_us_id' => $id,
+            'reply_by' => 'user',
+            'message' => $request->message,
+        ]);
+
+        // Update query status to in_progress if it was resolved
+        if ($query->status == 'resolved') {
+            $query->update(['status' => 'in_progress']);
+        }
+
+        return redirect()->back()->with('success_message', 'Your reply has been sent successfully!');
+    }
+    public function about(){
+        $condition = session('condition', 'new');
+        $sections  = Section::all();
+        $logos     = HeaderLogo::all();
+        $language  = Language::get();
+
+        return view('front.pages.about', compact('condition', 'sections', 'logos', 'language'));   
+    }
+    public function privacyPolicy(){
+        $condition = session('condition', 'new');
+        $sections  = Section::all();
+        $logos     = HeaderLogo::all();
+        $language  = Language::get();
+
+        return view('front.pages.privacypolicy', compact('condition', 'sections', 'logos', 'language'));   
     }
 
 }

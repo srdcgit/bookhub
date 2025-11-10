@@ -424,7 +424,7 @@
                         <!-- EXTRA NAV -->
                         <div class="extra-nav">
                             <div class="extra-cell">
-                                <a href="contact-us.html" class="btn btn-primary btnhover">Get In Touch</a>
+                                <a href="{{ url('/contact') }}" class="btn btn-primary btnhover">Get In Touch</a>
                             </div>
                         </div>
 
@@ -446,8 +446,7 @@
                                 <li class="nav-item"><a href="{{ url('/') }}"
                                         class="nav-link"><span>Home</span></a>
                                 </li>
-                                {{-- <li class="nav-item"><a href="{{ url('/about-us') }}" class="nav-link"><span>About
-                                            Us</span></a></li> --}}
+                                <li class="nav-item"><a href="{{ url('/about') }}" class="nav-link"><span>About Us</span></a></li>
                                 <li class="sub-menu-down"><a href="javascript:void(0);"><span><i
                                                 class="fas fa-tag me-2"></i> Condition
                                             ({{ ucfirst($condition) }})</span></a>
@@ -515,36 +514,20 @@
                         <div class="toggle-items row">
                             <div class="footer-col-book">
                                 <ul>
-                                    <li><a href="books-grid-view.html">Architecture</a></li>
-                                    <li><a href="books-grid-view.html">Art</a></li>
-                                    <li><a href="books-grid-view.html">Action</a></li>
-                                    <li><a href="books-grid-view.html">Biography</a></li>
-                                    <li><a href="books-grid-view.html">Body, Mind & Spirit</a></li>
-                                    <li><a href="books-grid-view.html">Business & Economics</a></li>
-                                    <li><a href="books-grid-view.html">Children Fiction</a></li>
-                                    <li><a href="books-grid-view.html">Children Non-Fiction</a></li>
-                                    <li><a href="books-grid-view.html">Comics & Graphics</a></li>
-                                    <li><a href="books-grid-view.html">Cooking</a></li>
-                                    <li><a href="books-grid-view.html">Crafts & Hobbies</a></li>
-                                    <li><a href="books-grid-view.html">Design</a></li>
-                                    <li><a href="books-grid-view.html">Drama</a></li>
-                                    <li><a href="books-grid-view.html">Education</a></li>
-                                    <li><a href="books-grid-view.html">Family & Relationships</a></li>
-                                    <li><a href="books-grid-view.html">Fiction</a></li>
-                                    <li><a href="books-grid-view.html">Foreign Language</a></li>
-                                    <li><a href="books-grid-view.html">Games</a></li>
-                                    <li><a href="books-grid-view.html">Gardening</a></li>
-                                    <li><a href="books-grid-view.html">Health & Fitness</a></li>
-                                    <li><a href="books-grid-view.html">History</a></li>
-                                    <li><a href="books-grid-view.html">House & Home</a></li>
-                                    <li><a href="books-grid-view.html">Humor</a></li>
-                                    <li><a href="books-grid-view.html">Literary Collections</a></li>
-                                    <li><a href="books-grid-view.html">Mathematics</a></li>
-                                    <li><a href="books-grid-view.html">Medical</a></li>
-                                    <li><a href="books-grid-view.html">Nature</a></li>
-                                    <li><a href="books-grid-view.html">Performing Arts</a></li>
-                                    <li><a href="books-grid-view.html">Pets</a></li>
-                                    <li><a href="books-grid-view.html">Show others</a></li>
+                                    {{-- <li><a href="{{ url('/category-products') }}">All Books</a></li> --}}
+                                    @foreach ($sections as $section)
+                                        @if (!empty($section['categories']) && count($section['categories']) > 0)
+                                            @foreach ($section['categories'] as $category)
+                                                <li>
+                                                    <a href="{{ url('/category-products/' . $category['id']) }}">{{ $category['category_name'] }}</a>
+                                                </li>
+                                            @endforeach
+                                        @else
+                                            <li>
+                                                <a href="{{ url('/category-products?section_id=' . $section['id']) }}">{{ $section['name'] }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -573,7 +556,7 @@
                                                     class="fa-brands fa-facebook-f"></i></a></li>
                                         <li><a href="#" target="_blank"><i
                                                     class="fa-brands fa-twitter"></i></a></li>
-                                        
+
                                         <li><a href="#" target="_blank"><i
                                                     class="fa-brands fa-instagram"></i></a></li>
                                         <li><a href="#" target="_blank"><i
@@ -586,9 +569,9 @@
                             <div class="widget widget_services">
                                 <h5 class="footer-title">Our Links</h5>
                                 <ul>
-                                    <li><a href="about-us.html">About us</a></li>
-                                    <li><a href="contact-us.html">Contact us</a></li>
-                                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                                    <li><a href="{{ url('/about') }}">About us</a></li>
+                                    <li><a href="{{ url('/contact') }}">Contact us</a></li>
+                                    <li><a href="{{ url('/privacy-policy') }}">Privacy Policy</a></li>
                                     <li><a href="pricing.html">Pricing Table</a></li>
                                     <li><a href="faq.html">FAQ</a></li>
                                 </ul>
@@ -596,9 +579,9 @@
                         </div>
                         <div class="col-xl-2 col-lg-3 col-sm-4 col-4 wow fadeInUp" data-wow-delay="0.3s">
                             <div class="widget widget_services">
-                                <h5 class="footer-title">Bookland ?</h5>
+                                <h5 class="footer-title">Bookhub ?</h5>
                                 <ul>
-                                    <li><a href="index.html">Bookland</a></li>
+                                    <li><a href="index.html">Bookhub</a></li>
                                     <li><a href="services.html">Services</a></li>
                                     <li><a href="books-detail.html">Book Details</a></li>
                                     <li><a href="blog-detail.html">Blog Details</a></li>
@@ -614,7 +597,7 @@
                                     <li><a href="help-desk.html">Help Center</a></li>
                                     <li><a href="shop-cart.html">Shop Cart</a></li>
                                     <li><a href="shop-login.html">Login</a></li>
-                                    <li><a href="about-us.html">Partner</a></li>
+                                    <li><a href="{{ url('/about') }}">Partner</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -633,8 +616,8 @@
                                     </li>
                                     <li>
                                         <i class="flaticon-email"></i>
-                                        <span>support@bookland.id<br>
-                                            info@bookland.id</span>
+                                        <span>support@bookhub.id<br>
+                                            info@bookhub.id</span>
                                     </li>
                                 </ul>
                             </div>
