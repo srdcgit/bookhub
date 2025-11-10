@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\SalesExecutive;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -91,5 +92,40 @@ class AuthController extends Controller
             'type'    => $type,
             'data'    => $user,
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        // ✅ Step 1: Manual validator for custom JSON error handling
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:sales_executives,email',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // ✅ Step 2: If validation fails, return a JSON response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // ✅ Step 3: Create new Sales Executive
+        $sales = SalesExecutive::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // ✅ Step 4: Send success response
+        return response()->json([
+            'status' => true,
+            'message' => 'Sales Executive registered successfully. Please log in to continue.',
+            'data' => $sales,
+        ], 201);
     }
 }
