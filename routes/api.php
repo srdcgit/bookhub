@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\StudentApiController;
 
 // Public route: login (accessible without token)
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/sales/register', [AuthController::class, 'register']);
 
 // Protected routes: logout (requires valid Sanctum token)
 Route::middleware('auth:sanctum')->group(function () {

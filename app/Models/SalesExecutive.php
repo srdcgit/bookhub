@@ -11,7 +11,7 @@ class SalesExecutive extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $guard = 'sales';
+    protected $guard = 'sales_executives';
 
     protected $fillable = [
         'name',

@@ -227,14 +227,13 @@ class InstitutionController extends Controller
     }
 
 
-
-
     // ✅ DELETE institution
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
         $type = $this->detectUserType($user);
 
+        // ✅ Restrict access
         if (!in_array($type, ['superadmin', 'sales'])) {
             return response()->json([
                 'status' => false,
@@ -242,6 +241,7 @@ class InstitutionController extends Controller
             ], 403);
         }
 
+        // ✅ Find institution
         $institution = InstitutionManagement::find($id);
 
         if (!$institution) {
@@ -251,6 +251,15 @@ class InstitutionController extends Controller
             ], 404);
         }
 
+        // ✅ Sales can delete only their own institutions
+        if ($type === 'sales' && $institution->added_by !== $user->id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Access denied! You can only delete institutions added by you.'
+            ], 403);
+        }
+
+        // ✅ Delete institution and its related classes
         $institution->institutionClasses()->delete();
         $institution->delete();
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
@@ -30,20 +29,20 @@ class InstitutionManagementController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'board' => 'required|string|max:255',
+            'name'           => 'required|string|max:255',
+            'type'           => 'required|string|max:255',
+            'board'          => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
-            'country_id' => 'required|integer',
-            'state_id' => 'required|integer',
-            'district_id' => 'required|integer',
-            'block_id' => 'nullable|integer',
-            'pincode' => 'required|string|max:10',
+            'country_id'     => 'required|integer',
+            'state_id'       => 'required|integer',
+            'district_id'    => 'required|integer',
+            'block_id'       => 'nullable|integer',
+            'pincode'        => 'required|string|max:10',
 
         ]);
 
-            $data['status'] = 0;
-            $data['added_by'] = Auth::guard('sales')->user()->id;
+        $data['status']   = 0;
+        $data['added_by'] = Auth::guard('sales')->user()->id;
 
         InstitutionManagement::create($data);
 
@@ -55,9 +54,10 @@ class InstitutionManagementController extends Controller
     {
         Session::put('page', 'sales.institution_managements');
 
-        $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
+        $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])
+            ->findOrFail($id);
 
-        return view('sales.institution_managements.show')->with(compact('institution'));
+        return view('sales.institution_managements.show', compact('institution'));
     }
 
     public function edit($id)
@@ -65,6 +65,9 @@ class InstitutionManagementController extends Controller
         Session::put('page', 'sales.institution_managements');
 
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
+        if (! $institution) {
+            return response()->json(['error' => 'Institution not found'], 404);
+        }
 
         return view('sales.institution_managements.edit')->with(compact('institution'));
     }
@@ -72,30 +75,30 @@ class InstitutionManagementController extends Controller
     public function update(Request $request, $id)
     {
         $validationRules = [
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'board' => 'required|string|max:255',
+            'name'           => 'required|string|max:255',
+            'type'           => 'required|string|max:255',
+            'board'          => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
-            'district_id' => 'required|string|max:255',
-            'block_id' => 'nullable|string|max:255',
+            'district_id'    => 'required|string|max:255',
+            'block_id'       => 'nullable|string|max:255',
             // 'city_id' => 'required|string|max:255',
-            'state_id' => 'required|string|max:255',
-            'pincode' => 'required|string|max:10',
-            'country_id' => 'required|string|max:255',
+            'state_id'       => 'required|string|max:255',
+            'pincode'        => 'required|string|max:10',
+            'country_id'     => 'required|string|max:255',
             // 'status' => 'boolean',
         ];
 
         // Only require classes array if type is school
         if ($request->input('type') === 'school') {
-            $validationRules['classes'] = 'required|array|min:1';
+            $validationRules['classes']              = 'required|array|min:1';
             $validationRules['classes.*.class_name'] = 'required|string|max:255';
-            $validationRules['classes.*.strength'] = 'required|integer|min:1';
+            $validationRules['classes.*.strength']   = 'required|integer|min:1';
         }
 
         $request->validate($validationRules);
 
         $institution = InstitutionManagement::findOrFail($id);
-        $data = $request->all();
+        $data        = $request->all();
 
         // $data['status'] = $request->status;
 
@@ -108,9 +111,9 @@ class InstitutionManagementController extends Controller
 
             // Add new classes
             foreach ($request->classes as $classData) {
-                if (!empty($classData['class_name']) && !empty($classData['strength'])) {
+                if (! empty($classData['class_name']) && ! empty($classData['strength'])) {
                     $institution->institutionClasses()->create([
-                        'class_name' => $classData['class_name'],
+                        'class_name'     => $classData['class_name'],
                         'total_strength' => $classData['strength'],
                     ]);
                 }
@@ -128,7 +131,6 @@ class InstitutionManagementController extends Controller
         return redirect('sales/institution-managements')->with('success_message', 'Institution has been deleted successfully');
     }
 
-
     public function getClasses(Request $request)
     {
         $type = $request->input('type');
@@ -138,7 +140,7 @@ class InstitutionManagementController extends Controller
                 'Nursery', 'LKG', 'UKG',
                 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5',
                 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
-                'Class 11', 'Class 12'
+                'Class 11', 'Class 12',
             ];
         } else {
             $classes = [];
@@ -153,11 +155,11 @@ class InstitutionManagementController extends Controller
 
         // Sample location data based on pincode patterns - you can replace this with actual API calls or database queries
         $locationData = [
-            'block' => 'Central Block',
+            'block'    => 'Central Block',
             'district' => 'Sample District',
             // 'city' => 'Sample City',
-            'state' => 'Sample State',
-            'country' => 'India'
+            'state'    => 'Sample State',
+            'country'  => 'India',
         ];
 
         // You can implement actual location lookup here
@@ -167,10 +169,10 @@ class InstitutionManagementController extends Controller
         if ($pincode) {
             // Simple pincode-based location mapping (you can expand this)
             $pincodeData = [
-                '110001' => ['block' => 'New Delhi Block', 'district' =>'New Delhi', 'state' => 'Delhi'],
+                '110001' => ['block' => 'New Delhi Block', 'district' => 'New Delhi', 'state' => 'Delhi'],
                 '400001' => ['block' => 'Mumbai Block', 'district' => 'Mumbai', 'state' => 'Maharashtra'],
-                '560001' => ['block' => 'Bangalore Block', 'district'=> 'Bangalore', 'state' => 'Karnataka'],
-                '700001' => ['block' => 'Kolkata Block', 'district'=> 'Kolkata', 'state' => 'West Bengal'],
+                '560001' => ['block' => 'Bangalore Block', 'district' => 'Bangalore', 'state' => 'Karnataka'],
+                '700001' => ['block' => 'Kolkata Block', 'district' => 'Kolkata', 'state' => 'West Bengal'],
                 '600001' => ['block' => 'Chennai Block', 'district' => 'Chennai', 'state' => 'Tamil Nadu'],
             ];
 
@@ -228,5 +230,3 @@ class InstitutionManagementController extends Controller
     }
 
 }
-
-

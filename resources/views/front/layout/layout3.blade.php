@@ -484,7 +484,7 @@
                                     <li><a class="fab fa-facebook-f" target="_blank"
                                             href="https://www.facebook.com/dexignzone"></a></li>
                                     <li><a class="fab fa-twitter" target="_blank"
-                                            href="https://twitter.com/dexignzones"></a></li>
+                                            href="https://www.twitter.com/dexignzones"></a></li>
                                     <li><a class="fab fa-linkedin-in" target="_blank"
                                             href="https://www.linkedin.com/showcase/3686700/admin/"></a></li>
                                     <li><a class="fab fa-instagram" target="_blank"
@@ -572,11 +572,12 @@
                                         <li><a href="#" target="_blank"><i
                                                     class="fa-brands fa-facebook-f"></i></a></li>
                                         <li><a href="#" target="_blank"><i
-                                                    class="fa-brands fa-youtube"></i></a></li>
-                                        <li><a href="#" target="_blank"><i
-                                                    class="fa-brands fa-linkedin"></i></a></li>
+                                                    class="fa-brands fa-twitter"></i></a></li>
+                                        
                                         <li><a href="#" target="_blank"><i
                                                     class="fa-brands fa-instagram"></i></a></li>
+                                        <li><a href="#" target="_blank"><i
+                                                    class="fa-brands fa-linkedin"></i></a></li>
                                     </ul>
                                 </div>
                             </div>

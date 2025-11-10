@@ -5,10 +5,13 @@ use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BookAttributeController;
 use App\Http\Controllers\Admin\BookRequestsController;
 use App\Http\Controllers\Admin\EditionController;
+use App\Http\Controllers\Admin\InstitutionManagementController;
 use App\Http\Controllers\Admin\ProductsController as AdminProductsController;
+use App\Http\Controllers\Admin\SalesExecutiveController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Front\BookRequestController;
 use App\Http\Controllers\Front\IndexController;
 use App\Http\Controllers\Front\ProductsController;
@@ -45,6 +48,11 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
         // Update the vendor's commission percentage (by the Admin) in `vendors` table (for every vendor on their own) in the Admin Panel in admin/admins/view_vendor_details.blade.php (Commissions module: Every vendor must pay a certain commission (that may vary from a vendor to another) for the website owner (admin) on every item sold, and it's defined by the website owner (admin))
         Route::post('update-vendor-commission', 'AdminController@updateVendorCommission');
+
+        // Sales Executives Management - Must be BEFORE admins/{type?} route to prevent route conflicts
+        Route::get('sales-executive', [SalesExecutiveController::class, 'index'])->name('salesexecutives.index');
+        Route::match(['get','post'], 'add-edit-sales-executive/{id?}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'addEdit'])->name('sales_executives.add_edit');
+        Route::get('delete-sales-executive/{id}', [\App\Http\Controllers\Admin\SalesExecutiveController::class, 'delete'])->name('sales_executives.delete');
 
         Route::get('admins/{type?}', 'AdminController@admins');                                // In case the authenticated user (logged-in user) is superadmin, admin, subadmin, vendor these are the three Admin Management URLs depending on the slug. The slug is the `type` column in `admins` table which can only be: superadmin, admin, subadmin, or vendor    // Used an Optional Route Parameters (or Optional Route Parameters) using a '?' question mark sign, for in case that there's no any {type} passed, the page will show ALL superadmins, admins, subadmins and vendors at the same page
         Route::match(['get', 'post'], 'add-edit-admin/{id?}', 'AdminController@addEditAdmin'); // Add or Edit Admin // the slug (Route Parameter) {id?} is an Optional Parameter, so if it's passed, this means Edit/Update the Admin, and if not passed, this means Add an Admin
@@ -453,56 +461,50 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
         Route::get('dashboard', 'SalesExecutiveAuthController@dashboard')->name('sales.dashboard');
         Route::post('logout', 'SalesExecutiveAuthController@logout')->name('sales.logout');
 
+        // Sales Executive Profile
+        Route::get('profile', 'ProfileController@edit')->name('sales.profile.edit');
+        Route::post('profile', 'ProfileController@update')->name('sales.profile.update');
+
         // Sales Institution Management (similar to Admin)
         Route::resource('institution-managements', 'InstitutionManagementController')->names([
-            'index'  => 'sales.institution_managements.index',
-            'create' => 'sales.institution_managements.create',
-            'store'  => 'sales.institution_managements.store',
-            'show'   => 'sales.institution_managements.show',
-            'edit'   => 'sales.institution_managements.edit',
-            'update' => 'sales.institution_managements.update',
+            'index'   => 'sales.institution_managements.index',
+            'create'  => 'sales.institution_managements.create',
+            'store'   => 'sales.institution_managements.store',
+            'show'    => 'sales.institution_managements.show',
+            'edit'    => 'sales.institution_managements.edit',
+            'update'  => 'sales.institution_managements.update',
             'destroy' => 'sales.institution_managements.destroy',
-        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        ]);
 
 // Sales Students Management (similar to Admin)
-Route::resource('students', 'StudentController')->names([
-    'index'  => 'sales.students.index',
-    'create' => 'sales.students.create',
-    'store'  => 'sales.students.store',
-    'show'   => 'sales.students.show',
-    'edit'   => 'sales.students.edit',
-    'update' => 'sales.students.update',
-    'destroy' => 'sales.students.destroy',
-])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        Route::resource('students', 'StudentController')->names([
+            'index'   => 'sales.students.index',
+            'create'  => 'sales.students.create',
+            'store'   => 'sales.students.store',
+            'show'    => 'sales.students.show',
+            'edit'    => 'sales.students.edit',
+            'update'  => 'sales.students.update',
+            'destroy' => 'sales.students.destroy',
+        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
 // Sales Blocks Management (similar to Admin)
-Route::resource('blocks', 'BlockController')->names([
-    'index'  => 'sales.blocks.index',
-    'create' => 'sales.blocks.create',
-    'store'  => 'sales.blocks.store',
-    'show'   => 'sales.blocks.show',
-    'edit'   => 'sales.blocks.edit',
-    'update' => 'sales.blocks.update',
-    'destroy' => 'sales.blocks.destroy',
-])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        Route::resource('blocks', 'BlockController')->names([
+            'index'   => 'sales.blocks.index',
+            'create'  => 'sales.blocks.create',
+            'store'   => 'sales.blocks.store',
+            'show'    => 'sales.blocks.show',
+            'edit'    => 'sales.blocks.edit',
+            'update'  => 'sales.blocks.update',
+            'destroy' => 'sales.blocks.destroy',
+        ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
 // AJAX routes for cascading location dropdowns (outside admin middleware for AJAX access)
-Route::get('institution-countries', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
-Route::get('institution-states', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getStates'])->name('institution_states');
-Route::get('institution-districts', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
-Route::get('institution-blocks', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
-
-
-
-
-
-
-
-
-
-
-
-
+        Route::get('institution-countries', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
+        Route::get('institution-states', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getStates'])->name('institution_states');
+        Route::get('institution-districts', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
+        Route::get('institution-blocks', [App\Http\Controllers\Sales\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
+        Route::get('/institution-classes', [InstitutionManagementController::class, 'getClasses'])
+            ->name('institution_classes');
 
 
     });

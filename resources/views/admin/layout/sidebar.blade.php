@@ -1,6 +1,3 @@
-{{-- Correcting issues in the Skydash Admin Panel Sidebar using Session --}}
-
-
 <!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
@@ -64,8 +61,7 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="ui-catalogue">
-                    <ul class="nav flex-column sub-menu"
-                        style="background: #fff !important; color: #052CA3 !important">
+                    <ul class="nav flex-column sub-menu" style="background: #fff !important; color: #052CA3 !important">
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'sections') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ url('admin/sections') }}">Sections</a></li>
@@ -134,14 +130,16 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="ui-settings">
-                    <ul class="nav flex-column sub-menu" style="background: #fff !important; color: #052CA3 !important">
+                    <ul class="nav flex-column sub-menu"
+                        style="background: #fff !important; color: #052CA3 !important">
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'update_admin_password') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ url('admin/update-admin-password') }}">Update Admin
                                 Password</a></li>
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'update_admin_details') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
-                                class="nav-link" href="{{ url('admin/update-admin-details') }}">Update Admin Details</a>
+                                class="nav-link" href="{{ url('admin/update-admin-details') }}">Update Admin
+                                Details</a>
                         </li>
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'logo') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
@@ -150,13 +148,10 @@
                     </ul>
                 </div>
             </li>
-
-
-
             <li class="nav-item">
                 <a @if (Session::get('page') == 'view_admins' ||
-                        // Session::get('page') == 'view_subadmins' ||
                         Session::get('page') == 'view_vendors' ||
+                        Session::get('page') == 'view_sales' ||
                         Session::get('page') == 'view_all') style="background: #052CA3 !important; color: #FFF !important" @endif
                     class="nav-link" data-toggle="collapse" href="#ui-admins" aria-expanded="false"
                     aria-controls="ui-admins">
@@ -167,8 +162,6 @@
                 <div class="collapse" id="ui-admins">
                     <ul class="nav flex-column sub-menu"
                         style="background: #fff !important; color: #052CA3 !important">
-
-
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'view_admins') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ url('admin/admins/admin') }}">Admins</a></li>
@@ -179,21 +172,15 @@
                                 @if (Session::get('page') == 'view_vendors') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ url('admin/admins/vendor') }}">Vendors</a></li>
                         <li class="nav-item"> <a
+                                @if (Session::get('page') == 'view_sales') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
+                                class="nav-link" href="{{ url('admin/sales-executive') }}">Sales
+                                Executives</a></li>
+                        <li class="nav-item"> <a
                                 @if (Session::get('page') == 'view_all') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ url('admin/admins') }}">All</a></li>
                     </ul>
                 </div>
             </li>
-
-            {{-- <li class="nav-item">
-                <a @if (Session::get('page') == 'schools') style="background: #052CA3 !important; color: #FFF !important" @endif
-                    class="nav-link" href="{{ route('admin.schools.index') }}">
-                    <i class="icon-layout menu-icon"></i>
-                    <span class="menu-title">Schools Management</span>
-                    <i class="menu-arrow"></i>
-                </a>
-            </li> --}}
-
             <li class="nav-item">
                 <a @if (Session::get('page') == 'sections' ||
                         Session::get('page') == 'categories' ||
@@ -254,8 +241,6 @@
                     </ul>
                 </div>
             </li>
-
-
             <li class="nav-item">
                 <a @if (Session::get('page') == 'orders') style="background: #052CA3 !important; color: #FFF !important" @endif
                     class="nav-link" data-toggle="collapse" href="#ui-orders" aria-expanded="false"
@@ -273,8 +258,6 @@
                     </ul>
                 </div>
             </li>
-
-
             <li class="nav-item">
                 <a @if (Session::get('page') == 'ratings') style="background: #052CA3 !important; color: #FFF !important" @endif
                     class="nav-link" data-toggle="collapse" href="#ui-ratings" aria-expanded="false"
@@ -292,9 +275,6 @@
                     </ul>
                 </div>
             </li>
-
-
-
             <li class="nav-item">
                 <a @if (Session::get('page') == 'users' || Session::get('page') == 'subscribers') style="background: #052CA3 !important; color: #FFF !important" @endif
                     class="nav-link" data-toggle="collapse" href="#ui-users" aria-expanded="false"
@@ -317,7 +297,9 @@
             </li>
 
             <li class="nav-item">
-                <a @if (Session::get('page') == 'institution_managements' || Session::get('page') == 'students' || Session::get('page') == 'blocks') style="background: #052CA3 !important; color: #FFF !important" @endif
+                <a @if (Session::get('page') == 'institution_managements' ||
+                        Session::get('page') == 'students' ||
+                        Session::get('page') == 'blocks') style="background: #052CA3 !important; color: #FFF !important" @endif
                     class="nav-link" data-toggle="collapse" href="#ui-institutions" aria-expanded="false"
                     aria-controls="ui-institutions">
                     <i class="icon-layout menu-icon"></i>
@@ -329,8 +311,9 @@
                         style="background: #fff !important; color: #052CA3 !important">
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'institution_managements') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
-                                class="nav-link" href="{{ url('admin/institution-managements') }}">Institution</a></li>
-                                {{-- <li class="nav-item"> <a
+                                class="nav-link" href="{{ url('admin/institution-managements') }}">Institution</a>
+                        </li>
+                        {{-- <li class="nav-item"> <a
                                 {{-- Cities removed --}}
                         <li class="nav-item"> <a
                                 @if (Session::get('page') == 'blocks') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif

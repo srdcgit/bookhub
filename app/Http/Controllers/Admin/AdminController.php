@@ -10,6 +10,7 @@ use App\Models\HeaderLogo;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Publisher;
+use App\Models\SalesExecutive;
 use App\Models\Section;
 use App\Models\User;
 use App\Models\Vendor;
@@ -458,17 +459,20 @@ class AdminController extends Controller
     public function admins($type = null)
     { // $type is the `type` column in the `admins` which can only be: superadmin, admin, subadmin or vendor    // A default value of null (to allow not passing a {type} slug, and in this case, the page will view ALL of the superadmin, admins, subadmins and vendors at the same time)
         $admins = Admin::query();
+        // $sales = SalesExecutive::query();
         // dd($admins);
 
         if (! empty($type)) { // in this case, $type can be: superadmin, admin, subadmin or vendor
             $admins = $admins->where('type', $type);
-            $title  = ucfirst($type) . 's';
+            // $sales = $sales->where('type', $type);
+            $title  = ucfirst($type);
 
             // Correcting issues in the Skydash Admin Panel Sidebar using Session
             Session::put('page', 'view_' . strtolower($title));
 
         } else { // if there's no $type is passed, show ALL of the admins, subadmins and vendors
-            $title = 'All Admins/Vendors';
+            $title = 'All Admins/Vendors/Sales';
+            // $sales = $sales->get()->toArray();
 
             // Correcting issues in the Skydash Admin Panel Sidebar using Session
             Session::put('page', 'view_all');
