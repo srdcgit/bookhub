@@ -350,7 +350,7 @@ class UserController extends Controller
         $logos     = HeaderLogo::all();
         $language  = Language::get();
 
-        return view('front.pages.about', compact('condition', 'sections', 'logos', 'language'));   
+        return view('front.pages.about', compact('condition', 'sections', 'logos', 'language'));
     }
     public function privacyPolicy(){
         $condition = session('condition', 'new');
@@ -358,7 +358,15 @@ class UserController extends Controller
         $logos     = HeaderLogo::all();
         $language  = Language::get();
 
-        return view('front.pages.privacypolicy', compact('condition', 'sections', 'logos', 'language'));   
+        return view('front.pages.privacypolicy', compact('condition', 'sections', 'logos', 'language'));
+    }
+    public function services(){
+        $condition = session('condition', 'new');
+        $sections  = Section::all();
+        $logos     = HeaderLogo::all();
+        $language  = Language::get();
+
+        return view('front.pages.services', compact('condition', 'sections', 'logos', 'language'));
     }
 
 }

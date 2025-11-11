@@ -398,6 +398,9 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
     // Render the Privacy Policy page (front/pages/privacy_policy.blade.php) using GET HTTP Requests, or the HTML Form Submission using POST HTTP Requests
     Route::match(['get', 'post'], 'privacy-policy', 'UserController@privacyPolicy');
 
+    // Render the Services page (front/pages/services.blade.php) using GET HTTP Requests, or the HTML Form Submission using POST HTTP Requests
+    Route::match(['get', 'post'], 'services', 'UserController@services');
+
     // Add a Newsletter Subscriber email HTML Form Submission in front/layout/footer.blade.php when clicking on the Submit button (using an AJAX Request/Call)
     Route::post('add-subscriber-email', 'NewsletterController@addSubscriber');
 

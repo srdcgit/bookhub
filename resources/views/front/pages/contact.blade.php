@@ -73,22 +73,26 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body p-4">
                     <h3 class="mb-3">Information About Us</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora...</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, tempora...</p>
+                    <p>BookHub is a modern digital platform built to make reading, learning, and knowledge sharing simple and accessible to everyone. Whether you’re a student, teacher, or lifelong learner, BookHub connects you to a vast collection of books and study materials through an easy-to-use online library system.
+
+                    With BookHub, we aim to empower readers and authors by providing anengaging space to explore, publish, and collaborate. We believe inthe transformative power of books and the importance of connectingcommunities through knowledge.</p>
                     <hr>
                     <h5 class="mt-4 mb-3">Contact Details</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <i class="fas fa-map-marker-alt text-primary"></i>
-                            <span class="ms-2">10 Salah Salem St., Cairo, Egypt</span>
+                            <span class="ms-2">
+                                Plot No-325, Baramunda ISBT,
+                                Above MRF Tyre Showroom
+                                Bhubaneswar-751003</span>
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-envelope text-primary"></i>
-                            <span class="ms-2">developers@computerscience.com</span>
+                            <span class="ms-2">support@srdcindia.co.in</span>
                         </li>
                         <li>
                             <i class="fas fa-phone-alt text-primary"></i>
-                            <span class="ms-2">+201122237359</span>
+                            <span class="ms-2">+91 (0) 84807 46394, +91 (0) 84807 46395</span>
                         </li>
                     </ul>
                 </div>

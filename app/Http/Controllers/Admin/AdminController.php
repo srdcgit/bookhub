@@ -38,9 +38,10 @@ class AdminController extends Controller
         $couponsCount    = Coupon::where('status', 1)->count();
         $vendorsCount     = Vendor::count();;
         $usersCount      = User::count();
+        $logos = HeaderLogo::first();
 
 
-        return view('admin/dashboard')->with(compact('sectionsCount', 'categoriesCount', 'productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount')); // is the same as:    return view('admin.dashboard');
+        return view('admin/dashboard')->with(compact('sectionsCount', 'categoriesCount', 'productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount', 'logos')); // is the same as:    return view('admin.dashboard');
     }
 
     public function login(Request $request)

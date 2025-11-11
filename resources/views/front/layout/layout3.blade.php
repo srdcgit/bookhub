@@ -572,7 +572,7 @@
                                     <li><a href="{{ url('/about') }}">About us</a></li>
                                     <li><a href="{{ url('/contact') }}">Contact us</a></li>
                                     <li><a href="{{ url('/privacy-policy') }}">Privacy Policy</a></li>
-                                    <li><a href="pricing.html">Pricing Table</a></li>
+
                                     <li><a href="faq.html">FAQ</a></li>
                                 </ul>
                             </div>
@@ -581,11 +581,11 @@
                             <div class="widget widget_services">
                                 <h5 class="footer-title">Bookhub ?</h5>
                                 <ul>
-                                    <li><a href="index.html">Bookhub</a></li>
-                                    <li><a href="services.html">Services</a></li>
-                                    <li><a href="books-detail.html">Book Details</a></li>
+                                    <li><a href="{{ url('/') }}">Bookhub</a></li>
+                                    <li><a href="{{ url('/services') }}">Services</a></li>
+                                    {{-- <li><a href="{{ url('product/' . $products['id']) }}">Book Details</a></li> --}}
                                     <li><a href="blog-detail.html">Blog Details</a></li>
-                                    <li><a href="books-grid-view.html">Shop</a></li>
+                                    <li><a href="#">Shop</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -596,8 +596,7 @@
                                     <li><a href="services.html">Download</a></li>
                                     <li><a href="help-desk.html">Help Center</a></li>
                                     <li><a href="shop-cart.html">Shop Cart</a></li>
-                                    <li><a href="shop-login.html">Login</a></li>
-                                    <li><a href="{{ url('/about') }}">Partner</a></li>
+                                    <li><a href="{{ url('/user/login-register') }}">Login</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -607,17 +606,17 @@
                                 <ul>
                                     <li>
                                         <i class="flaticon-placeholder"></i>
-                                        <span>832 Thompson Drive, San Fransisco CA 94107,US</span>
+                                        <span>Plot No-325, Baramunda ISBT,
+                                            Above MRF Tyre Showroom
+                                            Bhubaneswar-751003</span>
                                     </li>
                                     <li>
                                         <i class="flaticon-phone"></i>
-                                        <span>+123 345123 556<br>
-                                            +123 345123 556</span>
+                                        <span>+91 (0) 84807 46394, +91 (0) 84807 46395</span>
                                     </li>
                                     <li>
                                         <i class="flaticon-email"></i>
-                                        <span>support@bookhub.id<br>
-                                            info@bookhub.id</span>
+                                        <span>support@srdcindia.co.in</span>
                                     </li>
                                 </ul>
                             </div>
