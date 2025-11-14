@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\BookAttribute;
 use App\Models\Product;
 use App\Models\Edition;
+use App\Models\HeaderLogo;
 use App\Models\ProductsAttribute; // Add this at the top
 
 class BookAttributeController extends Controller
@@ -14,14 +15,19 @@ class BookAttributeController extends Controller
     // Fetch editions for a product (or all editions)
     public function getEditions($productId)
     {
-        // You can filter editions by product if needed, or return all
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
+            // You can filter editions by product if needed, or return all
         $editions = Edition::all();
-        return response()->json($editions);
+        return response()->json($editions, 'logos');
+        return view('admin.book_attributes.get_editions', compact('editions', 'logos', 'headerLogo'));
     }
 
     // Store attribute and duplicate product
     public function store(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'edition_id' => 'required|exists:editions,id',
@@ -40,8 +46,8 @@ class BookAttributeController extends Controller
         // Duplicate product with new edition, price (but NOT stock)
         $product = Product::findOrFail($request->product_id);
         $newProduct = $product->replicate();
-        // $newProduct->product_isbn = $product->product_isbn . '-' . $request->edition_id; 
-        $newProduct->product_isbn = $product->product_isbn; 
+        // $newProduct->product_isbn = $product->product_isbn . '-' . $request->edition_id;
+        $newProduct->product_isbn = $product->product_isbn;
         $newProduct->product_price = $request->product_price;
         $newProduct->edition_id = $request->edition_id;
         $newProduct->save();
@@ -64,5 +70,6 @@ class BookAttributeController extends Controller
         }
 
         return response()->json(['success' => true, 'message' => 'Attribute and product created successfully.']);
+        return view('admin.book_attributes.store', compact('newProduct', 'logos', 'headerLogo'));
     }
 }

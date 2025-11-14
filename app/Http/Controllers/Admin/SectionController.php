@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use App\Models\Section;
-
 class SectionController extends Controller
 {
     public function sections() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'sections');
 
@@ -20,10 +22,12 @@ class SectionController extends Controller
         $sections = Section::orderBy('id','desc')->get()->toArray(); // Plain PHP array
         // dd($sections);
 
-        return view('admin.sections.sections')->with(compact('sections'));
+        return view('admin.sections.sections')->with(compact('sections', 'logos', 'headerLogo'));
     }
 
     public function updateSectionStatus(Request $request) { // Update Section Status using AJAX in sections.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -43,20 +47,25 @@ class SectionController extends Controller
                 'section_id' => $data['section_id']
             ]);
         }
+        return view('admin.sections.sections', compact('sections', 'logos', 'headerLogo'));
     }
 
     public function deleteSection($id) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Section::where('id', $id)->delete();
 
         $message = 'Section has been deleted successfully!';
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.sections.sections', compact('sections', 'logos', 'headerLogo'));
     }
 
     public function addEditSection(Request $request, $id = null) { // If the $id is not passed, this means Add a Section, if not, this means Edit the Section
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'sections');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
 
         if ($id == '') { // if there's no $id is passed in the route/URL parameters, this means Add a new section
             $title = 'Add Section';
@@ -97,6 +106,6 @@ class SectionController extends Controller
         }
 
 
-        return view('admin.sections.add_edit_section')->with(compact('title', 'section'));
+        return view('admin.sections.add_edit_section')->with(compact('title', 'section', 'logos', 'headerLogo'));
     }
 }

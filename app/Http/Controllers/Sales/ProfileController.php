@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use App\Models\SalesExecutive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,12 +13,16 @@ class ProfileController extends Controller
 {
     public function edit()
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $sales = Auth::guard('sales')->user();
-        return view('sales.profile', compact('sales'));
+        return view('sales.profile', compact('sales', 'logos', 'headerLogo'));
     }
 
     public function update(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $sales = Auth::guard('sales')->user();
 
         $validated = $request->validate([

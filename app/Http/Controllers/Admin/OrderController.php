@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,8 @@ class OrderController extends Controller
 
     // Render admin/orders/orders.blade.php page (Orders Management section) in the Admin Panel
     public function orders() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'orders');
 
@@ -55,11 +58,13 @@ class OrderController extends Controller
         }
 
 
-        return view('admin.orders.orders')->with(compact('orders'));
+        return view('admin.orders.orders')->with(compact('orders', 'logos', 'headerLogo'));
     }
 
     // Render admin/orders/order_details.blade.php (View Order Details page) when clicking on the View Order Details icon in admin/orders/orders.blade.php (Orders tab under Orders Management section in Admin Panel)
     public function orderDetails($id) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'orders');
 
@@ -128,12 +133,14 @@ class OrderController extends Controller
         }
 
 
-        return view('admin.orders.order_details')->with(compact('orderDetails', 'userDetails', 'orderStatuses', 'orderItemStatuses', 'orderLog', 'item_discount'));
+        return view('admin.orders.order_details')->with(compact('orderDetails', 'userDetails', 'orderStatuses', 'orderItemStatuses', 'orderLog', 'item_discount', 'logos', 'headerLogo'));
     }
 
     // Update Order Status (by 'admin'-s ONLY, not 'vendor'-s, in contrast to "Update Item Status" which can be updated by both 'vendor'-s and 'admin'-s) (Pending, Shipped, In Progress, Canceled, ...) in admin/orders/order_details.blade.php in Admin Panel
     // Note: The `order_statuses` table contains all kinds of order statuses (that can be updated by 'admin'-s ONLY in `orders` table) like: pending, in progress, shipped, canceled, ...etc. In `order_statuses` table, the `name` column can be: 'New', 'Pending', 'Canceled', 'In Progress', 'Shipped', 'Partially Shipped', 'Delivered', 'Partially Delivered' and 'Paid'. 'Partially Shipped': If one order has products from different vendors, and one vendor has shipped their product to the customer while other vendor (or vendors) didn't!. 'Partially Delivered': if one order has products from different vendors, and one vendor has shipped and DELIVERED their product to the customer while other vendor (or vendors) didn't!    // The `order_item_statuses` table contains all kinds of order statuses (that can be updated by both 'vendor'-s and 'admin'-s in `orders_products` table) like: pending, in progress, shipped, canceled, ...etc.
     public function updateOrderStatus(Request $request) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->isMethod('post')) {
             $data = $request->all();
             // dd($data);
@@ -221,13 +228,16 @@ class OrderController extends Controller
 
 
             return redirect()->back()->with('success_message', $message);
+            return view('admin.orders.orders', compact('orders', 'logos', 'headerLogo'));
         }
     }
 
     // Update Item Status (which can be determined by both 'vendor'-s and 'admin'-s, in contrast to "Update Order Status" which is updated by 'admin'-s ONLY, not 'vendor'-s) (Pending, In Progress, Shipped, Delivered, ...) in admin/orders/order_details.blade.php in Admin Panel
     // Note: The `order_statuses` table contains all kinds of order statuses (that can be updated by 'admin'-s ONLY in `orders` table) like: pending, in progress, shipped, canceled, ...etc. In `order_statuses` table, the `name` column can be: 'New', 'Pending', 'Canceled', 'In Progress', 'Shipped', 'Partially Shipped', 'Delivered', 'Partially Delivered' and 'Paid'. 'Partially Shipped': If one order has products from different vendors, and one vendor has shipped their product to the customer while other vendor (or vendors) didn't!. 'Partially Delivered': if one order has products from different vendors, and one vendor has shipped and DELIVERED their product to the customer while other vendor (or vendors) didn't!    // The `order_item_statuses` table contains all kinds of order statuses (that can be updated by both 'vendor'-s and 'admin'-s in `orders_products` table) like: pending, in progress, shipped, canceled, ...etc.
     public function updateOrderItemStatus(Request $request) {
-        if ($request->isMethod('post')) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
+            if ($request->isMethod('post')) {
             $data = $request->all();
             // dd($data);
 
@@ -311,22 +321,27 @@ class OrderController extends Controller
 
 
             return redirect()->back()->with('success_message', $message);
+            return view('admin.orders.orders', compact('orders', 'logos', 'headerLogo'));
         }
     }
 
     // Render order invoice page (HTML) in order_invoice.blade.php
     public function viewOrderInvoice($order_id) { // Route Parameters: Required Parameters: https://laravel.com/docs/9.x/routing#required-parameters
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $orderDetails = Order::with('orders_products')->where('id', $order_id)->first()->toArray(); // Eager Loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading    // 'orders_products' is the relationship method name in Order.php model
         // dd($orderDetails);
         $userDetails = User::where('id', $orderDetails['user_id'])->first()->toArray(); // details of the user who made the order
 
 
-        return view('admin.orders.order_invoice')->with(compact('orderDetails', 'userDetails'));
+        return view('admin.orders.order_invoice')->with(compact('orderDetails', 'userDetails', 'logos', 'headerLogo'));
     }
 
     // Render order PDF invoice in order_invoice.blade.php using Dompdf Package
     // (We'll use the same viewPDFInvoice() function (but with different routes/URLs!) to render the PDF invoice for 'admin'-s in the Admin Panel and for the user to download it!)    // User download order PDF invoice (we created this route outside outside the Admin Panel routes so that the user could use it!)
     public function viewPDFInvoice($order_id) { // Route Parameters: Required Parameters: https://laravel.com/docs/9.x/routing#required-parameters
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $orderDetails = Order::with('orders_products')->where('id', $order_id)->first()->toArray(); // Eager Loading: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading    // 'orders_products' is the relationship method name in Order.php model
         // dd($orderDetails);
         $userDetails = User::where('id', $orderDetails['user_id'])->first()->toArray(); // details of the user who made the order

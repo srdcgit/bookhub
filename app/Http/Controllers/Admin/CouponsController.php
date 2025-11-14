@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Coupon;
-
-
+use App\Models\HeaderLogo;
 
 class CouponsController extends Controller
 {
     // Render admin/coupons/coupons.blade.php page in the Admin Panel
     public function coupons() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'coupons');
 
@@ -38,11 +39,13 @@ class CouponsController extends Controller
         }
 
 
-        return view('admin.coupons.coupons')->with(compact('coupons'));
+        return view('admin.coupons.coupons')->with(compact('coupons', 'logos', 'headerLogo'));
     }
 
     // Update Coupon Status (active/inactive) via AJAX in admin/coupons/coupons.blade.php, check admin/js/custom.js
     public function updateCouponStatus(Request $request) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -62,15 +65,19 @@ class CouponsController extends Controller
                 'coupon_id' => $data['coupon_id']
             ]);
         }
+        return view('admin.coupons.coupons', compact('coupons', 'logos', 'headerLogo'));
     }
 
     // Delete a Coupon via AJAX in admin/coupons/coupons.blade.php, check admin/js/custom.js
     public function deleteCoupon($id) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Coupon::where('id', $id)->delete();
 
         $message = 'Coupon has been deleted successfully!';
 
         return redirect()->back()->with('success_message', $message);
+        return view('admin.coupons.coupons', compact('coupons', 'logos', 'headerLogo'));
     }
 
     // Render admin/coupons/add_edit_coupon.blade.php page with 'GET' request ('Edit/Upate the Coupon') if the {id?} Optional Parameter is passed, or if it's not passed, it's a GET request too to 'Add a Coupon', or it's a POST request for the HTML Form submission in the same page
@@ -78,7 +85,8 @@ class CouponsController extends Controller
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'coupons');
 
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($id == '') { // if there's no $id is passed in the route/URL parameters (Optional Parameters {id?}), this means 'Add a new Coupon'
             // Add a new Coupon
             $title = 'Add Coupon';
@@ -184,7 +192,8 @@ class CouponsController extends Controller
             $coupon->save();
 
 
-            return redirect('admin/coupons')->with('success_message', $message);
+            return redirect('admin/coupons')->with('success_message', $message, 'logos');
+            return view('admin.coupons.coupons', compact('coupons', 'logos'));
         }
 
 
@@ -200,7 +209,7 @@ class CouponsController extends Controller
         // dd($users);
 
 
-        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories',  'users', 'selCats',  'selUsers'));
+        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories',  'users', 'selCats',  'selUsers', 'logos', 'headerLogo'));
     }
 
 }

@@ -18,12 +18,15 @@ use App\Models\Language;
 use App\Models\Edition;
 use App\Models\Publisher;
 use Illuminate\Support\Facades\Validator;
+use App\Models\HeaderLogo;
 
 class ProductsController extends Controller
 {
     public function products()
     { // render products.blade.php in the Admin Panel
         Session::put('page', 'products');
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
 
 
         // Modify the last $products variable so that ONLY products that BELONG TO the 'vendor' show up in (not ALL products show up) in products.blade.php, and also make sure that the 'vendor' account is active/enabled/approved (`status` is 1) before they can access the products page
@@ -59,11 +62,13 @@ class ProductsController extends Controller
         // dd($products);
 
 
-        return view('admin.products.products')->with(compact('products')); // render products.blade.php page, and pass $products variable to the view
+        return view('admin.products.products')->with(compact('products','logos', 'headerLogo')); // render products.blade.php page, and pass $products variable to the view
     }
 
     public function updateProductStatus(Request $request)
     { // Update Product Status using AJAX in products.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -83,21 +88,27 @@ class ProductsController extends Controller
                 'product_id' => $data['product_id']
             ]);
         }
+        return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
     }
 
     public function deleteProduct($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Product::where('id', $id)->delete();
 
         $message = 'Book has been deleted successfully!';
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
     }
 
     public function addEditProduct(Request $request, $id = null)
     { // If the $id is not passed, this means 'Add a Product', if not, this means 'Edit the Product'
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'products');
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
 
 
         if ($id == '') { // if there's no $id is passed in the route/URL parameters, this means 'Add a new product'
@@ -310,11 +321,13 @@ class ProductsController extends Controller
         $languages = Language::get();
         $editions = \App\Models\Edition::all();
         // return view('admin.products.add_edit_product')->with(compact('title', 'product'));
-        return view('admin.products.add_edit_product')->with(compact('title', 'product', 'categories', 'publishers', 'authors', 'subjects', 'languages', 'editions'));
+        return view('admin.products.add_edit_product')->with(compact('title', 'product', 'categories', 'publishers', 'authors', 'subjects', 'languages', 'editions', 'logos', 'headerLogo'));
     }
 
     public function getAuthor(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $q = $request->input('q');
 
         return Author::where('name', 'like', "%{$q}%")
@@ -325,6 +338,8 @@ class ProductsController extends Controller
     public function deleteProductImage($id)
     { // AJAX call from admin/js/custom.js    // Delete the product image from BOTH SERVER (FILESYSTEM) & DATABASE    // $id is passed as a Route Parameter
         // Get the product image record stored in the database
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $productImage = Product::select('product_image')->where('id', $id)->first();
         // dd($productImage);
 
@@ -356,7 +371,8 @@ class ProductsController extends Controller
         $message = 'Book Image has been deleted successfully!';
 
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
     }
 
 
@@ -364,7 +380,8 @@ class ProductsController extends Controller
     public function addAttributes(Request $request, $id)
     { // Add/Edit Attributes function
         Session::put('page', 'products');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $product = Product::select('id', 'product_name', 'product_isbn', 'product_price', 'product_image')->with('attributes')->find($id); // with('attributes') is the relationship method name in the Product.php model
 
         if ($request->isMethod('post')) { // When the <form> is submitted
@@ -380,13 +397,15 @@ class ProductsController extends Controller
                     // SKU duplicate check (Prevent duplicate SKU) because SKU is UNIQUE for every product
                     $skuCount = ProductsAttribute::where('sku', $value)->count();
                     if ($skuCount > 0) { // if there's an SKU for the product ALREADY EXISTING
-                        return redirect()->back()->with('error_message', 'SKU already exists! Please add another SKU!');
+                        return redirect()->back()->with('error_message', 'SKU already exists! Please add another SKU!', 'logos');
+                        return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
                     }
 
                     // Size duplicate check (Prevent duplicate Size) because Size is UNIQUE for every product
                     $sizeCount = ProductsAttribute::where(['product_id' => $id, 'size' => $data['size'][$key]])->count();
                     if ($sizeCount > 0) { // if there's an SKU for the product ALREADY EXISTING
-                        return redirect()->back()->with('error_message', 'Size already exists! Please add another Size!');
+                        return redirect()->back()->with('error_message', 'Size already exists! Please add another Size!', 'logos');
+                        return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
                     }
 
 
@@ -402,15 +421,18 @@ class ProductsController extends Controller
                     $attribute->save();
                 }
             }
-            return redirect()->back()->with('success_message', 'Book Attributes have been addded successfully!');
+            return redirect()->back()->with('success_message', 'Book Attributes have been addded successfully!', 'logos');
+            return view('admin.products.products', compact('products', 'logos', 'headerLogo'));
         }
 
 
-        return view('admin.attributes.add_edit_attributes')->with(compact('product'));
+        return view('admin.attributes.add_edit_attributes')->with(compact('product', 'logos', 'headerLogo'));
     }
 
     public function updateAttributeStatus(Request $request)
     { // Update Attribute Status using AJAX in add_edit_attributes.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -429,12 +451,14 @@ class ProductsController extends Controller
                 'attribute_id' => $data['attribute_id']
             ]);
         }
+        return view('admin.attributes.add_edit_attributes', compact('product', 'logos', 'headerLogo'));
     }
 
     public function editAttributes(Request $request)
     {
         Session::put('page', 'products');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->isMethod('post')) { // if the <form> is submitted
             $data = $request->all();
             // dd($data);
@@ -450,14 +474,16 @@ class ProductsController extends Controller
                 }
             }
 
-            return redirect()->back()->with('success_message', 'Book Attributes have been updated successfully!');
+            return redirect()->back()->with('success_message', 'Book Attributes have been updated successfully!', 'logos');
+            return view('admin.attributes.add_edit_attributes', compact('product', 'logos', 'headerLogo'));
         }
     }
 
     public function addImages(Request $request, $id)
     { // $id is the URL Paramter (slug) passed from the URL
         Session::put('page', 'products');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $product = Product::select('id', 'product_name', 'product_isbn', 'product_price', 'product_image')->with('images')->find($id); // with('images') is the relationship method name in the Product.php model
 
 
@@ -510,11 +536,13 @@ class ProductsController extends Controller
         }
 
 
-        return view('admin.images.add_images')->with(compact('product'));
+        return view('admin.images.add_images')->with(compact('product', 'logos', 'headerLogo'));
     }
 
     public function updateImageStatus(Request $request)
     { // Update Image Status using AJAX in add_images.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -533,11 +561,15 @@ class ProductsController extends Controller
                 'image_id' => $data['image_id']
             ]);
         }
+        return view('admin.images.add_images', compact('product', 'logos', 'headerLogo'));
     }
 
     public function deleteImage($id)
     { // AJAX call from admin/js/custom.js    // Delete the product image from BOTH SERVER (FILESYSTEM) & DATABASE    // $id is passed as a Route Parameter
         // Get the product image record stored in the database
+
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $productImage = ProductsImage::select('image')->where('id', $id)->first();
         // dd($productImage);
 
@@ -568,25 +600,32 @@ class ProductsController extends Controller
 
         $message = 'Book Image has been deleted successfully!';
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.images.add_images', compact('product', 'logos', 'headerLogo'));
     }
 
     public function deleteAttribute($id)
     { // Delete an attribute in add_edit_attributes.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         ProductsAttribute::where('id', $id)->delete();
 
         $message = 'Book Attribute has been deleted successfully!';
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.attributes.add_edit_attributes', compact('product', 'logos', 'headerLogo'));
     }
 
     public function deleteProductVideo($id)
     { // Delete a product video in add_edit_product.blade.php page from BOTH SERVER (FILESYSTEM) & DATABASE
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // This method is referenced in routes but not implemented
         // You can implement video deletion logic here if needed
 
         $message = 'Book Video has been deleted successfully!';
 
-        return redirect()->back()->with('success_message', $message);
+        return redirect()->back()->with('success_message', $message, 'logos');
+        return view('admin.products.add_edit_product', compact('product', 'logos', 'headerLogo'));
     }
 }

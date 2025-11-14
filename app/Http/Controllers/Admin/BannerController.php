@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\HeaderLogo;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
@@ -13,14 +14,18 @@ class BannerController extends Controller
     // List banners (Admin)
     public function banners()
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $banners = Banner::orderByDesc('id')->get();
         // View expected by existing admin UI
-        return view('admin.banners.banners', compact('banners'));
+        return view('admin.banners.banners', compact('banners', 'logos', 'headerLogo'));
     }
 
     // Add/Edit Banner (GET render form, POST submit form)
     public function addEditBanner(Request $request, $id = null)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $banner = $id ? Banner::findOrFail($id) : new Banner();
 
         if ($request->isMethod('post')) {
@@ -83,12 +88,14 @@ class BannerController extends Controller
         }
 
         $title = $id ? 'Edit Banner' : 'Add Banner';
-        return view('admin.banners.add_edit_banner', compact('banner', 'title'));
+        return view('admin.banners.add_edit_banner', compact('banner', 'title', 'logos', 'headerLogo'));
     }
 
     // AJAX: Update status (active/inactive)
     public function updateBannerStatus(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $request->validate([
             'banner_id' => 'required|integer|exists:banners,id',
             'status'    => 'required|in:0,1',
@@ -104,6 +111,8 @@ class BannerController extends Controller
     // Delete banner (and file)
     public function deleteBanner($id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $banner = Banner::findOrFail($id);
 
         if (!empty($banner->image)) {
@@ -116,7 +125,8 @@ class BannerController extends Controller
 
         $banner->delete();
 
-        return redirect()->back()->with('success_message', 'Banner deleted successfully');
+        return redirect()->back()->with('success_message', 'Banner deleted successfully', 'logos');
+        return view('admin.banners.banners', compact('banners', 'logos', 'headerLogo'));
     }
 
 }

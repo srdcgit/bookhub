@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use App\Models\User;
+use App\Models\HeaderLogo;
 
 class UserController extends Controller
 {
     // Render admin/users/users.blade.php page in the Admin Panel    
     public function users() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'users');
 
@@ -20,13 +23,15 @@ class UserController extends Controller
         // dd($users);
 
 
-        return view('admin.users.users')->with(compact('users'));
+        return view('admin.users.users')->with(compact('users', 'logos', 'headerLogo'));
     }
 
 
 
     // Update User Status (active/inactive) via AJAX in admin/users/users.blade.php, check admin/js/custom.js    
     public function updateUserStatus(Request $request) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -44,5 +49,6 @@ class UserController extends Controller
                 'user_id' => $data['user_id']
             ]);
         }
+        return view('admin.users.users', compact('users', 'logos', 'headerLogo'));
     }
 }

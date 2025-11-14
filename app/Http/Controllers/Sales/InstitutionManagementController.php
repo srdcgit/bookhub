@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Block;
 use App\Models\Country;
 use App\Models\District;
+use App\Models\HeaderLogo;
 use App\Models\InstitutionManagement;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ class InstitutionManagementController extends Controller
     public function index()
     {
         // $id=Auth::guard('sales')->user()->name;
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $institutions = InstitutionManagement::orderBy('id', 'desc')->paginate(20);
 
         return view('sales.institution_managements.index', compact('institutions'));
@@ -23,11 +26,14 @@ class InstitutionManagementController extends Controller
 
     public function create()
     {
-        return view('sales.institution_managements.create');
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
+        return view('sales.institution_managements.create', compact('logos','headerLogo'));
     }
 
     public function store(Request $request)
     {
+     
         $data = $request->validate([
             'name'           => 'required|string|max:255',
             'type'           => 'required|string|max:255',
@@ -52,24 +58,27 @@ class InstitutionManagementController extends Controller
 
     public function show($id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         Session::put('page', 'sales.institution_managements');
 
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])
             ->findOrFail($id);
 
-        return view('sales.institution_managements.show', compact('institution'));
+        return view('sales.institution_managements.show', compact('institution', 'logos', 'headerLogo'));
     }
 
     public function edit($id)
     {
         Session::put('page', 'sales.institution_managements');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
         if (! $institution) {
             return response()->json(['error' => 'Institution not found'], 404);
         }
 
-        return view('sales.institution_managements.edit')->with(compact('institution'));
+        return view('sales.institution_managements.edit')->with(compact('institution', 'logos', 'headerLogo'));
     }
 
     public function update(Request $request, $id)
@@ -125,16 +134,19 @@ class InstitutionManagementController extends Controller
 
     public function destroy($id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $institution = InstitutionManagement::findOrFail($id);
         $institution->delete();
 
-        return redirect('sales/institution-managements')->with('success_message', 'Institution has been deleted successfully');
+        return redirect('sales/institution-managements')->with('success_message', 'Institution has been deleted successfully', compact('logos', 'headerLogo'));
     }
 
     public function getClasses(Request $request)
     {
         $type = $request->input('type');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($type === 'school') {
             $classes = [
                 'Nursery', 'LKG', 'UKG',
@@ -152,7 +164,8 @@ class InstitutionManagementController extends Controller
     public function getLocationData(Request $request)
     {
         $pincode = $request->input('pincode');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         // Sample location data based on pincode patterns - you can replace this with actual API calls or database queries
         $locationData = [
             'block'    => 'Central Block',

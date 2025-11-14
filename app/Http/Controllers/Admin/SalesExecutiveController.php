@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use App\Models\SalesExecutive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,15 +13,19 @@ class SalesExecutiveController extends Controller
 {
     public function index()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'view_sales');
         $title = 'Sales Executives';
         $salesExecutives = SalesExecutive::all(); // Remove toArray() to keep as collection for object access
-        return view('admin.salesexecutives.index', compact('salesExecutives', 'title'));
+        return view('admin.salesexecutives.index', compact('salesExecutives', 'title', 'logos', 'headerLogo'));
     }
 
     public function addEdit(Request $request, $id = null)
     {
         Session::put('page', 'view_sales');
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
 
         $salesExecutive = null;
         $isEdit = false;
@@ -79,11 +84,13 @@ class SalesExecutiveController extends Controller
             return redirect()->route('salesexecutives.index')->with('success_message', 'Sales Executive updated successfully!');
         }
 
-        return view('admin.salesexecutives.add_edit', compact('salesExecutive'));
+        return view('admin.salesexecutives.add_edit', compact('salesExecutive', 'logos', 'headerLogo'));
     }
 
     public function delete($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         SalesExecutive::where('id', $id)->delete();
         return redirect()->back()->with('success_message', 'Sales Executive deleted successfully!');
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -16,17 +17,21 @@ class ShippingController extends Controller
 
     // Render the Shipping Charges page (admin/shipping/shipping_charges.blade.php) in the Admin Panel for 'admin'-s only, not for vendors    
     public function shippingCharges() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Highlight the 'Shipping Charges' module in the Sidebar on the left in the Admin Panel. Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'shipping');
 
         $shippingCharges = ShippingCharge::get()->toArray();
 
 
-        return view('admin.shipping.shipping_charges')->with(compact('shippingCharges'));
+        return view('admin.shipping.shipping_charges')->with(compact('shippingCharges', 'logos', 'headerLogo'));
     }
 
     // Update Shipping Status (active/inactive) via AJAX in admin/shipping/shipping_charages.blade.php, check admin/js/custom.js    
     public function updateShippingStatus(Request $request) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -46,10 +51,13 @@ class ShippingController extends Controller
                 'shipping_id' => $data['shipping_id']
             ]);
         }
+        return view('admin.shipping.shipping_charges', compact('shippingCharges', 'logos', 'headerLogo'));
     }
 
     // Render admin/shipping/edit_shipping_charges.blade.php page in case of HTTP 'GET' request ('Edit/Update Shipping Charges'), or hadle the HTML Form submission in the same page in case of HTTP 'POST' request    
     public function editShippingCharges($id, Request $request) { // Route Parameters: Required Parameters: https://laravel.com/docs/9.x/routing#required-parameters
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Highlight the 'Shipping Charges' module in the Sidebar on the left in the Admin Panel. Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'shipping');
 
@@ -67,14 +75,15 @@ class ShippingController extends Controller
             $message = 'Shipping Charges updated successfully!';
 
 
-            return redirect()->back()->with('success_message', $message);
+            return redirect()->back()->with('success_message', $message, 'logos');
+            return view('admin.shipping.shipping_charges', compact('shippingCharges', 'logos', 'headerLogo'));
         }
 
         $shippingDetails = ShippingCharge::where('id', $id)->first();
         $title = 'Edit Shipping Charges';
 
 
-        return view('admin.shipping.edit_shipping_charges')->with(compact('shippingDetails', 'title'));
+        return view('admin.shipping.edit_shipping_charges')->with(compact('shippingDetails', 'title', 'logos', 'headerLogo'));
     }
 
 }

@@ -14,11 +14,14 @@ class SalesExecutiveAuthController extends Controller
     public function showLogin()
     {
         $logos    = HeaderLogo::first();
-        return view('sales.login', compact('logos'));
+        $headerLogo = HeaderLogo::first();
+        return view('sales.login', compact('logos', 'headerLogo'));
     }
 
     public function login(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -36,12 +39,15 @@ class SalesExecutiveAuthController extends Controller
 
     public function showRegister()
     {
+        $headerLogo = HeaderLogo::first();
         $logos    = HeaderLogo::first();
-        return view('sales.register', compact('logos'));
+        return view('sales.register', compact('logos', 'headerLogo'));
     }
 
     public function register(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:sales_executives,email'],
@@ -58,19 +64,22 @@ class SalesExecutiveAuthController extends Controller
 
         Auth::guard('sales')->login($sales);
 
-        return redirect('/sales/dashboard');
+        return redirect('/sales/dashboard', compact('logos', 'headerLogo'));
     }
 
     public function dashboard()
     {
+        $headerLogo = HeaderLogo::first();
         $logos    = HeaderLogo::first();
-        return view('sales.dashboard', compact('logos'), [
+        return view('sales.dashboard', compact('logos', 'headerLogo'), [
             'user' => auth('sales')->user()
         ]);
     }
 
     public function logout(Request $request)
     {
+        $headerLogo =HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Auth::guard('sales')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

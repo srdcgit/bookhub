@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use App\Models\Student;
 use App\Models\InstitutionManagement;
 use Illuminate\Http\Request;
@@ -13,24 +14,30 @@ class StudentController extends Controller
 {
     public function index()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
         $students = Student::with('institution')->orderBy('id', 'desc')->get();
 
-        return view('admin.students.index')->with(compact('students'));
+        return view('admin.students.index')->with(compact('students', 'logos', 'headerLogo'));
     }
 
     public function create()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
         $institutions = InstitutionManagement::orderBy('name')->get();
 
-        return view('admin.students.create')->with(compact('institutions'));
+        return view('admin.students.create')->with(compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function store(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -50,21 +57,25 @@ class StudentController extends Controller
 
         Student::create($data);
 
-        return redirect('admin/students')->with('success_message', 'Student has been added successfully');
+        return redirect('admin/students')->with('success_message', 'Student has been added successfully', 'logos');
+        return view('admin.students.index', compact('students', 'logos', 'headerLogo'));
     }
 
     public function edit($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
         $student = Student::findOrFail($id);
         $institutions = InstitutionManagement::orderBy('name')->get();
 
-        return view('admin.students.edit')->with(compact('student', 'institutions'));
+        return view('admin.students.edit')->with(compact('student', 'institutions', 'logos'));
     }
 
     public function update(Request $request, $id)
     {
+        $logos = HeaderLogo::first();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -83,14 +94,18 @@ class StudentController extends Controller
 
         $student->update($data);
 
-        return redirect('admin/students')->with('success_message', 'Student has been updated successfully');
+        return redirect('admin/students')->with('success_message', 'Student has been updated successfully', 'logos');
+        return view('admin.students.index', compact('students', 'logos', 'headerLogo'));
     }
 
     public function destroy($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $student = Student::findOrFail($id);
         $student->delete();
 
-        return redirect('admin/students')->with('success_message', 'Student has been deleted successfully');
+        return redirect('admin/students')->with('success_message', 'Student has been deleted successfully', 'logos');
+        return view('admin.students.index', compact('students', 'logos', 'headerLogo'));
     }
 }

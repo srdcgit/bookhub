@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+.<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +8,9 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
+  @if(!empty($logos) && $logos->first() && $logos->first()->favicon)
+    <link rel="icon" type="image/x-icon" href="{{ asset('uploads/favicons/' . $logos->first()->favicon) }}" />
+  @endif
   <!-- Fonts -->
   <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
@@ -27,7 +30,7 @@
     }
   </style>
 </head>
-<body>
+</body>
 
 @include('layouts.navigation')
 

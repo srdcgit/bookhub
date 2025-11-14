@@ -39,13 +39,16 @@ class AdminController extends Controller
         $vendorsCount     = Vendor::count();;
         $usersCount      = User::count();
         $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
 
 
-        return view('admin/dashboard')->with(compact('sectionsCount', 'categoriesCount', 'productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount', 'logos')); // is the same as:    return view('admin.dashboard');
+        return view('admin/dashboard')->with(compact('sectionsCount', 'categoriesCount', 'productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount', 'logos', 'headerLogo')); // is the same as:    return view('admin.dashboard');
     }
 
     public function login(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->isMethod('post')) {
             $data = $request->all();
 
@@ -79,19 +82,23 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin/login');
+        return view('admin/login', compact('logos', 'headerLogo'));
     }
 
     public function logout()
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         Auth::guard('admin')->logout();
-        return redirect('admin/login');
+        return view('admin/login', compact('logos', 'headerLogo'));
     }
 
     public function updateAdminPassword(Request $request)
     {
 
         Session::put('page', 'update_admin_password');
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
 
 
         if ($request->isMethod('post')) {
@@ -117,11 +124,12 @@ class AdminController extends Controller
 
         $adminDetails = Admin::where('email', Auth::guard('admin')->user()->email)->first()->toArray(); // 'Admin' is the Admin.php model    // Auth::guard('admin') is the authenticated user using the 'admin' guard we created in auth.php    // https://laravel.com/docs/9.x/eloquent#retrieving-models    // Accessing Specific Guard Instances: https://laravel.com/docs/9.x/authentication#accessing-specific-guard-instances
 
-        return view('admin/settings/update_admin_password')->with(compact('adminDetails'));
+        return view('admin/settings/update_admin_password', compact('adminDetails', 'logos', 'headerLogo'));
     }
 
     public function checkAdminPassword(Request $request)
     { // This method is called from the AJAX call in admin/js/custom.js page
+
         $data = $request->all();
         // dd($data);
 
@@ -137,7 +145,8 @@ class AdminController extends Controller
     { // the update_admin_details.blade.php
                                                                // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'update_admin_details');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($request->isMethod('post')) { // if the update <form> is submitted
             $data = $request->all();
             // dd($data);
@@ -193,11 +202,13 @@ class AdminController extends Controller
             return redirect()->back()->with('success_message', 'Admin details updated successfully!');
         }
 
-        return view('admin/settings/update_admin_details');
+        return view('admin/settings/update_admin_details', compact('logos', 'headerLogo'));
     }
 
     public function updateVendorDetails($slug, Request $request)
     { // $slug can only be: 'personal', 'business' or 'bank'
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($slug == 'personal') {
             // Correcting issues in the Skydash Admin Panel Sidebar using Session
             Session::put('page', 'update_personal_details');
@@ -442,12 +453,14 @@ class AdminController extends Controller
 
         // The 'GET' request: to show the update_vendor_details.blade.php page
         // We'll create one view (not 3) for the 3 pages, but parts inside it will change depending on the $slug value
-        return view('admin/settings/update_vendor_details')->with(compact('slug', 'vendorDetails', 'countries'));
+        return view('admin/settings/update_vendor_details', compact('slug', 'vendorDetails', 'countries', 'logos', 'headerLogo'));
     }
 
     // Update the vendor's commission percentage (by the Admin) in `vendors` table (for every vendor on their own) in the Admin Panel in admin/admins/view_vendor_details.blade.php (Commissions module: Every vendor must pay a certain commission (that may vary from a vendor to another) for the website owner (admin) on every item sold, and it's defined by the website owner (admin))
     public function updateVendorCommission(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($request->isMethod('post')) { // if the HTML Form is submitted (in admin/admins/view_vendor_details.blade.php)
             $data = $request->all();
             // dd($data);
@@ -461,6 +474,8 @@ class AdminController extends Controller
 
     public function admins($type = null)
     { // $type is the `type` column in the `admins` which can only be: superadmin, admin, subadmin or vendor    // A default value of null (to allow not passing a {type} slug, and in this case, the page will view ALL of the superadmin, admins, subadmins and vendors at the same time)
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $admins = Admin::query();
         // $sales = SalesExecutive::query();
         // dd($admins);
@@ -484,20 +499,25 @@ class AdminController extends Controller
         $admins = $admins->get()->toArray(); // toArray() method converts the Collection object to a plain PHP array
                                              // dd($admins);
 
-        return view('admin/admins/admins')->with(compact('admins', 'title'));
+        return view('admin/admins/admins', compact('admins', 'title','logos', 'headerLogo'));
     }
 
     public function viewVendorDetails($id)
-    {                                                                   // View further 'vendor' details inside Admin Management table (if the authenticated user is superadmin, admin or subadmin)
+    {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $vendorDetails = Admin::with('vendorPersonal', 'vendorBusiness', 'vendorBank')->where('id', $id)->first(); // Using the relationship defined in the Admin.php model to be able to get data from `vendors`, `vendors_business_details` and `vendors_bank_details` tables
         $vendorDetails = json_decode(json_encode($vendorDetails), true);                                           // We used json_decode(json_encode($variable), true) to convert $vendorDetails to an array instead of Laravel's toArray() method
                                                                                                                    // dd($vendorDetails);
 
-        return view('admin/admins/view_vendor_details')->with(compact('vendorDetails'));
+        return view('admin/admins/view_vendor_details', compact('vendorDetails', 'logos', 'headerLogo'));
     }
 
     public function updateAdminStatus(Request $request)
-    { // Update Admin Status using AJAX in admins.blade.php
+    {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
+        // Update Admin Status using AJAX in admins.blade.php
         if ($request->ajax()) {                               // if the request is coming via an AJAX call
             $data = $request->all();                              // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
                                                                   // dd($data);
@@ -550,7 +570,9 @@ class AdminController extends Controller
 
     public function headerLogo(Request $request)
     {
+
         Session::put('page', 'logo');
+        $headerLogo = HeaderLogo::first();
         $logos = HeaderLogo::first();
 
         if ($request->isMethod('post')) {
@@ -571,11 +593,49 @@ class AdminController extends Controller
             return back()->with('success_message', 'Logo updated successfully.');
         }
 
-        return view('admin.settings.header_logo', compact('logos'));
+        return view('admin/settings/header_logo', compact('logos', 'headerLogo'));
+    }
+
+    public function favicon(Request $request)
+    {
+        Session::put('page', 'favicon');
+
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
+        if ($request->isMethod('post')) {
+            if ($request->hasFile('favicon')) {
+                $file = $request->file('favicon');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('uploads/favicons/');
+
+                if (! file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                $file->move($destinationPath, $filename);
+
+                if ($logos) {
+                    $logos->update(['favicon' => $filename]);
+                } else {
+                    $logos = HeaderLogo::create(['favicon' => $filename]);
+                }
+            }
+
+            return back()->with('success_message', 'Favicon updated successfully.');
+        }
+
+        return view('admin/settings/favicon', compact('logos', 'headerLogo'));
+    }
+
+    public function updateFavicon(Request $request)
+    {
+        return $this->favicon($request);
     }
 
     public function addEditAdmin(Request $request, $id = null)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         Session::put('page', 'admins');
 
         if ($request->isMethod('post')) {
@@ -715,15 +775,17 @@ class AdminController extends Controller
                 $vendorBank = $vendorBank ? $vendorBank->toArray() : [];
             }
 
-            return view('admin/admins/edit')->with(compact('admin', 'vendorPersonal', 'vendorBusiness', 'vendorBank'));
+            return view('admin/admins/edit', compact('admin', 'vendorPersonal', 'vendorBusiness', 'vendorBank', 'logos', 'headerLogo'));
         } else {
             // Add mode
-            return view('admin/admins/add');
+            return view('admin/admins/add', compact('logos', 'headerLogo'));
         }
     }
 
     public function deleteAdmin($id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         // Don't allow deleting the currently logged-in admin
         if ($id == Auth::guard('admin')->user()->id) {
             return redirect('admin/admins')->with('error_message', 'You cannot delete yourself!');
@@ -753,14 +815,18 @@ class AdminController extends Controller
     public function contactQueries()
     {
         Session::put('page', 'contact_queries');
-        
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
+
         $queries = ContactUs::with('replies')->orderBy('created_at', 'desc')->get()->toArray();
-        
-        return view('admin.contact_queries.index')->with(compact('queries'));
+
+        return view('admin/contact_queries/index', compact('queries', 'logos', 'headerLogo'));
     }
 
     public function updateContactStatus(Request $request)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($request->ajax()) {
             $data = $request->all();
 
@@ -775,30 +841,31 @@ class AdminController extends Controller
 
     public function updateContactReply(Request $request, $id)
     {
+        $logos = HeaderLogo::first();
         if ($request->isMethod('post')) {
             $data = $request->all();
-            
+
             // Get current query status
             $currentQuery = ContactUs::where('id', $id)->first();
             $wasResolved = $currentQuery && $currentQuery->status == 'resolved';
-            
+
             // If query is already resolved and admin is just changing status, admin_reply is optional
             $rules = [
                 'status' => 'required|in:pending,resolved,in_progress',
             ];
-            
+
             $customMessages = [
                 'status.required' => 'Status is required',
             ];
-            
+
             // Only require admin_reply if query is not already resolved or if status is being changed to resolved
             if (!$wasResolved || ($data['status'] == 'resolved' && !$wasResolved)) {
                 $rules['admin_reply'] = 'required';
                 $customMessages['admin_reply.required'] = 'Reply is required';
             }
-            
+
             $this->validate($request, $rules, $customMessages);
-            
+
             // Update main admin_reply field (for backward compatibility)
             // Only update admin_reply if it's provided
             $updateData = ['status' => $data['status']];
@@ -806,7 +873,7 @@ class AdminController extends Controller
                 $updateData['admin_reply'] = $data['admin_reply'];
             }
             ContactUs::where('id', $id)->update($updateData);
-            
+
             // Only create a new reply entry if admin is providing a new reply message
             if (!empty($data['admin_reply'])) {
                 // Also save to replies table for conversation thread
@@ -816,26 +883,28 @@ class AdminController extends Controller
                     'message' => $data['admin_reply'],
                 ]);
             }
-            
+
             if ($data['status'] == 'resolved') {
                 return redirect('admin/contact-queries')->with('success_message', 'Query resolved successfully!');
             } else {
                 return redirect('admin/contact-queries')->with('success_message', 'Reply updated successfully!');
             }
         }
-        
+
         $query = ContactUs::with('replies')->where('id', $id)->first();
         $query = $query ? $query->toArray() : [];
-        
-        return view('admin.contact_queries.reply')->with(compact('query'));
+
+        return view('admin/contact_queries/reply', compact('query', 'logos', 'headerLogo'));
     }
 
     public function deleteContactQuery($id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         ContactUs::where('id', $id)->delete();
 
         return redirect('admin/contact-queries')->with('success_message', 'Query deleted successfully!');
     }
 
-   
+
 }

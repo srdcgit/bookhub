@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use App\Models\InstitutionManagement;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -16,11 +17,13 @@ class StudentController extends Controller
      */
     public function index()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
         $students = Student::where('added_by', Auth::guard('sales')->user()->id)->with('institution')->orderBy('id', 'desc')->get();
 
-        return view('sales.students.index')->with(compact('students'));
+        return view('sales.students.index')->with(compact('students','logos', 'headerLogo'));
     }
 
     /**
@@ -28,11 +31,13 @@ class StudentController extends Controller
      */
     public function create()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
         $institutions = InstitutionManagement::where('status', 1)->orderBy('name')->get();
 
-        return view('sales.students.create')->with(compact('institutions'));
+        return view('sales.students.create')->with(compact('institutions', 'logos', 'headerLogo'));
     }
 
     /**
@@ -66,10 +71,11 @@ class StudentController extends Controller
     public function show(string $id)
     {
         Session::put('page', 'students');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $student = Student::findOrFail($id);
 
-        return view('sales.students.show')->with(compact('student'));
+        return view('sales.students.show')->with(compact('student', 'logos', 'headerLogo'));
     }
 
     /**
@@ -78,11 +84,12 @@ class StudentController extends Controller
     public function edit(string $id)
     {
         Session::put('page', 'students');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $student = Student::findOrFail($id);
         $institutions = InstitutionManagement::where('status', 1)->orderBy('name')->get();
 
-        return view('sales.students.edit')->with(compact('student', 'institutions'));
+        return view('sales.students.edit')->with(compact('student', 'institutions', 'headerLogo', 'logos'));
     }
 
     /**
@@ -115,6 +122,8 @@ class StudentController extends Controller
     public function destroy(string $id)
     {
         $student = Student::findOrFail($id);
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $student->delete();
 
         return redirect('sales/students')->with('success_message', 'Student has been deleted successfully');

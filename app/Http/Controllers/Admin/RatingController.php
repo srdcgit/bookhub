@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use App\Models\Rating;
+use App\Models\HeaderLogo;
 
 class RatingController extends Controller
 {
     // Render admin/ratings/ratings.blade.php page in the Admin Panel    
     public function ratings() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Highlight the 'Product Ratings & Reviews' tab in the 'Ratings Management' module in the Admin Panel left Sidebar (admin/layout/sidebar.blade.php) on the left in the Admin Panel. Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'ratings');
 
@@ -19,11 +22,13 @@ class RatingController extends Controller
         // dd($ratings);
 
 
-        return view('admin.ratings.ratings')->with(compact('ratings'));
+        return view('admin.ratings.ratings')->with(compact('ratings', 'logos', 'headerLogo'));
     }
 
     // Update Rating Status (active/inactive) via AJAX in admin/ratings/ratings.blade.php, check admin/js/custom.js    
     public function updateRatingStatus(Request $request) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -43,16 +48,20 @@ class RatingController extends Controller
                 'rating_id' => $data['rating_id']
             ]);
         }
+        return view('admin.ratings.ratings', compact('ratings', 'logos', 'headerLogo'));
     }
 
     // Delete a Rating via AJAX in admin/ratings/ratings.blade.php, check admin/js/custom.js    
     public function deleteRating($id) { // Route Parameters: Required Parameters: https://laravel.com/docs/9.x/routing#required-parameters
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Rating::where('id', $id)->delete();
 
         $message = 'Rating has been deleted successfully!';
         
 
         return redirect()->back()->with('success_message', $message);
+        return view('admin.ratings.ratings', compact('ratings', 'logos', 'headerLogo'));
     }
 
 }

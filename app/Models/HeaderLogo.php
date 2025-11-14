@@ -9,6 +9,6 @@ class HeaderLogo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['logo'];
+    protected $fillable = ['logo', 'favicon'];
 }
 

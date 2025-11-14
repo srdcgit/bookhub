@@ -9,6 +9,7 @@ use App\Models\State;
 use App\Models\District;
 // use App\Models\City;
 use App\Models\Block;
+use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -17,22 +18,27 @@ class InstitutionManagementController extends Controller
 {
     public function index()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'institution_managements');
         $id=Auth::guard('admin')->user()->name;
         $institutions = InstitutionManagement::orderBy('id', 'desc')->get();
 
-        return view('admin.institution_managements.index')->with(compact('institutions','id'));
+        return view('admin.institution_managements.index')->with(compact('institutions','id', 'logos', 'headerLogo'));
     }
 
     public function create()
     {
+        $headerLogo = HeaderLogo::first();
         Session::put('page', 'institution_managements');
         $id=Auth::guard('admin')->user()->name;
-        return view('admin.institution_managements.create')->with(compact('id'));
+        return view('admin.institution_managements.create')->with(compact('id', 'logos', 'headerLogo'));
     }
 
     public function store(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $validationRules = [
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
@@ -77,29 +83,36 @@ class InstitutionManagementController extends Controller
             }
         }
 
-        return redirect('admin/institution-managements')->with('success_message', 'Institution has been added successfully');
+        return redirect('admin/institution-managements')->with('success_message', 'Institution has been added successfully', 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function show($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'institution_managements');
 
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
 
-        return view('admin.institution_managements.show')->with(compact('institution'));
+        return view('admin.institution_managements.show')->with(compact('institution', 'logos', 'headerLogo'));
     }
 
     public function edit($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'institution_managements');
 
         $institution = InstitutionManagement::with(['institutionClasses', 'country', 'state', 'district', 'block'])->findOrFail($id);
 
-        return view('admin.institution_managements.edit')->with(compact('institution'));
+        return view('admin.institution_managements.edit')->with(compact('institution', 'logos', 'headerLogo'));
     }
 
     public function update(Request $request, $id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $validationRules = [
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
@@ -146,19 +159,24 @@ class InstitutionManagementController extends Controller
             }
         }
 
-        return redirect('admin/institution-managements')->with('success_message', 'Institution has been updated successfully');
+        return redirect('admin/institution-managements')->with('success_message', 'Institution has been updated successfully', 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function destroy($id)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $institution = InstitutionManagement::findOrFail($id);
         $institution->delete();
 
         return redirect('admin/institution-managements')->with('success_message', 'Institution has been deleted successfully');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function getClasses(Request $request)
     {
+        $logos = HeaderLogo::first();
         $type = $request->input('type');
 
         if ($type === 'school') {
@@ -177,6 +195,8 @@ class InstitutionManagementController extends Controller
 
     public function getLocationData(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $pincode = $request->input('pincode');
 
         // Sample location data based on pincode patterns - you can replace this with actual API calls or database queries
@@ -207,20 +227,26 @@ class InstitutionManagementController extends Controller
             }
         }
 
-        return response()->json($locationData);
+        return response()->json($locationData, 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function getCountries()
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $countries = Country::where('status', true)
             ->pluck('name', 'id')
             ->toArray();
 
-        return response()->json($countries);
+        return response()->json($countries, 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function getStates(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $countryId = $request->input('country');
 
         $states = State::where('country_id', $countryId)
@@ -228,11 +254,14 @@ class InstitutionManagementController extends Controller
             ->pluck('name', 'id')
             ->toArray();
 
-        return response()->json($states);
+        return response()->json($states, 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function getDistricts(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $stateId = $request->input('state');
 
         $districts = District::where('state_id', $stateId)
@@ -240,11 +269,14 @@ class InstitutionManagementController extends Controller
             ->pluck('name', 'id')
             ->toArray();
 
-        return response()->json($districts);
+        return response()->json($districts, 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function getBlocks(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $districtId = $request->input('district');
 
         $blocks = Block::where('district_id', $districtId)
@@ -252,7 +284,8 @@ class InstitutionManagementController extends Controller
             ->pluck('name', 'id')
             ->toArray();
 
-        return response()->json($blocks);
+        return response()->json($blocks, 'logos');
+        return view('admin.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     // public function getCities(Request $request)

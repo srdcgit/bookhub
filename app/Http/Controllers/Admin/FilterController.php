@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -11,11 +12,13 @@ use App\Models\ProductsFiltersValue;
 
 class FilterController extends Controller
 {
-    // Dynamic Filters in the Admin Panel (of products)    
+    // Dynamic Filters in the Admin Panel (of products)
 
 
 
     public function filters() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'filters');
 
@@ -24,10 +27,12 @@ class FilterController extends Controller
         // dd($filters);
 
 
-        return view('admin.filters.filters')->with(compact('filters'));
+        return view('admin.filters.filters')->with(compact('filters', 'logos', 'headerLogo'));
     }
 
-    public function updateFilterStatus(Request $request) { // Update Filter Status using AJAX in filters.blade.php    
+    public function updateFilterStatus(Request $request) { // Update Filter Status using AJAX in filters.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -47,9 +52,12 @@ class FilterController extends Controller
                 'filter_id' => $data['filter_id']
             ]);
         }
+        return view('admin.filters.filters', compact('filters', 'logos', 'headerLogo'));
     }
 
-    public function updateFilterValueStatus(Request $request) { // Update Filter Value Status using AJAX in filters_values.blade.php    
+    public function updateFilterValueStatus(Request $request) { // Update Filter Value Status using AJAX in filters_values.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -64,14 +72,17 @@ class FilterController extends Controller
             ProductsFiltersValue::where('id', $data['filter_id'])->update(['status' => $status]); // $data['filter_id'] comes from the 'data' object inside the $.ajax() method
             // echo '<pre>', var_dump($data), '</pre>';
 
-            return response()->json([ // JSON Responses: https://laravel.com/docs/9.x/responses#json-responses 
+            return response()->json([ // JSON Responses: https://laravel.com/docs/9.x/responses#json-responses
                 'status'    => $status,
                 'filter_id' => $data['filter_id']
             ]);
         }
+        return view('admin.filters.filters_values', compact('filters_values', 'logos', 'headerLogo'));
     }
 
     public function filtersValues() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'filters');
 
@@ -80,10 +91,12 @@ class FilterController extends Controller
         // dd($filters);
 
 
-        return view('admin.filters.filters_values')->with(compact('filters_values'));
+        return view('admin.filters.filters_values')->with(compact('filters_values', 'logos', 'headerLogo'));
     }
 
-    public function addEditFilter(Request $request, $id = null) { // If the $id is not passed, this means 'Add a Filter', but if it's passed, this means 'Edit the Filter'    
+    public function addEditFilter(Request $request, $id = null) { // If the $id is not passed, this means 'Add a Filter', but if it's passed, this means 'Edit the Filter'
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'filters');
 
@@ -127,15 +140,17 @@ class FilterController extends Controller
 
 
         // Note: Dynamic Filters are applied to `categories` (parent categories and subcategories (child categories)), and not `sections`!
-        // Get ALL the Sections with their Categories and Subcategories (Get all sections with its categories and subcategories) to select them while adding or updating a filter (to select the fitler's respective categories)    // $categories are ALL the `sections` with their related 'parent' categories (if any (if exist)) and their subcategories or 'child' categories (if any (if exist))    
+        // Get ALL the Sections with their Categories and Subcategories (Get all sections with its categories and subcategories) to select them while adding or updating a filter (to select the fitler's respective categories)    // $categories are ALL the `sections` with their related 'parent' categories (if any (if exist)) and their subcategories or 'child' categories (if any (if exist))
         $categories = \App\Models\Section::with('categories')->get()->toArray(); // with('categories') is the relationship method name in the Section.php Model
         // dd($categories);
 
 
-        return view('admin.filters.add_edit_filter')->with(compact('title', 'categories', 'filter'));
+        return view('admin.filters.add_edit_filter')->with(compact('title', 'categories', 'filter', 'logos', 'headerLogo'));
     }
 
-    public function addEditFilterValue(Request $request, $id = null) { // If the $id is not passed, this means 'Add Filter Value', but if it's passed, this means 'Edit the Filter Value'    
+    public function addEditFilterValue(Request $request, $id = null) { // If the $id is not passed, this means 'Add Filter Value', but if it's passed, this means 'Edit the Filter Value'
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'filters');
 
@@ -175,10 +190,12 @@ class FilterController extends Controller
         // dd($filters);
 
 
-        return view('admin.filters.add_edit_filter_value')->with(compact('title', 'filter', 'filters'));
+        return view('admin.filters.add_edit_filter_value')->with(compact('title', 'filter', 'filters', 'logos', 'headerLogo'));
     }
 
-    public function categoryFilters(Request $request) { // Show the related filters depending on the selected category <select> in category_filters.blade.php (which in turn is included by add_edit_product.php) using AJAX. Check admin/js/custom.js    
+    public function categoryFilters(Request $request) { // Show the related filters depending on the selected category <select> in category_filters.blade.php (which in turn is included by add_edit_product.php) using AJAX. Check admin/js/custom.js
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) {
             $data = $request->all();
             // dd($data);
@@ -191,6 +208,7 @@ class FilterController extends Controller
                 'view' => (String) \Illuminate\Support\Facades\View::make('admin.filters.category_filters')->with(compact('category_id')) // View Responses: https://laravel.com/docs/9.x/responses#view-responses    // Creating & Rendering Views: https://laravel.com/docs/9.x/views#creating-and-rendering-views    // Passing Data To Views: https://laravel.com/docs/9.x/views#passing-data-to-views
             ]);
         }
+        return view('admin.filters.category_filters', compact('category_id', 'logos', 'headerLogo'));
     }
 
 }

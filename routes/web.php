@@ -77,6 +77,9 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
         //Logo
         Route::match(['get', 'post'], 'header-logo', [AdminController::class, 'headerLogo'])->name('logo');
+        //Favicon
+        Route::match(['get', 'post'], 'favicon', [AdminController::class, 'favicon'])->name('favicon');
+        Route::post('update-favicon', [AdminController::class, 'updateFavicon'])->name('update.favicon');
 
         //Publishers
         Route::get('publisher', 'PublisherController@publisher');

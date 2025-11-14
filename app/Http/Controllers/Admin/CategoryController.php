@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Session;
 use Intervention\Image\Facades\Image;
 
 use App\Models\Category;
+use App\Models\HeaderLogo;
 use App\Models\Section;
 
 
 class CategoryController extends Controller
 {
     public function categories() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'categories');
 
@@ -21,10 +24,12 @@ class CategoryController extends Controller
         // dd($categories);
 
 
-        return view('admin.categories.categories')->with(compact('categories'));
+        return view('admin.categories.categories')->with(compact('categories', 'logos', 'headerLogo'));
     }
 
     public function updateCategoryStatus(Request $request) { // Update Category Status using AJAX in categories.blade.php
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -44,13 +49,15 @@ class CategoryController extends Controller
                 'category_id' => $data['category_id']
             ]);
         }
+        return view('admin.categories.categories', compact('categories', 'logos', 'headerLogo'));
     }
 
     public function addEditCategory(Request $request, $id = null) { // If the $id is not passed, this means Add a Category, if not, this means Edit the Category
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'categories');
 
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         if ($id == '') { // if there's no $id is passed in the route/URL parameters, this means Add a new Category
             $title = 'Add Category';
             $category = new Category();
@@ -149,10 +156,12 @@ class CategoryController extends Controller
         // dd($getSections);
 
 
-        return view('admin.categories.add_edit_category')->with(compact('title', 'category', 'getSections', 'getCategories'));
+        return view('admin.categories.add_edit_category')->with(compact('title', 'category', 'getSections', 'getCategories', 'logos', 'headerLogo'));
     }
 
     public function appendCategoryLevel(Request $request) { // (AJAX) Show Categories <select> <option> depending on the chosen Section (show the relevant categories of the chosen section) using AJAX in admin/js/custom.js in append_categories_level.blade.php page
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         // Note: We created the <div> in a separate file in order for the appendCategoryLevel() method inside the CategoryController to be able to return the whole file as a response to the AJAX call in admin/js/custom.js to show the proper/relevant categories <select> box <option> depending on the selected (chosen) Section
         if ($request->ajax()) { // if the request is coming via an AJAX call
             // if ($request->isMethod('get')) {
@@ -167,17 +176,23 @@ class CategoryController extends Controller
 
             return view('admin.categories.append_categories_level')->with(compact('getCategories')); // return-ing the WHOLE append_categories_level.blade.php page
         }
+        return view('admin.categories.append_categories_level', compact('getCategories', 'logos', 'headerLogo'));
     }
 
     public function deleteCategory($id) {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         Category::where('id', $id)->delete();
 
         $message = 'Category has been deleted successfully!';
 
         return redirect()->back()->with('success_message', $message);
+        return view('admin.categories.categories', compact('categories', 'logos', 'headerLogo'));
     }
 
     public function deleteCategoryImage($id) { // AJAX call from admin/js/custom.js    // Delete the category image from BOTH SERVER (FILESYSTEM) & DATABASE    // $id is passed as a Route Parameter
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         // Category image record in the database
         $categoryImage = Category::select('category_image')->where('id', $id)->first();
         // dd($categoryImage);
@@ -196,5 +211,6 @@ class CategoryController extends Controller
         $message = 'Category Image has been deleted successfully!';
 
         return redirect()->back()->with('success_message', $message);
+        return view('admin.categories.categories', compact('categories', 'logos', 'headerLogo'));
     }
 }

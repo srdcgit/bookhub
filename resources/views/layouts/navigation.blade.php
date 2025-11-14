@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-dark" href="{{ auth('sales')->check() ? route('sales.dashboard') : route('dashboard') }}">
-            <x-application-logo class="d-inline-block" style="height:38px;"/>
-            BookHub
-        </a>
+        
+        <img
+        src="{{ asset('uploads/logos/' . $logos->first()->logo) }}"
+        alt="" height="50" width="150">
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                 aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

@@ -26,7 +26,7 @@
     <meta name="app-url" content="{{ config('app.url') }}">
 
     <!-- FAVICONS ICON -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('front/newtheme/images/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('uploads/favicons/' . $logos->first()->favicon) }}" />
 
     <!-- PAGE TITLE HERE -->
     <title>

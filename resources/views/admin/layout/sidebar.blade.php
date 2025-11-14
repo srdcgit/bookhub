@@ -145,6 +145,10 @@
                                 @if (Session::get('page') == 'logo') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
                                 class="nav-link" href="{{ route('logo') }}">Logo</a>
                         </li>
+                        <li class="nav-item"> <a
+                                @if (Session::get('page') == 'favicon') style="background: #052CA3 !important; color: #FFF !important" @else style="background: #fff !important; color: #052CA3 !important" @endif
+                                class="nav-link" href="{{ route('favicon') }}">Favicon</a>
+                        </li>
                     </ul>
                 </div>
             </li>

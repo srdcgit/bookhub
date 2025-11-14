@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Block;
 use App\Models\District;
+use App\Models\HeaderLogo;
 
 class BlockController extends Controller
 {
@@ -16,12 +17,13 @@ class BlockController extends Controller
     public function index()
     {
         Session::put('page', 'blocks');
-
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         $blocks = Block::with('district.state.country')
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('sales.blocks.index')->with(compact('blocks'));
+        return view('sales.blocks.index')->with(compact('blocks', 'headerLogo','logos'));
     }
 
     /**
@@ -30,13 +32,15 @@ class BlockController extends Controller
     public function create()
     {
         Session::put('page', 'blocks');
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
 
         $districts = District::where('status', true)
             ->with('state.country')
             ->orderBy('name')
             ->get();
 
-        return view('sales.blocks.create')->with(compact('districts'));
+        return view('sales.blocks.create')->with(compact('districts', 'headerLogo','logos'));
     }
 
     /**
@@ -44,6 +48,7 @@ class BlockController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id',
@@ -62,11 +67,12 @@ class BlockController extends Controller
     public function show(string $id)
     {
         Session::put('page', 'blocks');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $block = Block::with('district.state.country')
             ->findOrFail($id);
 
-        return view('sales.blocks.show')->with(compact('block'));
+        return view('sales.blocks.show')->with(compact('block', 'headerLogo','logos'));
     }
 
     /**
@@ -75,7 +81,8 @@ class BlockController extends Controller
     public function edit(string $id)
     {
         Session::put('page', 'blocks');
-
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $block = Block::with('district.state.country')
             ->findOrFail($id);
         $districts = District::where('status', true)
@@ -83,7 +90,7 @@ class BlockController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('sales.blocks.edit')->with(compact('block','districts'));
+        return view('sales.blocks.edit')->with(compact('block','districts', 'logos','headerLogo'));
     }
 
     /**
@@ -91,6 +98,8 @@ class BlockController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $request->validate([
             'name' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id',
@@ -103,7 +112,7 @@ class BlockController extends Controller
 
         $block->update($data);
 
-        return redirect('sales/blocks')->with('success_message', 'Block has been updated successfully');
+        return redirect('sales/blocks')->with('success_message', 'Block has been updated successfully', 'headerLogo', 'logos');
     }
 
     /**
@@ -111,6 +120,8 @@ class BlockController extends Controller
      */
     public function destroy(string $id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $block = Block::findOrFail($id);
         $block->delete();
 

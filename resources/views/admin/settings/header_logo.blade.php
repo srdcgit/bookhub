@@ -16,8 +16,12 @@
         </div>
 
        {{-- @foreach ($logos as $logo) --}}
+        @if($logos && $logos->logo)
             <p class="mt-2">Current Logo:</p>
-            <img src="{{ asset('uploads/logos/' . $logos->logo) }}" height="60">
+            <img src="{{ asset('uploads/logos/' . $logos->logo) }}" height="60" alt="Current header logo">
+        @else
+            <p class="mt-2 text-muted">No logo uploaded yet.</p>
+        @endif
       {{-- @endforeach --}}
 
         <button class="btn btn-primary mt-3" type="submit">Upload</button>

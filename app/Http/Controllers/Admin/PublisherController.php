@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use App\Models\Publisher;
+use App\Models\HeaderLogo;
 
 
 class PublisherController extends Controller
 {
     public function publisher() {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'publisher');
 
@@ -20,10 +23,12 @@ class PublisherController extends Controller
  // Plain PHP array
         // dd($publisher);
 
-        return view('admin.publisher.publisher')->with(compact('publishers'));
+        return view('admin.publisher.publisher')->with(compact('publishers', 'logos', 'headerLogo'));
     }
 
     public function updatePublisherStatus(Request $request) { // Update publisher Status using AJAX in publisher.blade.php
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) { // if the request is coming via an AJAX call
             $data = $request->all(); // Getting the name/value pairs array that are sent from the AJAX request (AJAX call)
             // dd($data);
@@ -43,20 +48,26 @@ class PublisherController extends Controller
                 'publisher_id' => $data['publisher_id']
             ]);
         }
+        return view('admin.publisher.publisher', compact('publishers', 'logos', 'headerLogo'));
     }
 
 
     public function deletePublisher($id) {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Publisher::where('id', $id)->delete();
 
         $message = 'Publisher has been deleted successfully!';
 
         return redirect()->back()->with('success_message', $message);
-    }
+        return view('admin.publisher.publisher', compact('publishers', 'logos', 'headerLogo'));
+        }
 
 
     public function addPublisherAjax(Request $request)
     {
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         if ($request->ajax()) {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -87,11 +98,14 @@ class PublisherController extends Controller
             'status' => 'error',
             'message' => 'Invalid request.'
         ]);
+        return view('admin.publisher.publisher', compact('publishers', 'logos', 'headerLogo'));
     }
 
 
 
     public function addEditPublisher(Request $request, $id = null) { // If the $id is not passed, this means Add a publisher, if not, this means Edit the publisher
+        $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         // Correcting issues in the Skydash Admin Panel Sidebar using Session
         Session::put('page', 'publisher');
 
@@ -132,10 +146,11 @@ class PublisherController extends Controller
             $publisher->save(); // Save all data in the database
 
 
-            return redirect('admin/publisher')->with('success_message', $message);
+            return redirect('admin/publisher')->with('success_message', $message, 'logos');
+            return view('admin.publisher.publisher', compact('publishers', 'logos', 'headerLogo'));
         }
 
 
-        return view('admin.publisher.add_edit_publisher')->with(compact('title', 'publisher'));
+        return view('admin.publisher.add_edit_publisher')->with(compact('title', 'publisher', 'logos', 'headerLogo'));
     }
 }
