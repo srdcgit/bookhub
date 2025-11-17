@@ -11,7 +11,7 @@
                                 <h4 class="card-title mb-0">{{ $title }}</h4>
                                 <a href="{{ route('sales_executives.add_edit') }}"
                                     class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
-                                    <i class="mdi mdi-plus fs-5"></i>Add Sales Executive
+                                    <i class="mdi mdi-plus fs-5"></i> Add Sales Executive
                                 </a>
                             </div>
 

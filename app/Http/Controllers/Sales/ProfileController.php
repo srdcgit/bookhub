@@ -56,6 +56,7 @@ class ProfileController extends Controller
         $sales->save();
 
         return redirect()->route('sales.profile.edit')->with('success_message', 'Profile updated successfully.');
+        return view('sales.profile', compact('sales', 'logos', 'headerLogo'));
     }
 }
 

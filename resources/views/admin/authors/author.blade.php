@@ -14,7 +14,7 @@
 
 
                             <a href="{{ route('add.author') }}" style="max-width: 150px; float: right; display: inline-block"
-                                class="btn btn-block btn-primary">Add Author</a>
+                                class="btn btn-block btn-primary"><i class="mdi mdi-plus"></i> Add Author</a>
 
                             {{-- Displaying The Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors AND https://laravel.com/docs/9.x/blade#validation-errors --}}
                             {{-- Determining If An Item Exists In The Session (using has() method): https://laravel.com/docs/9.x/session#determining-if-an-item-exists-in-the-session --}}

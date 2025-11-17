@@ -13,7 +13,7 @@
 
                             <a href="{{ url('admin/add-edit-product') }}"
                                 style="max-width: 150px; float: right; display: inline-block"
-                                class="btn btn-block btn-primary">Add Book</a>
+                                class="btn btn-block btn-primary"><i class="mdi mdi-plus"></i> Add Book</a>
 
                             {{-- Displaying The Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors AND https://laravel.com/docs/9.x/blade#validation-errors --}}
                             {{-- Determining If An Item Exists In The Session (using has() method): https://laravel.com/docs/9.x/session#determining-if-an-item-exists-in-the-session --}}
@@ -156,7 +156,7 @@
                         <h5 class="modal-title fw-bold" id="addAttributeModalLabel">
                             <i class="fas fa-plus-circle me-2"></i>Add Book Attribute
                         </h5>
-                       
+
                     </div>
 
                     <div class="modal-body p-4">
@@ -166,7 +166,7 @@
                                 <i class="fas fa-book me-2"></i>Book Name
                             </label>
                             <div class="input-group">
-                               
+
                                 <input type="text" class="form-control bg-light" id="bookNameEdition" readonly>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                                 <i class="fas fa-tag me-2 text-info"></i>Edition <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                
+
                                 <select id="bookEdition" class="form-control" required>
                                     <option value="" disabled selected>Choose Edition...</option>
                                     <!-- Editions will be populated dynamically -->
@@ -194,7 +194,7 @@
                                         class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
-                                   
+
                                     <input type="number" class="form-control" id="bookPrice" placeholder="0.00"
                                         required min="0" step="0.01">
                                 </div>
@@ -207,7 +207,7 @@
                                     <i class="fas fa-boxes me-2 text-warning"></i>Stock <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
-                                    
+
                                     <input type="number" class="form-control" id="bookStock" placeholder="0" required
                                         min="0" step="1">
                                 </div>

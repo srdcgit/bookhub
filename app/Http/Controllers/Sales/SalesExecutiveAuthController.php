@@ -35,6 +35,7 @@ class SalesExecutiveAuthController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+        return view('sales.login', compact('logos', 'headerLogo'));
     }
 
     public function showRegister()
@@ -84,6 +85,7 @@ class SalesExecutiveAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/sales/login');
+        return view('sales.dashboard', compact('logos', 'headerLogo'));
     }
 }
 

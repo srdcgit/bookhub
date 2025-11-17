@@ -21,7 +21,7 @@ class InstitutionManagementController extends Controller
         $headerLogo = HeaderLogo::first();
         $institutions = InstitutionManagement::orderBy('id', 'desc')->paginate(20);
 
-        return view('sales.institution_managements.index', compact('institutions'));
+        return view('sales.institution_managements.index', compact('institutions','logos','headerLogo'));
     }
 
     public function create()
@@ -34,6 +34,8 @@ class InstitutionManagementController extends Controller
     public function store(Request $request)
     {
      
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $data = $request->validate([
             'name'           => 'required|string|max:255',
             'type'           => 'required|string|max:255',
@@ -54,6 +56,7 @@ class InstitutionManagementController extends Controller
 
         return redirect()->route('sales.institution_managements.index')
             ->with('success_message', 'Institution has been added successfully');
+        return view('sales.institution_managements.index', compact('logos', 'headerLogo'));    
     }
 
     public function show($id)
@@ -83,6 +86,8 @@ class InstitutionManagementController extends Controller
 
     public function update(Request $request, $id)
     {
+        $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $validationRules = [
             'name'           => 'required|string|max:255',
             'type'           => 'required|string|max:255',
@@ -130,6 +135,7 @@ class InstitutionManagementController extends Controller
         }
 
         return redirect('sales/institution-managements')->with('success_message', 'Institution has been updated successfully');
+        return view('sales/institution-managements', compact('logos', 'headerLogo'));
     }
 
     public function destroy($id)
@@ -145,8 +151,7 @@ class InstitutionManagementController extends Controller
     public function getClasses(Request $request)
     {
         $type = $request->input('type');
-        $logos = HeaderLogo::first();
-        $headerLogo = HeaderLogo::first();
+       
         if ($type === 'school') {
             $classes = [
                 'Nursery', 'LKG', 'UKG',
@@ -159,13 +164,13 @@ class InstitutionManagementController extends Controller
         }
 
         return response()->json($classes);
+       
     }
 
     public function getLocationData(Request $request)
     {
         $pincode = $request->input('pincode');
-        $logos = HeaderLogo::first();
-        $headerLogo = HeaderLogo::first();
+      
         // Sample location data based on pincode patterns - you can replace this with actual API calls or database queries
         $locationData = [
             'block'    => 'Central Block',

@@ -51,7 +51,7 @@ class StudentController extends Controller
 
         $data = $request->all();
 
-        
+
         $data['status'] = 1;
         $data['added_by'] = Auth::guard('admin')->user()->id;
 
@@ -70,12 +70,13 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $institutions = InstitutionManagement::orderBy('name')->get();
 
-        return view('admin.students.edit')->with(compact('student', 'institutions', 'logos'));
+        return view('admin.students.edit')->with(compact('student', 'institutions', 'logos', 'headerLogo'));
     }
 
     public function update(Request $request, $id)
     {
         $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -85,12 +86,14 @@ class StudentController extends Controller
             'gender' => 'required|string|in:male,female,other',
             'dob' => 'required|date|before:today',
             'roll_number' => 'nullable|string|max:255',
-            'status' => 'boolean'
+            'status' => 'nullable|boolean'
         ]);
 
         $student = Student::findOrFail($id);
         $data = $request->all();
-        $data['status'] = $request->status;
+        $data['status'] = $request->has('status')
+            ? ($request->boolean('status') ? 1 : 0)
+            : $student->status;
 
         $student->update($data);
 

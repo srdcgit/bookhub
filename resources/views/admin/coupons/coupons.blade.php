@@ -13,7 +13,7 @@
 
 
 
-                            <a href="{{ url('admin/add-edit-coupon') }}" style="max-width: 150px; float: right; display: inline-block" class="btn btn-block btn-primary">Add Coupon</a>
+                            <a href="{{ url('admin/add-edit-coupon') }}" style="max-width: 150px; float: right; display: inline-block" class="btn btn-block btn-primary"><i class="mdi mdi-plus"></i> Add Coupon</a>
 
                             {{-- Displaying The Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors AND https://laravel.com/docs/9.x/blade#validation-errors --}}
                             {{-- Determining If An Item Exists In The Session (using has() method): https://laravel.com/docs/9.x/session#determining-if-an-item-exists-in-the-session --}}
@@ -45,7 +45,7 @@
                                     <tbody>
                                         @foreach ($coupons as $coupon)
                                             <tr>
-                                                
+
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $coupon['coupon_code'] }}</td>
                                                 <td>{{ $coupon['coupon_type'] }}</td>

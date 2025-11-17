@@ -180,7 +180,7 @@
                 <div class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-plus-circle"></i>
-                        Add New Institution 
+                        Add New Institution
                     </h1>
                     <p class="page-subtitle">Create a new institution record for your system</p>
                 </div>

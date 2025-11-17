@@ -49,7 +49,7 @@
 
 
 
-                            {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}    
+                            {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}
                             @if ($errors->any())
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
 
@@ -76,26 +76,18 @@
                                     </button>
                                 </div>
                             @endif
-                
-
-                            
 
 
-                            
+
+
+
+
                             <form class="forms-sample" action="{{ url('admin/add-images/' . $product['id']) }}" method="post" enctype="multipart/form-data"> {{-- "enctype" attribute must be used becasue we're uploading files --}}
                                 @csrf
 
                                 <div class="form-group">
                                     <label for="product_name">Product Name:</label>
                                     &nbsp; {{ $product['product_name'] }}
-                                </div>
-                                <div class="form-group">
-                                    <label for="product_code">Product Code:</label>
-                                    &nbsp; {{ $product['product_code'] }}
-                                </div>
-                                <div class="form-group">
-                                    <label for="product_color">Product Color:</label>
-                                    &nbsp; {{ $product['product_color'] }}
                                 </div>
                                 <div class="form-group">
                                     <label for="product_price">Product Price:</label>
@@ -110,9 +102,9 @@
                                     @endif
                                 </div>
 
-                
 
-                                {{-- Add Remove Input Fields Dynamically using jQuery: https://www.codexworld.com/add-remove-input-fields-dynamically-using-jquery/ --}} 
+
+                                {{-- Add Remove Input Fields Dynamically using jQuery: https://www.codexworld.com/add-remove-input-fields-dynamically-using-jquery/ --}}
                                 {{-- Products attributes add//remove input fields dynamically using jQuery --}}
                                 <div class="form-group">
                                     <div class="field_wrapper">
@@ -124,7 +116,7 @@
                             </form>
 
                             <br><br>
-                            
+
                             <h4 class="card-title">Product Images</h4>
 
                             {{-- DataTable --}}

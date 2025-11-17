@@ -9,7 +9,7 @@
                             <h4 class="card-title">Editions</h4>
                             <a href="{{ route('edition.create') }}"
                                 style="max-width: 150px; float: right; display: inline-block"
-                                class="btn btn-block btn-primary mb-3">Add Edition</a>
+                                class="btn btn-block btn-primary mb-3"><i class="mdi mdi-plus"></i> Add Edition</a>
 
                             {{-- Displaying The Validation Errors and Success Messages --}}
                             @if (Session::has('success'))
@@ -30,12 +30,12 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody> 
+                                    <tbody>
                                         @foreach ($editions as $key => $edition)
                                             <tr>
                                                 <td>{{ __($key + 1) }}</td>
                                                 <td>{{ $edition->edition ?? 'Not set'}}</td>
-                                                
+
                                                 <td>
                                                     <a title="Edit Edition" href="{{ route('edition.edit', $edition->id) }}">
                                                         <i style="font-size: 25px" class="mdi mdi-pencil-box"></i>
@@ -64,7 +64,7 @@
             </div>
         </footer>
     </div>
-    
+
     <!-- DataTables Bootstrap 4 CSS CDN -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
 

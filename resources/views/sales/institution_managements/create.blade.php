@@ -317,7 +317,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <div class="form-group text-center mt-4">
                     <a href="{{ url('sales/institution-managements') }}" class="btn-cancel">

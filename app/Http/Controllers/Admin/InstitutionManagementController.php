@@ -30,6 +30,7 @@ class InstitutionManagementController extends Controller
     public function create()
     {
         $headerLogo = HeaderLogo::first();
+        $logos = HeaderLogo::first();
         Session::put('page', 'institution_managements');
         $id=Auth::guard('admin')->user()->name;
         return view('admin.institution_managements.create')->with(compact('id', 'logos', 'headerLogo'));
@@ -177,6 +178,7 @@ class InstitutionManagementController extends Controller
     public function getClasses(Request $request)
     {
         $logos = HeaderLogo::first();
+        $headerLogo = HeaderLogo::first();
         $type = $request->input('type');
 
         if ($type === 'school') {
@@ -191,6 +193,7 @@ class InstitutionManagementController extends Controller
         }
 
         return response()->json($classes);
+        return view('admin.institution_managements.index', compact('logos', 'headerLogo'));
     }
 
     public function getLocationData(Request $request)

@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Languages</h4>
-                        <a style="max-width: 150px; float: right; display: inline-block;" href="{{ url('admin/add-edit-language') }}" class="btn btn-block btn-primary">Add Language</a>
+                        <a style="max-width: 150px; float: right; display: inline-block;" href="{{ url('admin/add-edit-language') }}" class="btn btn-block btn-primary"><i class="mdi mdi-plus"></i> Add Language</a>
                         @if(Session::has('success_message'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <strong>Success:</strong> {{ Session::get('success_message') }}

@@ -11,7 +11,7 @@
 
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" style="padding-top: 0.2rem; !important;">
                     @if(auth('sales')->check())
                         <x-nav-link :href="route('sales.dashboard')" :active="request()->routeIs('sales.*')" class="nav-link">
                             <i class="bi bi-speedometer2 me-1"></i>{{ __('Dashboard') }}
