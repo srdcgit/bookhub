@@ -67,6 +67,7 @@ class SalesExecutiveController extends Controller
                 'total_target' => $data['total_target'] ?? null,
                 'completed_target' => $data['completed_target'] ?? null,
                 'income_per_target' => $data['income_per_target'] ?? null,
+                'status' => 0,
             ];
 
             if (! $isEdit) {
