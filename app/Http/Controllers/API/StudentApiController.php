@@ -151,7 +151,6 @@ class StudentApiController extends Controller
             ], 403);
         }
 
-        // Get linked user (if exists)
         $linkedUserID = User::where('mobile', $student->phone)
             ->orWhere('email', $student->email)
             ->value('id');
@@ -245,14 +244,6 @@ class StudentApiController extends Controller
                 'status' => false,
                 'message' => 'Access denied! You can only delete students added by you.'
             ], 403);
-        }
-
-        $userRecord = User::where('email', $student->email)
-            ->orWhere('mobile', $student->phone)
-            ->first();
-
-        if ($userRecord) {
-            $userRecord->delete();
         }
 
         $student->delete();
