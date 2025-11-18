@@ -28,17 +28,27 @@ class AuthController extends Controller
         ];
 
         foreach ($userTypes as $type => $model) {
+
             $user = $model::where('email', $request->email)->first();
 
             if ($user && Hash::check($request->password, $user->password)) {
 
-                // ✅ check if user's type matches (for admins)
+                // 🔥 Check correct type for admin table
                 if (in_array($type, ['superadmin', 'vendor'])) {
                     if ($user->type !== $type) {
-                        continue; // skip if not matching
+                        continue;
                     }
                 }
 
+                // 🔥 STATUS CHECK (NEW)
+                if (isset($user->status) && $user->status == 0) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Your account is inactive. Please contact admin.',
+                    ], 403);
+                }
+
+                // Generate token
                 $token = $user->createToken("{$type}-token")->plainTextToken;
 
                 return response()->json([
@@ -56,6 +66,7 @@ class AuthController extends Controller
             'message' => 'Invalid credentials',
         ], 401);
     }
+
 
     public function logout(Request $request)
     {
@@ -118,6 +129,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'status' => '0',
             'password' => Hash::make($request->password),
         ]);
 
