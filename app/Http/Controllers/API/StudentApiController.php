@@ -8,6 +8,9 @@ use App\Models\Student;
 use App\Models\Admin;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Auth;
+use App\Models\InstitutionManagement;
+use Illuminate\Validation\ValidationException;
+
 
 class StudentApiController extends Controller
 {
@@ -67,19 +70,38 @@ class StudentApiController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'required|string|min:10|max:15',
-            'institution_id' => 'nullable|exists:institution_managements,id',
-            'class' => 'required|string|max:255',
-            'gender' => 'required|string|in:male,female,other',
-            'dob' => 'required|date|before:today',
-            'roll_number' => 'nullable|string|max:255',
-        ]);
+        // ✅ Validation with unique rules
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'nullable|email|max:255|unique:students,email',
+                'phone' => 'required|string|min:10|max:15|unique:students,phone',
+                'institution_id' => 'nullable|exists:institution_managements,id',
+                'class' => 'required|string|max:255',
+                'gender' => 'required|string|in:male,female,other',
+                'dob' => 'required|date|before:today',
+                'roll_number' => 'nullable|string|max:255|unique:students,roll_number',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
-        // ✅ Sales students default to status = 0 (pending)
-        // ✅ Superadmin students default to status = 1 (approved)
+        // Institution check
+        if (!empty($validated['institution_id'])) {
+            $institution = InstitutionManagement::find($validated['institution_id']);
+            if ($institution && $institution->status == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'This institution is inactive. You cannot add students.'
+                ], 403);
+            }
+        }
+
+        // Status based on role
         $validated['status'] = ($type === 'superadmin') ? 1 : 0;
         $validated['added_by'] = $user->id;
 
@@ -91,6 +113,7 @@ class StudentApiController extends Controller
             'data' => $student
         ], 201);
     }
+
 
 
     // ✅ Update student
