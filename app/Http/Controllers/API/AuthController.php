@@ -19,10 +19,10 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Define user types and their models
+
         $userTypes = [
-            'superadmin' => Admin::class, // stored in admins table
-            'vendor'     => Admin::class, // stored in same admins table
+            'superadmin' => Admin::class, 
+            'vendor'     => Admin::class, 
             'sales'      => SalesExecutive::class,
             'user'       => User::class,
         ];
@@ -33,14 +33,13 @@ class AuthController extends Controller
 
             if ($user && Hash::check($request->password, $user->password)) {
 
-                // 🔥 Check correct type for admin table
                 if (in_array($type, ['superadmin', 'vendor'])) {
                     if ($user->type !== $type) {
                         continue;
                     }
                 }
 
-                // 🔥 STATUS CHECK (NEW)
+
                 if (isset($user->status) && $user->status == 0) {
                     return response()->json([
                         'status'  => false,
@@ -48,7 +47,6 @@ class AuthController extends Controller
                     ], 403);
                 }
 
-                // Generate token
                 $token = $user->createToken("{$type}-token")->plainTextToken;
 
                 return response()->json([
@@ -89,10 +87,10 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // ✅ Determine user type
+
         $type = 'user';
         if ($user instanceof Admin) {
-            $type = $user->type; // from DB column
+            $type = $user->type; 
         } elseif ($user instanceof SalesExecutive) {
             $type = 'sales';
         }
@@ -107,7 +105,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // ✅ Step 1: Manual validator for custom JSON error handling
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:sales_executives,email',
@@ -115,7 +112,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        // ✅ Step 2: If validation fails, return a JSON response
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -124,7 +121,6 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // ✅ Step 3: Create new Sales Executive
         $sales = SalesExecutive::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -133,7 +129,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // ✅ Step 4: Send success response
         return response()->json([
             'status' => true,
             'message' => 'Sales Executive registered successfully. Please log in to continue.',
