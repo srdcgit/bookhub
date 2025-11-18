@@ -338,6 +338,54 @@ $(document).ready(function () {
         });
     });
 
+    // Update Sales Executive Status (active/inactive) via AJAX in admin/salesexecutives/index.blade.php
+    $(document).on('click', '.updateSalesExecutiveStatus', function () {
+        var status = $(this).children('i').attr('status');
+        var salesExecutiveId = $(this).attr('sales_executive_id');
+
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'post',
+            url: 'update-sales-executive-status',
+            data: { status: status, sales_executive_id: salesExecutiveId },
+            success: function (resp) {
+                if (resp.status == 0) {
+                    $('#sales-executive-' + salesExecutiveId).html('<i style="font-size: 25px" class="mdi mdi-bookmark-outline" status="Inactive"></i>');
+                } else if (resp.status == 1) {
+                    $('#sales-executive-' + salesExecutiveId).html('<i style="font-size: 25px" class="mdi mdi-bookmark-check" status="Active"></i>');
+                }
+
+                var swalInstance = window.Swal || window.swal || null;
+                if (swalInstance) {
+                    if (typeof swalInstance.fire === 'function') {
+                        swalInstance.fire({
+                            title: 'Success',
+                            text: 'Sales Executive status updated successfully.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else if (typeof swalInstance === 'function') {
+                        swalInstance({
+                            title: 'Success',
+                            text: 'Sales Executive status updated successfully.',
+                            icon: 'success',
+                            buttons: false,
+                            timer: 1500
+                        });
+                    } else {
+                        alert('Sales Executive status updated successfully.');
+                    }
+                } else {
+                    alert('Sales Executive status updated successfully.');
+                }
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    });
+
     // Update Shipping Status (active/inactive) via AJAX in admin/shipping/shipping_charages.blade.php, check admin/js/custom.js
     $(document).on('click', '.updateShippingStatus', function () { // '.updateUserStatus' is the anchor link <a> CSS class    // This is the same as    $('.updateUserStatus').on('click', function() {
         var status = $(this).children('i').attr('status'); // Using HTML Custom Attributes

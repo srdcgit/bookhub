@@ -7,7 +7,9 @@ use App\Models\HeaderLogo;
 use App\Models\InstitutionManagement;
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class StudentController extends Controller
@@ -60,7 +62,15 @@ class StudentController extends Controller
         $data['status'] = 0;
         $data['added_by'] = Auth::guard('sales')->user()->id;
 
+
         Student::create($data);
+
+        User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'mobile'   => $data['phone'],
+            'password' => Hash::make('12345678'),
+        ]);
 
         return redirect('sales/students')->with('success_message', 'Student has been added successfully');
     }

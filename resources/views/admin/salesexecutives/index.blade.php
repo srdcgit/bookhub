@@ -33,6 +33,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Phone</th>
+                                            <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -43,6 +44,23 @@
                                                 <td>{{ $se->name }}</td>
                                                 <td>{{ $se->email }}</td>
                                                 <td>{{ $se->phone }}</td>
+                                                <td>
+                                                    @if ($se->status == 1)
+                                                        <a class="updateSalesExecutiveStatus"
+                                                            id="sales-executive-{{ $se->id }}"
+                                                            sales_executive_id="{{ $se->id }}"
+                                                            href="javascript:void(0)">
+                                                            <i style="font-size: 25px" class="mdi mdi-bookmark-check" status="Active"></i>
+                                                        </a>
+                                                    @else
+                                                        <a class="updateSalesExecutiveStatus"
+                                                            id="sales-executive-{{ $se->id }}"
+                                                            sales_executive_id="{{ $se->id }}"
+                                                            href="javascript:void(0)">
+                                                            <i style="font-size: 25px" class="mdi mdi-bookmark-outline" status="Inactive"></i>
+                                                        </a>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex align-items-center" style="gap: 10px;">
                                                         <a href="{{ route('sales_executives.add_edit', $se->id) }}"

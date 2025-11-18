@@ -95,6 +95,27 @@ class SalesExecutiveController extends Controller
         SalesExecutive::where('id', $id)->delete();
         return redirect()->back()->with('success_message', 'Sales Executive deleted successfully!');
     }
+
+    public function updateStatus(Request $request)
+    {
+        if (! $request->ajax()) {
+            abort(400, 'Invalid request');
+        }
+
+        $data = $request->validate([
+            'status'              => 'required|string|in:Active,Inactive',
+            'sales_executive_id'  => 'required|integer|exists:sales_executives,id',
+        ]);
+
+        $newStatus = $data['status'] === 'Active' ? 0 : 1;
+
+        SalesExecutive::where('id', $data['sales_executive_id'])->update(['status' => $newStatus]);
+
+        return response()->json([
+            'status'             => $newStatus,
+            'sales_executive_id' => $data['sales_executive_id'],
+        ]);
+    }
 }
 
 
