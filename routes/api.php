@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\StudentApiController;
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\SalesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,5 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/students/{id}', [StudentApiController::class, 'update']);
     Route::delete('/students/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/getStudents/', [StudentApiController::class, 'getStudentByClass']);
+});
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/sales/profile', [SalesController::class, 'getProfile']);
+    Route::post('/sales/update-profile', [SalesController::class, 'updateProfile']);
+    Route::get('/sales/bank-details', [SalesController::class, 'getBankDetails']);
+    Route::put('/sales/update-bank', [SalesController::class, 'updateBankDetails']);
 });
