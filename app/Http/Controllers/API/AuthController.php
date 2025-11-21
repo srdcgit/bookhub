@@ -15,31 +15,50 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
+            'login'    => 'required',   // email OR mobile/phone
             'password' => 'required',
         ]);
 
+        $loginInput = $request->login;   // can be email or mobile/phone
 
+        // All user types and their models
         $userTypes = [
-            'superadmin' => Admin::class, 
-            'vendor'     => Admin::class, 
+            'superadmin' => Admin::class,
+            'vendor'     => Admin::class,
             'sales'      => SalesExecutive::class,
             'user'       => User::class,
         ];
 
         foreach ($userTypes as $type => $model) {
 
-            $user = $model::where('email', $request->email)->first();
+            // Determine the login field based on model
+            if ($model === Admin::class) {
+                $user = $model::where('email', $loginInput)
+                    ->orWhere('mobile', $loginInput)
+                    ->first();
+            } elseif ($model === SalesExecutive::class) {
+                $user = $model::where('email', $loginInput)
+                    ->orWhere('phone', $loginInput)
+                    ->first();
+            } elseif ($model === User::class) {
+                $user = $model::where('email', $loginInput)
+                    ->orWhere('mobile', $loginInput)
+                    ->first();
+            } else {
+                $user = null;
+            }
 
+            // If user found and password matches
             if ($user && Hash::check($request->password, $user->password)) {
 
+                // Admin has type field → superadmin / vendor
                 if (in_array($type, ['superadmin', 'vendor'])) {
                     if ($user->type !== $type) {
-                        continue;
+                        continue; // Skip wrong type
                     }
                 }
 
-
+                // Check active/inactive
                 if (isset($user->status) && $user->status == 0) {
                     return response()->json([
                         'status'  => false,
@@ -47,6 +66,7 @@ class AuthController extends Controller
                     ], 403);
                 }
 
+                // Create token
                 $token = $user->createToken("{$type}-token")->plainTextToken;
 
                 return response()->json([
@@ -61,9 +81,10 @@ class AuthController extends Controller
 
         return response()->json([
             'status'  => false,
-            'message' => 'Invalid credentials',
+            'message' => 'Invalid email/phone or password.',
         ], 401);
     }
+
 
 
     public function logout(Request $request)
@@ -90,7 +111,7 @@ class AuthController extends Controller
 
         $type = 'user';
         if ($user instanceof Admin) {
-            $type = $user->type; 
+            $type = $user->type;
         } elseif ($user instanceof SalesExecutive) {
             $type = 'sales';
         }
