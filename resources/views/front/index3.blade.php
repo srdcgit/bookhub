@@ -990,7 +990,7 @@
                             <h4 class="fw-semibold mb-3 text-primary">Register today</h4>
                             <p class="mb-4 text-muted">Fill out a short application and our onboarding team will connect
                                 with you within 48 hours.</p>
-                            <a href="{{ route('sales.register') }}" class="btn btn-primary btnhover w-100">
+                            <a href="{{ url('/sales') }}" class="btn btn-primary btnhover w-100">
                                 Join as Sales Executive
                                 <i class="fa-solid fa-arrow-right ms-2"></i>
                             </a>

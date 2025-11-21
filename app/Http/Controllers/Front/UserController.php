@@ -369,4 +369,13 @@ class UserController extends Controller
         return view('front.pages.services', compact('condition', 'sections', 'logos', 'language'));
     }
 
+    public function sales(){
+        $condition = session('condition', 'new');
+        $sections  = Section::all();
+        $logos     = HeaderLogo::all();
+        $language  = Language::get();
+
+        return view('front.pages.sales', compact('condition', 'sections', 'logos', 'language'));
+    }
+
 }
