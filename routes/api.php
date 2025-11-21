@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\StudentApiController;
+use App\Http\Controllers\Api\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/institutions', [InstitutionController::class, 'store']);
     Route::put('/institutions/{id}', [InstitutionController::class, 'update']);
     Route::delete('/institutions/{id}', [InstitutionController::class, 'destroy']);
+    Route::get('/book/lookup', [BookController::class, 'lookupByIsbn']);
 });
 
 // Student
@@ -48,4 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/students', [StudentApiController::class, 'store']);
     Route::put('/students/{id}', [StudentApiController::class, 'update']);
     Route::delete('/students/{id}', [StudentApiController::class, 'destroy']);
+    Route::get('/getStudents/', [StudentApiController::class, 'getStudentByClass']);
+
 });

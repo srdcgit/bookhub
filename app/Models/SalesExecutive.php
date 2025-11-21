@@ -31,6 +31,7 @@ class SalesExecutive extends Authenticatable
         'total_target',
         'completed_target',
         'income_per_target',
+        'status',
         'password',
     ];
 

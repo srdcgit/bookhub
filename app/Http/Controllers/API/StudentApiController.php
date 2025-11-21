@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Admin;
+use App\Models\User;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InstitutionManagement;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 
 class StudentApiController extends Controller
@@ -25,7 +28,6 @@ class StudentApiController extends Controller
         return null;
     }
 
-    // ✅ Get all students (only for superadmin)
     public function index(Request $request)
     {
         $user = $request->user();
@@ -39,10 +41,8 @@ class StudentApiController extends Controller
         }
 
         if ($type === 'superadmin') {
-            // Superadmin can see all students
             $students = Student::with('institution')->orderBy('id', 'desc')->get();
         } else {
-            // Sales can see only students added by them
             $students = Student::with('institution')
                 ->where('added_by', $user->id)
                 ->orderBy('id', 'desc')
@@ -56,12 +56,10 @@ class StudentApiController extends Controller
         ], 200);
     }
 
-
-    // ✅ Add student
     public function store(Request $request)
     {
         $user = $request->user();
-        $type = $this->detectUserType($user);
+        $type = strtolower(trim($this->detectUserType($user)));
 
         if (!in_array($type, ['superadmin', 'sales'])) {
             return response()->json([
@@ -70,12 +68,11 @@ class StudentApiController extends Controller
             ], 403);
         }
 
-        // ✅ Validation with unique rules
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'nullable|email|max:255|unique:students,email',
-                'phone' => 'required|string|min:10|max:15|unique:students,phone',
+                'email' => 'nullable|email|max:255|unique:students,email|unique:users,email',
+                'phone' => 'required|string|min:10|max:15|unique:students,phone|unique:users,mobile',
                 'institution_id' => 'nullable|exists:institution_managements,id',
                 'class' => 'required|string|max:255',
                 'gender' => 'required|string|in:male,female,other',
@@ -90,7 +87,7 @@ class StudentApiController extends Controller
             ], 422);
         }
 
-        // Institution check
+
         if (!empty($validated['institution_id'])) {
             $institution = InstitutionManagement::find($validated['institution_id']);
             if ($institution && $institution->status == 0) {
@@ -101,11 +98,20 @@ class StudentApiController extends Controller
             }
         }
 
-        // Status based on role
-        $validated['status'] = ($type === 'superadmin') ? 1 : 0;
+        $studentStatus = ($type === 'superadmin') ? 1 : 0;
+        $validated['status']   = $studentStatus;
         $validated['added_by'] = $user->id;
 
+
         $student = Student::create($validated);
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'mobile' => $validated['phone'],
+            'status' => $studentStatus,
+            'password' => Hash::make('12345678'),
+        ]);
 
         return response()->json([
             'status' => true,
@@ -116,7 +122,6 @@ class StudentApiController extends Controller
 
 
 
-    // ✅ Update student
     public function update(Request $request, $id)
     {
         $user = $request->user();
@@ -138,7 +143,7 @@ class StudentApiController extends Controller
             ], 404);
         }
 
-        // ✅ Sales can only update their own students
+
         if ($type === 'sales' && $student->added_by !== $user->id) {
             return response()->json([
                 'status' => false,
@@ -146,31 +151,61 @@ class StudentApiController extends Controller
             ], 403);
         }
 
-        // ✅ Validation
+        $linkedUserID = User::where('mobile', $student->phone)
+            ->orWhere('email', $student->email)
+            ->value('id');
+
         $validationRules = [
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'required|string|min:10|max:15',
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('students', 'email')->ignore($student->id),
+                Rule::unique('users', 'email')->ignore($linkedUserID)
+            ],
+
+
+            'phone' => [
+                'required',
+                'string',
+                'min:10',
+                'max:15',
+                Rule::unique('students', 'phone')->ignore($student->id),
+                Rule::unique('users', 'mobile')->ignore($linkedUserID)
+            ],
+
             'institution_id' => 'nullable|exists:institution_managements,id',
             'class' => 'required|string|max:255',
             'gender' => 'required|string|in:male,female,other',
             'dob' => 'required|date|before:today',
-            'roll_number' => 'nullable|string|max:255',
+            'roll_number' => Rule::unique('students', 'roll_number')->ignore($student->id),
         ];
 
-        // ✅ Superadmin can update status
         if ($type === 'superadmin') {
             $validationRules['status'] = 'boolean';
         }
 
         $validated = $request->validate($validationRules);
 
-        // ❌ Prevent Sales from updating status
+
         if ($type !== 'superadmin') {
             unset($validated['status']);
         }
 
         $student->update($validated);
+
+        $userRecord = User::find($linkedUserID);
+
+        if ($userRecord) {
+            $userRecord->update([
+                'name'   => $validated['name'],
+                'email'  => $validated['email'],
+                'mobile' => $validated['phone'],
+                'status' => $validated['status'] ?? $userRecord->status, // Only superadmin updates status
+            ]);
+        }
 
         return response()->json([
             'status' => true,
@@ -180,11 +215,12 @@ class StudentApiController extends Controller
     }
 
 
-    // ✅ Delete student
+
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
         $type = $this->detectUserType($user);
+
 
         if (!in_array($type, ['superadmin', 'sales'])) {
             return response()->json([
@@ -202,7 +238,7 @@ class StudentApiController extends Controller
             ], 404);
         }
 
-        // ✅ Sales can delete only their own students
+
         if ($type === 'sales' && $student->added_by !== $user->id) {
             return response()->json([
                 'status' => false,
@@ -215,6 +251,62 @@ class StudentApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => ucfirst($type) . ' deleted student successfully.'
+        ], 200);
+    }
+    public function getStudentByClass(Request $request)
+    {
+        $user = $request->user();
+        $type = $this->detectUserType($user);
+
+        if (!in_array($type, ['superadmin', 'sales'])) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Access denied! Only Superadmin or Sales can view students.'
+            ], 403);
+        }
+
+        $query = Student::query();
+
+        // 🔐 Superadmin = view all
+        if ($type === 'superadmin') {
+            // no restrictions
+        }
+        // 🔐 Sales = only view his own added students
+        elseif ($type === 'sales') {
+            $query->where('added_by', $user->id);
+        }
+
+        // -------------------------------
+        // 🔍 Filters
+        // -------------------------------
+
+        // Institution filter
+        if ($request->filled('institution_id')) {
+            $query->where('institution_id', $request->institution_id);
+        }
+
+        // Class filter
+        if ($request->filled('class')) {
+            $query->where('class', $request->class);
+        }
+
+        // Name search
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Roll Number search
+        if ($request->filled('roll_number')) {
+            $query->where('roll_number', $request->roll_number);
+        }
+
+        $students = $query->orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Students fetched successfully',
+            'count' => $students->count(),
+            'data' => $students
         ], 200);
     }
 }

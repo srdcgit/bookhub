@@ -19,24 +19,32 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Define user types and their models
+
         $userTypes = [
-            'superadmin' => Admin::class, // stored in admins table
-            'vendor'     => Admin::class, // stored in same admins table
+            'superadmin' => Admin::class, 
+            'vendor'     => Admin::class, 
             'sales'      => SalesExecutive::class,
             'user'       => User::class,
         ];
 
         foreach ($userTypes as $type => $model) {
+
             $user = $model::where('email', $request->email)->first();
 
             if ($user && Hash::check($request->password, $user->password)) {
 
-                // ✅ check if user's type matches (for admins)
                 if (in_array($type, ['superadmin', 'vendor'])) {
                     if ($user->type !== $type) {
-                        continue; // skip if not matching
+                        continue;
                     }
+                }
+
+
+                if (isset($user->status) && $user->status == 0) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Your account is inactive. Please contact admin.',
+                    ], 403);
                 }
 
                 $token = $user->createToken("{$type}-token")->plainTextToken;
@@ -56,6 +64,7 @@ class AuthController extends Controller
             'message' => 'Invalid credentials',
         ], 401);
     }
+
 
     public function logout(Request $request)
     {
@@ -78,10 +87,10 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // ✅ Determine user type
+
         $type = 'user';
         if ($user instanceof Admin) {
-            $type = $user->type; // from DB column
+            $type = $user->type; 
         } elseif ($user instanceof SalesExecutive) {
             $type = 'sales';
         }
@@ -96,7 +105,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // ✅ Step 1: Manual validator for custom JSON error handling
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:sales_executives,email',
@@ -104,7 +112,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        // ✅ Step 2: If validation fails, return a JSON response
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -113,15 +121,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // ✅ Step 3: Create new Sales Executive
         $sales = SalesExecutive::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'status' => '0',
             'password' => Hash::make($request->password),
         ]);
 
-        // ✅ Step 4: Send success response
         return response()->json([
             'status' => true,
             'message' => 'Sales Executive registered successfully. Please log in to continue.',

@@ -60,12 +60,17 @@ class SalesExecutiveAuthController extends Controller
         $sales->name = $data['name'];
         $sales->email = $data['email'];
         $sales->phone = $data['phone'];
+        $sales->status = 0;
         $sales->password = Hash::make($data['password']);
         $sales->save();
 
         Auth::guard('sales')->login($sales);
 
-        return redirect('/sales/dashboard', compact('logos', 'headerLogo'));
+        return redirect('/sales/dashboard')
+        ->with([
+            'logos' => $logos,
+            'headerLogo' => $headerLogo,
+        ]);
     }
 
     public function dashboard()
