@@ -329,9 +329,13 @@
                                     <i class="fas fa-cube form-icon"></i>
                                     Block <span class="required">*</span>
                                 </label>
-                                <select name="block_id" class="form-control" id="block-select">
-                                    <option value="">Select Block</option>
-                                </select>
+                                <input
+                                    type="text"
+                                    name="block_id"
+                                    class="form-control"
+                                    id="block-input"
+                                    placeholder="Enter block ID or name"
+                                    value="{{ old('block_id') }}">
                                 @error('block_id')
                                     <div class="error-message">{{ $message }}</div>
                                 @enderror
@@ -517,7 +521,7 @@
                     $('#state-select').empty().append('<option value="">Select State</option>');
                     $('#district-select').empty().append('<option value="">Select District</option>');
                     // $('#city-select').empty().append('<option value="">Select City</option>');
-                    $('#block-select').empty().append('<option value="">Select Block</option>');
+                    $('#block-input').val('');
                     return;
                 }
 
@@ -542,7 +546,7 @@
                         $('#district-select').empty().append(
                             '<option value="">Select District</option>');
                         // $('#city-select').empty().append('<option value="">Select City</option>');
-                        $('#block-select').empty().append('<option value="">Select Block</option>');
+                        $('#block-input').val('');
 
                         // Set old value if exists and trigger change to load districts
                         @if (old('state_id'))
@@ -561,7 +565,7 @@
                 if (!state) {
                     $('#district-select').empty().append('<option value="">Select District</option>');
                     // $('#city-select').empty().append('<option value="">Select City</option>');
-                    $('#block-select').empty().append('<option value="">Select Block</option>');
+                    $('#block-input').val('');
                     return;
                 }
 
@@ -584,7 +588,7 @@
 
                         // Clear dependent dropdowns
                         // $('#city-select').empty().append('<option value="">Select City</option>');
-                        $('#block-select').empty().append('<option value="">Select Block</option>');
+                        $('#block-input').val('');
 
                         // Set old value if exists and trigger change to load blocks
                         @if (old('district_id'))
@@ -599,41 +603,6 @@
             }
 
 
-
-            // Load blocks based on district
-            function loadBlocks(district) {
-                if (!district) {
-                    $('#block-select').empty().append('<option value="">Select Block</option>');
-                    return;
-                }
-
-                $.ajax({
-                    url: '{{ route('institution_blocks') }}',
-                    type: 'GET',
-                    data: {
-                        district: district
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        var blockSelect = $('#block-select');
-                        blockSelect.empty();
-                        blockSelect.append('<option value="">Select Block</option>');
-
-                        $.each(response, function(key, value) {
-                            blockSelect.append('<option value="' + key + '">' + value +
-                                '</option>');
-                        });
-
-                        // Set old value if exists
-                        @if (old('block_id'))
-                            blockSelect.val('{{ old('block_id') }}');
-                        @endif
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Error loading blocks:', error);
-                    }
-                });
-            }
 
             // Event handlers for cascading dropdowns
             $('#country-select').on('change', function() {
@@ -652,12 +621,15 @@
             // });
 
             $('#district-select').on('change', function() {
-                var district = $(this).val();
-                loadBlocks(district);
+                $('#block-input').val('');
             });
 
             // Load countries on page load
             loadCountries();
+
+            @if (old('block_id'))
+                $('#block-input').val('{{ old('block_id') }}');
+            @endif
         });
     </script>
 

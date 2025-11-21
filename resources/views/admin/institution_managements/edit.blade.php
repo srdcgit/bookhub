@@ -347,9 +347,13 @@
                                 <i class="fas fa-cube form-icon"></i>
                                 Block <span class="required">*</span>
                             </label>
-                            <select name="block_id" class="form-control" id="block-select">
-                                <option value="">Select Block</option>
-                            </select>
+                            <input
+                                type="text"
+                                name="block_id"
+                                class="form-control"
+                                id="block-input"
+                                placeholder="Enter block ID or name"
+                                value="{{ old('block_id', optional($institution->block)->name ?? $institution->block_id) }}">
                             @error('block_id')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
@@ -541,7 +545,7 @@ $(document).ready(function() {
             $('#state-select').empty().append('<option value="">Select State</option>');
             $('#district-select').empty().append('<option value="">Select District</option>');
             // $('#city-select').empty().append('<option value="">Select City</option>');
-            $('#block-select').empty().append('<option value="">Select Block</option>');
+            $('#block-input').val('');
             return Promise.resolve();
         }
 
@@ -563,7 +567,7 @@ $(document).ready(function() {
                     // Clear dependent dropdowns
                     $('#district-select').empty().append('<option value="">Select District</option>');
                     // $('#city-select').empty().append('<option value="">Select City</option>');
-                    $('#block-select').empty().append('<option value="">Select Block</option>');
+                    $('#block-input').val('');
 
                     resolve();
                 },
@@ -580,7 +584,7 @@ $(document).ready(function() {
         if (!state) {
             $('#district-select').empty().append('<option value="">Select District</option>');
             // $('#city-select').empty().append('<option value="">Select City</option>');
-            $('#block-select').empty().append('<option value="">Select Block</option>');
+            $('#block-input').val('');
             return Promise.resolve();
         }
 
@@ -601,44 +605,12 @@ $(document).ready(function() {
 
                     // Clear dependent dropdowns
                     // $('#city-select').empty().append('<option value="">Select City</option>');
-                    $('#block-select').empty().append('<option value="">Select Block</option>');
+                    $('#block-input').val('');
 
                     resolve();
                 },
                 error: function(xhr, status, error) {
                     console.log('Error loading districts:', error);
-                    reject(error);
-                }
-            });
-        });
-    }
-
-    // Load blocks based on district
-    function loadBlocks(district) {
-        if (!district) {
-            $('#block-select').empty().append('<option value="">Select Block</option>');
-            return Promise.resolve();
-        }
-
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: '{{ route("institution_blocks") }}',
-                type: 'GET',
-                data: { district: district },
-                dataType: 'json',
-                success: function(response) {
-                    var blockSelect = $('#block-select');
-                    blockSelect.empty();
-                    blockSelect.append('<option value="">Select Block</option>');
-
-                    $.each(response, function(key, value) {
-                        blockSelect.append('<option value="' + key + '">' + value + '</option>');
-                    });
-
-                    resolve();
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error loading blocks:', error);
                     reject(error);
                 }
             });
@@ -662,8 +634,7 @@ $(document).ready(function() {
     // });
 
     $('#district-select').on('change', function() {
-        var district = $(this).val();
-        loadBlocks(district);
+        $('#block-input').val('');
     });
 
     // Load countries and populate form with current values
@@ -677,7 +648,7 @@ $(document).ready(function() {
             var currentState = '{{ old("state_id", $institution->state_id ?? "") }}';
             var currentDistrict = '{{ old("district_id", $institution->district_id ?? "") }}';
             // var currentCity = '{{ old("city_id", $institution->city_id ?? "") }}';
-            var currentBlock = '{{ old("block_id", $institution->block_id ?? "") }}';
+            var currentBlock = '{{ old("block_id", optional($institution->block)->name ?? $institution->block_id) }}';
 
             // Set country and load states
             if (currentCountry) {
@@ -689,19 +660,16 @@ $(document).ready(function() {
                     $('#state-select').val(currentState);
                     await loadDistricts(currentState);
 
-                    // Set district and load blocks
+                    // Set district
                     if (currentDistrict) {
                         $('#district-select').val(currentDistrict);
-                        await loadBlocks(currentDistrict);
-
-                        // Set block
-                        if (currentBlock) {
-                            $('#block-select').val(currentBlock);
-                        }
                     }
                     }
                 }
 
+            if (currentBlock) {
+                $('#block-input').val(currentBlock);
+            }
         } catch (error) {
             console.log('Error initializing form:', error);
         }

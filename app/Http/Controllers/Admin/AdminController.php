@@ -53,20 +53,31 @@ class AdminController extends Controller
             $data = $request->all();
 
             $rules = [
-                'email'    => 'required|email|max:255',
+                'login'    => 'required|string|max:150',
                 'password' => 'required',
             ];
 
             $customMessages = [
-                'email.required'    => 'Email Address is required!',
-                'email.email'       => 'Valid Email Address is required',
+                'login.required'    => 'Email or mobile number is required!',
                 'password.required' => 'Password is required!',
             ];
 
             $this->validate($request, $rules, $customMessages);
 
 
-            if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
+            $loginInput = trim($data['login']);
+            $numericLogin = preg_replace('/\D/', '', $loginInput);
+            $credentials = ['password' => $data['password']];
+
+            if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+                $credentials['email'] = $loginInput;
+            } elseif (strlen($numericLogin) >= 10 && strlen($numericLogin) <= 11) {
+                $credentials['mobile'] = $numericLogin;
+            } else {
+                return redirect()->back()->withErrors(['login' => 'Enter a valid email or 10/11-digit mobile number.'])->withInput();
+            }
+
+            if (Auth::guard('admin')->attempt($credentials)) {
                 if (Auth::guard('admin')->user()->type == 'vendor' && Auth::guard('admin')->user()->confirm == 'No') {
                     return redirect()->back()->with('error_message', 'Please confirm your email to activate your Vendor Account');
 

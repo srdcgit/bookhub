@@ -16,9 +16,14 @@
                                        aria-selected="true">Dashboard</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#edit-account" class="nav-link" id="edit-account-tab"
-                                       data-bs-toggle="tab" role="tab" aria-controls="edit-account"
-                                       aria-selected="false">Account Details</a>
+                                    <a href="#profile-details" class="nav-link" id="profile-details-tab"
+                                       data-bs-toggle="tab" role="tab" aria-controls="profile-details"
+                                       aria-selected="false">Profile Details</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a href="#bank-details" class="nav-link" id="bank-details-tab"
+                                       data-bs-toggle="tab" role="tab" aria-controls="bank-details"
+                                       aria-selected="false">Bank Details</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#change-password" class="nav-link" id="change-password-tab"
@@ -74,8 +79,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Account Details Tab -->
-                                <div class="tab-pane fade" id="edit-account" role="tabpanel" aria-labelledby="edit-account-tab">
+                                <!-- Profile Details Tab -->
+                                <div class="tab-pane fade" id="profile-details" role="tabpanel" aria-labelledby="profile-details-tab">
                                     @if ($errors->any())
                                         <div class="alert alert-danger py-2 mb-4">
                                             <ul class="mb-0 ps-3">
@@ -86,9 +91,30 @@
                                         </div>
                                     @endif
 
-                                    <form class="" method="POST" action="{{ route('sales.profile.update') }}">
+                                    <form class="" method="POST" action="{{ route('sales.profile.update') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row g-3 mb-2">
+                                            <h5 class="text-primary mb-3 fw-bold">Profile Details</h5>
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold">Profile Picture</label>
+                                                <div class="d-flex align-items-center gap-3 flex-wrap">
+                                                    <div class="rounded-circle border overflow-hidden" style="width: 72px; height: 72px;">
+                                                        @php
+                                                            $profilePicturePath = $sales->profile_picture ? asset($sales->profile_picture) : asset('assets/images/avatar.png');
+                                                        @endphp
+                                                        <img
+                                                            id="profile-picture-preview"
+                                                            src="{{ $profilePicturePath }}"
+                                                            data-default-src="{{ $profilePicturePath }}"
+                                                            alt="Profile picture preview"
+                                                            class="w-100 h-100 object-fit-cover">
+                                                    </div>
+                                                    <div class="flex-grow-1" style="min-width: 220px;">
+                                                        <input type="file" name="profile_picture" id="profile-picture-input" class="form-control" accept="image/*">
+                                                        <small class="text-muted">Supported formats: JPG, PNG, GIF up to 2MB.</small>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold">Name</label>
                                                 <input type="text" name="name" class="form-control" value="{{ old('name', $sales->name) }}" required>
@@ -101,10 +127,7 @@
                                                 <label class="form-label fw-semibold">Phone</label>
                                                 <input type="text" name="phone" class="form-control" value="{{ old('phone', $sales->phone) }}">
                                             </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold">UPI ID</label>
-                                                <input type="text" name="upi_id" class="form-control" value="{{ old('upi_id', $sales->upi_id) }}">
-                                            </div>
+
                                         </div>
 
                                         <div class="row g-3 mb-2">
@@ -134,35 +157,47 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-4">
-                                            <hr>
-                                            <h5 class="text-primary mb-3 fw-bold">Bank Details</h5>
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <label class="form-label fw-semibold">Bank Name</label>
-                                                    <input type="text" name="bank_name" class="form-control" value="{{ old('bank_name', $sales->bank_name) }}">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label fw-semibold">Branch</label>
-                                                    <input type="text" name="bank_branch" class="form-control" value="{{ old('bank_branch', $sales->bank_branch) }}">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label fw-semibold">Account Number</label>
-                                                    <input type="text" name="account_number" class="form-control" value="{{ old('account_number', $sales->account_number) }}">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label fw-semibold">IFSC Code</label>
-                                                    <input type="text" name="ifsc_code" class="form-control" value="{{ old('ifsc_code', $sales->ifsc_code) }}">
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="mt-4 text-end">
                                             <button type="submit" class="btn btn-primary px-4">Save Changes</button>
                                         </div>
                                     </form>
                                 </div>
 
+                                <!-- Bank Details Tab -->
+                                <div class="tab-pane fade" id="bank-details" role="tabpanel" aria-labelledby="bank-details-tab">
+                                    <form class="" method="POST" action="{{ route('sales.profile.update') }}" style="max-width: 520px;">
+                                        @csrf
+                                        <div class="row g-3 mb-2">
+                                            <h5 class="text-primary mb-3 fw-bold">Bank Details</h5>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">Bank Name</label>
+                                                        <input type="text" name="bank_name" class="form-control" value="{{ old('bank_name', $sales->bank_name) }}">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">Branch</label>
+                                                        <input type="text" name="bank_branch" class="form-control" value="{{ old('bank_branch', $sales->bank_branch) }}">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">Account Number</label>
+                                                        <input type="text" name="account_number" class="form-control" value="{{ old('account_number', $sales->account_number) }}">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">IFSC Code</label>
+                                                        <input type="text" name="ifsc_code" class="form-control" value="{{ old('ifsc_code', $sales->ifsc_code) }}">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold">UPI ID</label>
+                                                        <input type="text" name="upi_id" class="form-control" value="{{ old('upi_id', $sales->upi_id) }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 text-end">
+                                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                            </div>
+                                    </form>
+                                </div>
+                                
                                 <!-- Change Password Tab -->
                                 <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
                                     <form class="" method="POST" action="{{ route('sales.profile.update') }}" style="max-width: 520px;">
@@ -203,6 +238,24 @@
             $('#sales-account-tabs .nav-link').removeClass('active');
             $(e.target).addClass('active');
         });
+
+        const profileInput = document.getElementById('profile-picture-input');
+        const profilePreview = document.getElementById('profile-picture-preview');
+        if (profileInput && profilePreview) {
+            profileInput.addEventListener('change', function(event) {
+                const [file] = event.target.files || [];
+                if (!file) {
+                    profilePreview.src = profilePreview.dataset.defaultSrc || profilePreview.src;
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.src = e.target?.result || profilePreview.src;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     });
     </script>
 @endsection

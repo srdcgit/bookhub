@@ -94,12 +94,12 @@
                 <form method="POST" action="{{ route('sales.login.submit') }}">
                     @csrf
                     <div class="mb-3 text-start">
-                        <label for="email" class="form-label fw-semibold">Email Address</label>
+                        <label for="login" class="form-label fw-semibold">Email or Mobile</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" required autofocus>
+                            <input type="text" name="login" id="login" class="form-control" placeholder="Enter your email or mobile" value="{{ old('login') }}" required autofocus>
                         </div>
-                        @error('email')
+                        @error('login')
                             <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
                     </div>

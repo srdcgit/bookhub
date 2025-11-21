@@ -663,10 +663,10 @@
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Email -->
+                        <!-- Email or Mobile -->
                         <div class="mb-3">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <label>Email or Mobile</label>
+                            <input type="text" name="login" class="form-control" placeholder="Enter email or 10-digit mobile" required>
                         </div>
                         <!-- Password -->
                         <div class="mb-3">

@@ -32,7 +32,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Roll No</th>
-                            <th>Email</th>
+                            <th>Father's Name</th>
                             <th>Phone</th>
                             <th>Gender</th>
                             <th>Class</th>
@@ -47,7 +47,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $student->name ?? 'N/A' }}</td>
                                 <td>{{ $student->roll_number ?? 'N/A' }}</td>
-                                <td>{{ $student->email ?? 'N/A' }}</td>
+                                <td>{{ $student->father_names ?? 'N/A' }}</td>
                                 <td>{{ $student->phone ?? 'N/A' }}</td>
                                 <td>{{ $student->gender ? ucfirst($student->gender) : 'N/A' }}</td>
                                 <td>{{ $student->class ?? 'N/A' }}</td>

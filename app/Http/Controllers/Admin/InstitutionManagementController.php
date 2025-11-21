@@ -13,6 +13,7 @@ use App\Models\HeaderLogo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class InstitutionManagementController extends Controller
 {
@@ -61,9 +62,8 @@ class InstitutionManagementController extends Controller
             $validationRules['classes.*.strength'] = 'required|integer|min:1';
         }
 
-        $request->validate($validationRules);
-
-        $data = $request->all();
+        $data = $request->validate($validationRules);
+        $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, isset($data['district_id']) ? (int) $data['district_id'] : null);
 
         $data['status'] = 1;
         $data['added_by'] = Auth::guard('admin')->user()->id;
@@ -135,10 +135,10 @@ class InstitutionManagementController extends Controller
             $validationRules['classes.*.strength'] = 'required|integer|min:1';
         }
 
-        $request->validate($validationRules);
+        $data = $request->validate($validationRules);
+        $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, isset($data['district_id']) ? (int) $data['district_id'] : null);
 
         $institution = InstitutionManagement::findOrFail($id);
-        $data = $request->all();
 
         $data['status'] = $request->status;
 
@@ -302,4 +302,38 @@ class InstitutionManagementController extends Controller
 
     //     return response()->json($cities);
     // }
+    protected function prepareBlockId(?string $input, ?int $districtId): ?int
+    {
+        if (empty($input)) {
+            return null;
+        }
+
+        $trimmed = trim($input);
+
+        if (is_numeric($trimmed)) {
+            return (int) $trimmed;
+        }
+
+        $query = Block::where('name', $trimmed);
+        if ($districtId) {
+            $query->where('district_id', $districtId);
+        }
+        $block = $query->first();
+
+        if (! $block) {
+            if (! $districtId) {
+                throw ValidationException::withMessages([
+                    'block_id' => 'Please select a district before entering a new block name.',
+                ]);
+            }
+
+            $block = Block::create([
+                'name'        => $trimmed,
+                'district_id' => $districtId,
+                'status'      => true,
+            ]);
+        }
+
+        return $block->id;
+    }
 }

@@ -38,11 +38,11 @@
                                         </button>
                                     </div>
                                 @endif
-                                
-                                {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}    
+
+                                {{-- Displaying Laravel Validation Errors: https://laravel.com/docs/9.x/validation#quick-displaying-the-validation-errors --}}
                                 @if ($errors->any())
                                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    
+
 
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>
@@ -61,13 +61,13 @@
 
 
                                     <div class="form-group">
-                                        <input type="email" name="email" id="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Username" required>
+                                        <input type="text" name="login" id="login" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email or mobile number" required>
                                     </div>
                                     <div class="form-group">
                                         <input type="password" name="password" id="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" required>
                                     </div>
                                     <div class="mt-3">
-                                        
+
                                         {{-- My code: --}}
                                         <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
 
