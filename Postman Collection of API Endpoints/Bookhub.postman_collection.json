@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"ritikkumar12@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"login\": \"01255686414\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -79,7 +79,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 13|0htc9v4Tq24u2Yv1souP0DlM9PuIQTow70jScbvE0f0aad91",
+								"value": "Bearer 28|461prmAitMxiwHSo5K8e4DtU5m3V6MReqHBXmhYM634f4fe6",
 								"type": "text"
 							},
 							{
@@ -523,7 +523,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 24|AczMFKzT01knOzjqZqowCWEZwwEkyKI8tuDeQOmVb6a5f167",
+								"value": "Bearer 23|2K571p259DO6ttYV2UptNNw4a87ISa3E6OFD1BDy84d2693f",
 								"type": "text"
 							},
 							{
@@ -534,7 +534,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"biswa12617@gmail.com\",\r\n  \"phone\": \"7846943502\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STUD123045\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"father_name\": \"Parameswar\",\r\n  \"email\": \"biswa126100@gmail.com\",\r\n  \"phone\": \"7846943511\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STUD21230452\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -575,7 +575,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet Mohanta\",\r\n  \"email\": \"biswajeetmohanta123@gmail.com\",\r\n  \"phone\": \"7846943580\",\r\n  \"institution_id\": 2,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-09-18\",\r\n  \"roll_number\": \"STU143\",\r\n//   Update Status by admin only\r\n  \"status\": 1\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet Mohanta\",\r\n  \"email\": \"biswajeetmohanta123@gmail.com\",\r\n  \"father_name\": \"Parameswar Mohanta\",\r\n  \"phone\": \"7846943580\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-09-18\",\r\n  \"roll_number\": \"STU143\",\r\n//   Update Status by admin only\r\n  \"status\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -583,7 +583,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/students/24",
+							"raw": "http://localhost/bookhub/public/api/students/29",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -593,7 +593,7 @@
 								"public",
 								"api",
 								"students",
-								"24"
+								"29"
 							]
 						}
 					},
