@@ -43,7 +43,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="salesBlocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-lines-fill me-1"></i> Blocks
                     </a>
@@ -52,7 +52,7 @@
                             <a class="dropdown-item" href="{{ route('sales.blocks.index') }}">All Blocks</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 @endif
                 <!-- Add more nav-items here -->
             </ul>
