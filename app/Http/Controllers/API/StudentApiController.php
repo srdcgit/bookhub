@@ -189,7 +189,7 @@ class StudentApiController extends Controller
 
         $validated = $request->validate($validationRules);
 
-    
+
         if ($type !== 'superadmin') {
             unset($validated['status']);
         }
@@ -251,6 +251,62 @@ class StudentApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => ucfirst($type) . ' deleted student successfully.'
+        ], 200);
+    }
+    public function getStudentByClass(Request $request)
+    {
+        $user = $request->user();
+        $type = $this->detectUserType($user);
+
+        if (!in_array($type, ['superadmin', 'sales'])) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Access denied! Only Superadmin or Sales can view students.'
+            ], 403);
+        }
+
+        $query = Student::query();
+
+        // 🔐 Superadmin = view all
+        if ($type === 'superadmin') {
+            // no restrictions
+        }
+        // 🔐 Sales = only view his own added students
+        elseif ($type === 'sales') {
+            $query->where('added_by', $user->id);
+        }
+
+        // -------------------------------
+        // 🔍 Filters
+        // -------------------------------
+
+        // Institution filter
+        if ($request->filled('institution_id')) {
+            $query->where('institution_id', $request->institution_id);
+        }
+
+        // Class filter
+        if ($request->filled('class')) {
+            $query->where('class', $request->class);
+        }
+
+        // Name search
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Roll Number search
+        if ($request->filled('roll_number')) {
+            $query->where('roll_number', $request->roll_number);
+        }
+
+        $students = $query->orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Students fetched successfully',
+            'count' => $students->count(),
+            'data' => $students
         ], 200);
     }
 }
