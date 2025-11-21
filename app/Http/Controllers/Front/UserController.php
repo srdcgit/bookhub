@@ -94,19 +94,30 @@ class UserController extends Controller
 
         // Validate the form input
         $validator = Validator::make($data, [
-            'email'    => 'required|email|max:150|exists:users,email',
+            'login'    => 'required|string|max:150',
             'password' => 'required|min:6',
+        ], [
+            'login.required' => 'Email or mobile number is required.',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $loginInput = $data['login'];
+        $credentials = ['password' => $data['password']];
+        if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+            $credentials['email'] = $loginInput;
+        } elseif (preg_match('/^\d{10}$/', $loginInput)) {
+            $credentials['mobile'] = $loginInput;
+        } else {
+            return redirect()->back()->withErrors([
+                'login' => 'Enter a valid email or 10-digit mobile number.',
+            ])->withInput();
+        }
+
         // Attempt login
-        if (Auth::attempt([
-            'email'    => $data['email'],
-            'password' => $data['password'],
-        ])) {
+        if (Auth::attempt($credentials)) {
             // Check if user is inactive
             if (Auth::user()->status == 0) {
                 Auth::logout();
@@ -124,7 +135,7 @@ class UserController extends Controller
             return redirect(url()->previous());
         } else {
             // Incorrect credentials
-            return redirect()->back()->with('error_message', 'Incorrect Email or Password!');
+            return redirect()->back()->with('error_message', 'Incorrect login credentials!');
         }
     }
 
@@ -296,6 +307,7 @@ class UserController extends Controller
                 'confirm_password' => 'required|min:6|same:new_password',
             ]);
 
+            /** @var \App\Models\User $user */
             $user = Auth::user();
 
             if (Hash::check($request->input('current_password'), $user->password)) {

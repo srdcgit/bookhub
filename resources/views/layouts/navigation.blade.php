@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top">
     <div class="container">
-        
+
         <img
         src="{{ asset('uploads/logos/' . $logos->first()->logo) }}"
         alt="" height="50" width="150">
@@ -59,10 +59,18 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 @if(auth('sales')->check())
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="userDropdown"
+                        @php
+                            $salesUser = auth('sales')->user();
+                            $profilePicture = $salesUser?->profile_picture
+                                ? asset($salesUser->profile_picture)
+                                : asset('assets/images/avatar.png');
+                        @endphp
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown"
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-5"></i>
-                            {{ auth('sales')->user()->name ?? 'Sales' }}
+                            <span class="rounded-circle border overflow-hidden" style="width: 36px; height: 36px;">
+                                <img src="{{ $profilePicture }}" alt="Profile photo" class="w-100 h-100 object-fit-cover">
+                            </span>
+                            {{ $salesUser->name ?? 'Sales' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
                             <li>

@@ -49,6 +49,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'father_names' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'required|string|min:10|max:15',
             'institution_id' => 'nullable|exists:institution_managements,id',
@@ -67,7 +68,7 @@ class StudentController extends Controller
 
         User::create([
             'name'     => $data['name'],
-            'email'    => $data['email'],
+            'email'    => $data['email'] ?? null,
             'mobile'   => $data['phone'],
             'password' => Hash::make('12345678'),
         ]);
@@ -109,6 +110,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'father_names' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'required|string|min:10|max:15',
             'institution_id' => 'nullable|exists:institution_managements,id',
@@ -138,4 +140,58 @@ class StudentController extends Controller
 
         return redirect('sales/students')->with('success_message', 'Student has been deleted successfully');
     }
+
+    /**
+     * Provide the full postal address for an institution so the front-end can derive coordinates.
+     */
+    // public function getInstitutionAddress(int $institutionId)
+    // {
+    //     $institution = InstitutionManagement::with(['state', 'district', 'block'])->findOrFail($institutionId);
+
+    //     $addressParts = array_filter([
+    //         $institution->name,
+    //         optional($institution->block)->name,
+    //         optional($institution->district)->name,
+    //         optional($institution->state)->name,
+    //         $institution->pincode,
+    //     ]);
+
+    //     return response()->json([
+    //         'address' => implode(', ', $addressParts),
+    //     ]);
+    // }
+
+    /**
+     * Persist the current sales executive location in the session.
+     */
+    // public function storeUserLocation(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'latitude'  => 'required|numeric|between:-90,90',
+    //         'longitude' => 'required|numeric|between:-180,180',
+    //     ]);
+
+    //     Session::put('user_latitude', $data['latitude']);
+    //     Session::put('user_longitude', $data['longitude']);
+
+    //     return response()->json(['status' => 'ok']);
+    // }
+
+    /**
+     * Persist the selected institution coordinates in the session.
+     */
+    // public function storeInstitutionLocation(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'institution_id' => 'required|exists:institution_managements,id',
+    //         'latitude'       => 'required|numeric|between:-90,90',
+    //         'longitude'      => 'required|numeric|between:-180,180',
+    //     ]);
+
+    //     Session::put('selected_institution_id', $data['institution_id']);
+    //     Session::put('selected_institution_latitude', $data['latitude']);
+    //     Session::put('selected_institution_longitude', $data['longitude']);
+
+    //     return response()->json(['status' => 'ok']);
+    // }
 }

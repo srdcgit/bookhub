@@ -11,6 +11,7 @@ use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class InstitutionManagementController extends Controller
 {
@@ -33,7 +34,7 @@ class InstitutionManagementController extends Controller
 
     public function store(Request $request)
     {
-     
+
         $logos = HeaderLogo::first();
         $headerLogo = HeaderLogo::first();
         $data = $request->validate([
@@ -44,11 +45,12 @@ class InstitutionManagementController extends Controller
             'country_id'     => 'required|integer',
             'state_id'       => 'required|integer',
             'district_id'    => 'required|integer',
-            'block_id'       => 'nullable|integer',
+            'block_id'       => 'nullable|string|max:255',
             'pincode'        => 'required|string|max:10',
 
         ]);
 
+        $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, $data['district_id'] ?? null);
         $data['status']   = 0;
         $data['added_by'] = Auth::guard('sales')->user()->id;
 
@@ -56,7 +58,7 @@ class InstitutionManagementController extends Controller
 
         return redirect()->route('sales.institution_managements.index')
             ->with('success_message', 'Institution has been added successfully');
-        return view('sales.institution_managements.index', compact('logos', 'headerLogo'));    
+        return view('sales.institution_managements.index', compact('logos', 'headerLogo'));
     }
 
     public function show($id)
@@ -109,10 +111,10 @@ class InstitutionManagementController extends Controller
             $validationRules['classes.*.strength']   = 'required|integer|min:1';
         }
 
-        $request->validate($validationRules);
+        $data = $request->validate($validationRules);
+        $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, $data['district_id'] ?? null);
 
         $institution = InstitutionManagement::findOrFail($id);
-        $data        = $request->all();
 
         // $data['status'] = $request->status;
 
@@ -151,7 +153,7 @@ class InstitutionManagementController extends Controller
     public function getClasses(Request $request)
     {
         $type = $request->input('type');
-       
+
         if ($type === 'school') {
             $classes = [
                 'Nursery', 'LKG', 'UKG',
@@ -164,13 +166,13 @@ class InstitutionManagementController extends Controller
         }
 
         return response()->json($classes);
-       
+
     }
 
     public function getLocationData(Request $request)
     {
         $pincode = $request->input('pincode');
-      
+
         // Sample location data based on pincode patterns - you can replace this with actual API calls or database queries
         $locationData = [
             'block'    => 'Central Block',
@@ -247,4 +249,38 @@ class InstitutionManagementController extends Controller
         return response()->json($blocks);
     }
 
+    protected function prepareBlockId(?string $input, ?int $districtId): ?int
+    {
+        if (empty($input)) {
+            return null;
+        }
+
+        $trimmed = trim($input);
+
+        if (is_numeric($trimmed)) {
+            return (int) $trimmed;
+        }
+
+        $query = Block::where('name', $trimmed);
+        if ($districtId) {
+            $query->where('district_id', $districtId);
+        }
+        $block = $query->first();
+
+        if (! $block) {
+            if (! $districtId) {
+                throw ValidationException::withMessages([
+                    'block_id' => 'Please select a district before entering a new block name.',
+                ]);
+            }
+
+            $block = Block::create([
+                'name'        => $trimmed,
+                'district_id' => $districtId,
+                'status'      => true,
+            ]);
+        }
+
+        return $block->id;
+    }
 }

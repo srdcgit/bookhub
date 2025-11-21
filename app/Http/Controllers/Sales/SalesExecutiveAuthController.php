@@ -22,10 +22,24 @@ class SalesExecutiveAuthController extends Controller
     {
         $logos = HeaderLogo::first();
         $headerLogo = HeaderLogo::first();
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $data = $request->validate([
+            'login'    => ['required', 'string', 'max:150'],
             'password' => ['required'],
         ]);
+
+        $loginInput   = trim($data['login']);
+        $numericLogin = preg_replace('/\D/', '', $loginInput);
+        $credentials  = ['password' => $data['password']];
+
+        if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+            $credentials['email'] = $loginInput;
+        } elseif (strlen($numericLogin) >= 10 && strlen($numericLogin) <= 11) {
+            $credentials['phone'] = $numericLogin;
+        } else {
+            return back()
+                ->withErrors(['login' => 'Enter a valid email or 10/11-digit mobile number.'])
+                ->withInput();
+        }
 
         if (Auth::guard('sales')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
@@ -33,9 +47,8 @@ class SalesExecutiveAuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
-        return view('sales.login', compact('logos', 'headerLogo'));
+            'login' => 'The provided credentials do not match our records.',
+        ])->onlyInput('login');
     }
 
     public function showRegister()

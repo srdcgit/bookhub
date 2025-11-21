@@ -510,6 +510,10 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
             'destroy' => 'sales.students.destroy',
         ])->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
+        // Route::post('students/store-user-location', 'StudentController@storeUserLocation')->name('sales.students.store_user_location');
+        // Route::post('students/store-institution-location', 'StudentController@storeInstitutionLocation')->name('sales.students.store_institution_location');
+        // Route::get('students/institution/{institution}/address', 'StudentController@getInstitutionAddress')->name('sales.students.institution_address');
+
 // Sales Blocks Management (similar to Admin)
         Route::resource('blocks', 'BlockController')->names([
             'index'   => 'sales.blocks.index',

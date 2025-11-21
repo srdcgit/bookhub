@@ -14,6 +14,7 @@ class SalesExecutive extends Authenticatable
     protected $guard = 'sales_executives';
 
     protected $fillable = [
+        'profile_picture',
         'name',
         'email',
         'phone',
