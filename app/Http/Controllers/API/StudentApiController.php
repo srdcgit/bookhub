@@ -71,7 +71,8 @@ class StudentApiController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'nullable|email|max:255|unique:students,email|unique:users,email',
+                'father_name' => 'required|string|max:255',  // ✅ NEW
+                'email' => 'nullable|email|max:255|unique:students,email|unique:users,email', // email optional
                 'phone' => 'required|string|min:10|max:15|unique:students,phone|unique:users,mobile',
                 'institution_id' => 'nullable|exists:institution_managements,id',
                 'class' => 'required|string|max:255',
@@ -87,7 +88,7 @@ class StudentApiController extends Controller
             ], 422);
         }
 
-
+        // Institution must be active
         if (!empty($validated['institution_id'])) {
             $institution = InstitutionManagement::find($validated['institution_id']);
             if ($institution && $institution->status == 0) {
@@ -98,17 +99,19 @@ class StudentApiController extends Controller
             }
         }
 
+        // Status: superadmin=1, sales=0
         $studentStatus = ($type === 'superadmin') ? 1 : 0;
         $validated['status']   = $studentStatus;
         $validated['added_by'] = $user->id;
 
-
+        // Save student
         $student = Student::create($validated);
 
+        // Create user login entry
         User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'mobile' => $validated['phone'],
+            'name'   => $validated['name'],
+            'email'  => $validated['email'] ?? null,      // email not required
+            'mobile' => $validated['phone'],              // ALWAYS INSERT MOBILE
             'status' => $studentStatus,
             'password' => Hash::make('12345678'),
         ]);
@@ -119,8 +122,6 @@ class StudentApiController extends Controller
             'data' => $student
         ], 201);
     }
-
-
 
     public function update(Request $request, $id)
     {
@@ -143,7 +144,7 @@ class StudentApiController extends Controller
             ], 404);
         }
 
-
+        // Sales can edit only their students
         if ($type === 'sales' && $student->added_by !== $user->id) {
             return response()->json([
                 'status' => false,
@@ -151,22 +152,22 @@ class StudentApiController extends Controller
             ], 403);
         }
 
+        // Get linked user account
         $linkedUserID = User::where('mobile', $student->phone)
             ->orWhere('email', $student->email)
             ->value('id');
 
+        // Validation rules
         $validationRules = [
-            'name' => 'required|string|max:255',
-
-            'email' => [
+            'name'         => 'required|string|max:255',
+            'father_name'  => 'required|string|max:255', // NEW
+            'email'        => [
                 'nullable',
                 'email',
                 'max:255',
                 Rule::unique('students', 'email')->ignore($student->id),
                 Rule::unique('users', 'email')->ignore($linkedUserID)
             ],
-
-
             'phone' => [
                 'required',
                 'string',
@@ -175,36 +176,51 @@ class StudentApiController extends Controller
                 Rule::unique('students', 'phone')->ignore($student->id),
                 Rule::unique('users', 'mobile')->ignore($linkedUserID)
             ],
-
             'institution_id' => 'nullable|exists:institution_managements,id',
-            'class' => 'required|string|max:255',
-            'gender' => 'required|string|in:male,female,other',
-            'dob' => 'required|date|before:today',
-            'roll_number' => Rule::unique('students', 'roll_number')->ignore($student->id),
+            'class'          => 'required|string|max:255',
+            'gender'         => 'required|string|in:male,female,other',
+            'dob'            => 'required|date|before:today',
+            'roll_number'    => Rule::unique('students', 'roll_number')->ignore($student->id),
         ];
 
+        // Superadmin can update status
         if ($type === 'superadmin') {
             $validationRules['status'] = 'boolean';
         }
 
         $validated = $request->validate($validationRules);
 
+        // Institution must be active
+        if (!empty($validated['institution_id'])) {
+            $institution = InstitutionManagement::find($validated['institution_id']);
+            if ($institution && $institution->status == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'This institution is inactive. You cannot update students.'
+                ], 403);
+            }
+        }
 
+        // Sales cannot update status
         if ($type !== 'superadmin') {
             unset($validated['status']);
         }
 
+        // Update student
         $student->update($validated);
 
-        $userRecord = User::find($linkedUserID);
+        // Update linked user record
+        if ($linkedUserID) {
+            $userRecord = User::find($linkedUserID);
 
-        if ($userRecord) {
-            $userRecord->update([
-                'name'   => $validated['name'],
-                'email'  => $validated['email'],
-                'mobile' => $validated['phone'],
-                'status' => $validated['status'] ?? $userRecord->status, // Only superadmin updates status
-            ]);
+            if ($userRecord) {
+                $userRecord->update([
+                    'name'   => $validated['name'],
+                    'email'  => $validated['email'] ?? $userRecord->email,
+                    'mobile' => $validated['phone'],   // Always update mobile
+                    'status' => $validated['status'] ?? $userRecord->status,
+                ]);
+            }
         }
 
         return response()->json([
@@ -213,6 +229,7 @@ class StudentApiController extends Controller
             'data' => $student
         ], 200);
     }
+
 
 
 
