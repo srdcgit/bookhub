@@ -4,229 +4,89 @@
 
 
 
-<style>
-    /* Ensure consistent banner height with responsive breakpoints */
-    #carouselExampleAutoplaying .carousel-item img {
-        width: 100%;
-        height: 360px;
-        object-fit: cover;
-    }
-    @media (min-width: 576px) {
-        #carouselExampleAutoplaying .carousel-item img { height: 420px; }
-    }
-    @media (min-width: 992px) {
-        #carouselExampleAutoplaying .carousel-item img { height: 520px; }
-    }
-    @media (min-width: 1400px) {
-        #carouselExampleAutoplaying .carousel-item img { height: 600px; }
-    }
-    /* Utility in case any .dz-media images need cover behavior */
-    .img-cover {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-</style>
-@php
-    $hasSliderBanners = !empty($sliderBanners) && is_iterable($sliderBanners) && count($sliderBanners) > 0;
-@endphp
-<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      @if($hasSliderBanners)
-        @foreach ($sliderBanners as $banner)
-          @php
-              $image = $banner['image'] ?? null;
-              $alt   = $banner['alt']   ?? ($banner['title'] ?? '');
-              $link  = $banner['link']  ?? null;
-          @endphp
-          @if(!empty($image))
-            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-              <a href="{{ !empty($link) ? url($link) : 'javascript:;' }}">
-                <img src="{{ asset('front/images/banner_images/' . $image) }}" class="d-block w-100" alt="{{ $alt }}">
-              </a>
-              @if(!empty($banner['title']))
-                <div class="carousel-caption d-none d-md-block">
-                  {{-- <h5>{{ $banner['title'] }}</h5> --}}
-                </div>
-              @endif
-            </div>
-          @endif
-        @endforeach
-      @else
-        <div class="carousel-item active">
-          <div style="height: 300px; background:#f2f2f2;" class="d-flex align-items-center justify-content-center">
-            <span>No banners available</span>
-          </div>
-        </div>
-      @endif
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
+    <style>
+        /* Ensure consistent banner height with responsive breakpoints */
+        #carouselExampleAutoplaying .carousel-item img {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+        }
 
+        @media (min-width: 576px) {
+            #carouselExampleAutoplaying .carousel-item img {
+                height: 420px;
+            }
+        }
 
+        @media (min-width: 992px) {
+            #carouselExampleAutoplaying .carousel-item img {
+                height: 520px;
+            }
+        }
 
-    <!--Swiper Banner Start -->
-    {{-- <div class="main-slider style-1">
-        <div class="main-swiper">
-            <div class="swiper-wrapper">
-                @foreach ($slidingProducts as $products)
+        @media (min-width: 1400px) {
+            #carouselExampleAutoplaying .carousel-item img {
+                height: 600px;
+            }
+        }
+
+        /* Utility in case any .dz-media images need cover behavior */
+        .img-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+    @php
+        $hasSliderBanners = !empty($sliderBanners) && is_iterable($sliderBanners) && count($sliderBanners) > 0;
+    @endphp
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @if ($hasSliderBanners)
+                @foreach ($sliderBanners as $banner)
                     @php
-                        $discountedPrice = \App\Models\Product::getDiscountPrice($products->id);
-                        $hasDiscount = $discountedPrice > 0;
+                        $image = $banner['image'] ?? null;
+                        $alt = $banner['alt'] ?? ($banner['title'] ?? '');
+                        $link = $banner['link'] ?? null;
                     @endphp
-                    <div class="swiper-slide" style="background-color: #ecab56 !important;">
-                        <div class="container">
-                            <div class="banner-content">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="swiper-content">
-                                            <div class="content-info">
-                                                <h6 class="font-family: poppins text-dark" data-swiper-parallax="-10">
-                                                    Publisher:
-                                                    {{ $products->publisher->name ?? 'N/A' }}
-                                                </h6>
-                                                <h1 class="title text-dark mb-0" data-swiper-parallax="-20">
-                                                    {{ $products['product_name'] }}</h1>
-                                                <ul class="dz-tags" data-swiper-parallax="-30">
-                                                    @php
-                                                        $allAuthorNames = $products->authors->pluck('name')->join(', ');
-                                                    @endphp
-                                                    <li><a class="text-dark" title="{{ $allAuthorNames }}"
-                                                            href="javascript:void(0);">
-                                                            Authors:
-                                                            @if ($products->authors->isNotEmpty())
-                                                                {{ $products->authors->first()->name }}
-                                                                @if ($products->authors->count() > 1)
-                                                                    ...
-                                                                @endif
-                                                            @else
-                                                                N/A
-                                                            @endif
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <p class="text mb-0" data-swiper-parallax="-40">Book Condition: <span
-                                                        style="text-transform: capitalize;">{{ $products['condition'] }}</span>
-                                                </p>
-                                                <p class="text mb-0" data-swiper-parallax="-40">Description:
-                                                    {{ $products['description'] }}</p>
-                                                <div class="price" data-swiper-parallax="-50">
-                                                    <span
-                                                        class="price-num text-dark">₹{{ \App\Models\Product::getDiscountPrice($products['id']) }}</span>
-                                                    <del>₹{{ $products['product_price'] }}</del>
-                                                    @if ($hasDiscount)
-                                                        <span
-                                                            class="badge badge-danger">{{ $products['product_discount'] }}%
-                                                            OFF</span>
-                                                    @endif
-                                                </div>
-                                                <div class="content-btn" data-swiper-parallax="-60">
-                                                    <a class="btn btn-success btnhover"
-                                                        href="{{ url('product/' . $products['id']) }}">Buy
-                                                        Now</a>
-                                                    <a class="btn border btnhover ms-4 text-white"
-                                                        href="{{ url('product/' . $products['id']) }}">See
-                                                        Details</a>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="banner-media" data-swiper-parallax="-100">
-                                            <img src="{{ asset('front/images/product_images/small/' . $products['product_image']) }}"
-                                                alt="banner-media" style="height: 758px; width: 774px;">
-                                        </div>
-
-                                    </div>
+                    @if (!empty($image))
+                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                            <a href="{{ !empty($link) ? url($link) : 'javascript:;' }}">
+                                <img src="{{ asset('front/images/banner_images/' . $image) }}" class="d-block w-100"
+                                    alt="{{ $alt }}">
+                            </a>
+                            @if (!empty($banner['title']))
+                                <div class="carousel-caption d-none d-md-block">
+                                    {{-- <h5>{{ $banner['title'] }}</h5> --}}
                                 </div>
-                            </div>
+                            @endif
                         </div>
-                    </div>
+                    @endif
                 @endforeach
-            </div>
-            <div class="container swiper-pagination-wrapper">
-                <div class="swiper-pagination-five"></div>
-            </div>
-        </div>
-        <div class="swiper main-swiper-thumb">
-            <div class="swiper-wrapper">
-                @foreach ($sliderProducts as $sliderProduct)
-                    <div class="swiper-slide">
-                        <div class="books-card">
-                            <div class="dz-media">
-                                <img src="{{ asset('front/images/product_images/small/' . $sliderProduct['product_image']) }}"
-                                    alt="book">
-                            </div>
-                            <div class="dz-content">
-                                <h5 class="title mb-0">{{ $sliderProduct['product_name'] }}</h5>
-                                <div class="dz-meta">
-                                    <ul>
-                                        <li>by @if ($sliderProduct->authors->isNotEmpty())
-                                                {{ $sliderProduct->authors->first()->name }}
-                                                @if ($sliderProduct->authors->count() > 1)
-                                                    ...
-                                                @endif
-                                            @else
-                                                N/A
-                                            @endif
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="book-footer">
-                                    <div class="price">
-                                        <span
-                                            class="price-num">₹{{ \App\Models\Product::getDiscountPrice($sliderProduct['id']) }}</span>
-                                        <del>₹{{ $sliderProduct['product_price'] }}</del>
-                                        @if ($hasDiscount)
-                                            <span class="badge badge-danger">{{ $sliderProduct['product_discount'] }}%
-                                                OFF</span>
-                                        @endif
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div> --}}
-    <!--Swiper Banner End-->
-
-    <!-- Client Start-->
-    {{-- <div class="bg-white py-5">
-        <div class="container">
-            <!--Client Swiper -->
-            <div class="swiper client-swiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="{{ asset('front/newtheme/images/client/client1.svg') }}"
-                            alt="client">
-                    </div>
-                    <div class="swiper-slide"><img src="{{ asset('front/newtheme/images/client/client2.svg') }}"
-                            alt="client">
-                    </div>
-                    <div class="swiper-slide"><img src="{{ asset('front/newtheme/images/client/client3.svg') }}"
-                            alt="client">
-                    </div>
-                    <div class="swiper-slide"><img src="{{ asset('front/newtheme/images/client/client4.svg') }}"
-                            alt="client">
-                    </div>
-                    <div class="swiper-slide"><img src="{{ asset('front/newtheme/images/client/client5.svg') }}"
-                            alt="client">
+            @else
+                <div class="carousel-item active">
+                    <div style="height: 300px; background:#f2f2f2;"
+                        class="d-flex align-items-center justify-content-center">
+                        <span>No banners available</span>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
-    </div> --}}
-    <!-- Client End-->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+
+   
 
     <!--Recommend Section Start-->
     <section class="content-inner-1 bg-grey reccomend">
@@ -234,7 +94,8 @@
         <div class="container">
             <div class="section-head text-center">
                 <h2 class="title">Recomended For You</h2>
-                <p>Discover titles picked just for you—personalized recommendations to match your taste and help you find your next great read.</p>
+                <p>Discover titles picked just for you—personalized recommendations to match your taste and help you find
+                    your next great read.</p>
             </div>
             <!-- Swiper -->
             <div class="swiper-container swiper-two">
@@ -245,20 +106,24 @@
                                 <div class="dz-media">
                                     <a href="{{ url('product/' . $sliderProduct['id']) }}">
                                         <img src="{{ asset('front/images/product_images/small/' . $sliderProduct['product_image']) }}"
-                                            style="height: 250px; width: 200px; object-fit: cover !important;" alt="book">
+                                            style="height: 250px; width: 200px; object-fit: cover !important;"
+                                            alt="book">
                                     </a>
                                 </div>
                                 <div class="dz-content">
                                     <h4 class="title"><a
-                                        href="{{ url('product/' . $sliderProduct['id']) }}">{{ $sliderProduct['product_name'] }}</a></h4>
+                                            href="{{ url('product/' . $sliderProduct['id']) }}">{{ $sliderProduct['product_name'] }}</a>
+                                    </h4>
                                     <span
                                         class="price">₹{{ \App\Models\Product::getDiscountPrice($sliderProduct['id']) }}</span>
-                                        <form action="{{ url('cart/add') }}" method="POST" class="d-flex align-items-center">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $sliderProduct['id'] }}">
-                                            <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" class="btn btn-primary btnhover2"><i class="flaticon-shopping-cart-1"></i> <span>&nbsp;&nbsp;Add to cart</span></button>
-                                        </form>
+                                    <form action="{{ url('cart/add') }}" method="POST" class="d-flex align-items-center">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $sliderProduct['id'] }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btnhover2"><i
+                                                class="flaticon-shopping-cart-1"></i> <span>&nbsp;&nbsp;Add to
+                                                cart</span></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -301,7 +166,8 @@
                         </div>
                         <div class="icon-content">
                             <h5 class="dz-title m-b10">Best Quality</h5>
-                            <p>Quality‑checked new and pre‑owned books with accurate descriptions—for a great read every time.</p>
+                            <p>Quality‑checked new and pre‑owned books with accurate descriptions—for a great read every
+                                time.</p>
                         </div>
                     </div>
                 </div>
@@ -345,7 +211,8 @@
                                 <div class="dz-media">
                                     <a href="{{ url('product/' . $product['id']) }}">
                                         <img src="{{ asset('front/images/product_images/small/' . $product['product_image']) }}"
-                                            style="height: 256px;  width: 357px !important; object-fit: cover;" alt="book">
+                                            style="height: 256px;  width: 357px !important; object-fit: cover;"
+                                            alt="book">
                                     </a>
                                 </div>
                                 <div class="dz-content">
@@ -496,7 +363,8 @@
             <div class="section-head text-center">
                 <div class="circle style-1"></div>
                 <h2 class="title">Featured Product</h2>
-                <p>Discover our handpicked favorites—top-rated, trending titles curated to help you find your next great read.</p>
+                <p>Discover our handpicked favorites—top-rated, trending titles curated to help you find your next great
+                    read.</p>
             </div>
         </div>
         <div class="container">
@@ -1094,17 +962,21 @@
             <div class="row align-items-center text-white g-4">
                 <div class="col-xl-7 col-lg-7">
                     <h2 class="display-6 text-white fw-semibold mb-3">Become a BookHub Sales Executive</h2>
-                    <p class="lead mb-4">Help schools and institutions discover the right books while earning attractive commissions, marketing support, and exclusive incentives from BookHub.</p>
+                    <p class="lead mb-4">Help schools and institutions discover the right books while earning attractive
+                        commissions, marketing support, and exclusive incentives from BookHub.</p>
                     <div class="d-flex flex-column flex-md-row gap-3">
                         <div class="d-flex align-items-center">
-                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i class="fa-solid fa-chart-line fs-4"></i></span>
+                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i
+                                    class="fa-solid fa-chart-line fs-4"></i></span>
                             <div>
                                 <h5 class="mb-1 text-white">Grow your network</h5>
-                                <small class="text-white-50">Connect with schools, colleges, and book lovers in your city.</small>
+                                <small class="text-white-50">Connect with schools, colleges, and book lovers in your
+                                    city.</small>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i class="fa-solid fa-coins fs-4"></i></span>
+                            <span class="bg-white bg-opacity-10 rounded-circle p-3 me-3"><i
+                                    class="fa-solid fa-coins fs-4"></i></span>
                             <div>
                                 <h5 class="mb-1 text-white">Earn more, faster</h5>
                                 <small class="text-white-50">Enjoy competitive payouts and performance bonuses.</small>
@@ -1116,14 +988,17 @@
                     <div class="card border-0 shadow-lg">
                         <div class="card-body p-4">
                             <h4 class="fw-semibold mb-3 text-primary">Register today</h4>
-                            <p class="mb-4 text-muted">Fill out a short application and our onboarding team will connect with you within 48 hours.</p>
+                            <p class="mb-4 text-muted">Fill out a short application and our onboarding team will connect
+                                with you within 48 hours.</p>
                             <a href="{{ route('sales.register') }}" class="btn btn-primary btnhover w-100">
                                 Join as Sales Executive
                                 <i class="fa-solid fa-arrow-right ms-2"></i>
                             </a>
                             <div class="d-flex align-items-center mt-4">
                                 <span class="text-primary me-3"><i class="fa-solid fa-circle-check"></i></span>
-                                <small class="text-muted">Trusted by {{ number_format(App\Models\SalesExecutive::count()) }}+ executives across India.</small>
+                                <small class="text-muted">Trusted by
+                                    {{ number_format(App\Models\SalesExecutive::count()) }}+ executives across
+                                    India.</small>
                             </div>
                         </div>
                     </div>

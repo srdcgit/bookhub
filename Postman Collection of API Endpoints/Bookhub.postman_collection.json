@@ -2,13 +2,13 @@
 	"info": {
 		"_postman_id": "b09aadb4-b670-4b7f-925c-69bcd5a1faaa",
 		"name": "Bookhub",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27811401",
 		"_collection_link": "https://www.postman.com/orbital-module-architect-63198617/workspace/test/collection/27811401-b09aadb4-b670-4b7f-925c-69bcd5a1faaa?action=share&source=collection_link&creator=27811401"
 	},
 	"item": [
 		{
-			"name": "Login",
+			"name": "Login & Register",
 			"item": [
 				{
 					"name": "Login",
@@ -17,14 +17,26 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"ritikkumar12@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"login\": \"01255686414\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/login"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
@@ -44,7 +56,19 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/validate-token"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/validate-token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"validate-token"
+							]
+						}
 					},
 					"response": []
 				},
@@ -55,7 +79,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 15|IPeWMUSMcLnkwimlLmBwBlnTSU1U7EiQg4XCk348e9210769",
+								"value": "Bearer 28|461prmAitMxiwHSo5K8e4DtU5m3V6MReqHBXmhYM634f4fe6",
 								"type": "text"
 							},
 							{
@@ -64,7 +88,48 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/logout"
+						"url": {
+							"raw": "https://mybookhub.in/api/logout",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Ritik Kumar\",\r\n  \"email\": \"ritik@example.com\",\r\n  \"phone\": \"9876543210\",\r\n  \"password\": \"123456\",\r\n  \"password_confirmation\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://mybookhub.in/api/sales/register",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"sales",
+								"register"
+							]
+						}
 					},
 					"response": []
 				}
@@ -80,11 +145,22 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 5|kDsBnHTHPVafYgxFlWwjwMsGOOfYvcjLn20m0dYL28f28922",
+								"value": "Bearer 23|urwnFOmWNREvR9iPgjauGFCDmJoTfud4y3g5t8P6c763f889",
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/countries"
+						"url": {
+							"raw": "https://mybookhub.in/api/countries",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"countries"
+							]
+						}
 					},
 					"response": []
 				},
@@ -98,7 +174,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 5|kDsBnHTHPVafYgxFlWwjwMsGOOfYvcjLn20m0dYL28f28922",
+								"value": "Bearer 14|hsKlvXAbVCvnNUfkmIgjdQpmyYohbaAAcDXPF5lW08bc8979",
 								"type": "text"
 							}
 						],
@@ -111,7 +187,19 @@
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/states/1"
+						"url": {
+							"raw": "https://mybookhub.in/api/states/1",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"states",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -126,7 +214,20 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/blocks/44"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/blocks/44",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"blocks",
+								"44"
+							]
+						}
 					},
 					"response": []
 				},
@@ -214,7 +315,20 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/districts/27"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/districts/27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"districts",
+								"27"
+							]
+						}
 					},
 					"response": []
 				},
@@ -243,7 +357,19 @@
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/institutions"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/institutions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"institutions"
+							]
+						}
 					},
 					"response": []
 				},
@@ -272,7 +398,20 @@
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/institutions/31"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/institutions/31",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"institutions",
+								"31"
+							]
+						}
 					},
 					"response": []
 				},
@@ -301,7 +440,20 @@
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/institutions/30"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/institutions/30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"institutions",
+								"30"
+							]
+						}
 					},
 					"response": []
 				},
@@ -316,7 +468,19 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/institutions"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/institutions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"institutions"
+							]
+						}
 					},
 					"response": []
 				}
@@ -332,11 +496,23 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 15|IPeWMUSMcLnkwimlLmBwBlnTSU1U7EiQg4XCk348e9210769",
+								"value": "Bearer 19|8FJmFKcFWQoiXiEpnRMVeisFFcoTaKH0m0DKIapqde55f4cd",
 								"type": "text"
 							}
 						],
-						"url": "http://localhost/bookhub/public/api/students"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"students"
+							]
+						}
 					},
 					"response": []
 				},
@@ -347,7 +523,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 15|IPeWMUSMcLnkwimlLmBwBlnTSU1U7EiQg4XCk348e9210769",
+								"value": "Bearer 23|2K571p259DO6ttYV2UptNNw4a87ISa3E6OFD1BDy84d2693f",
 								"type": "text"
 							},
 							{
@@ -358,14 +534,26 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"biswa@gmail.com\",\r\n  \"phone\": \"7846943580\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STU123\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"father_name\": \"Parameswar\",\r\n  \"email\": \"biswa126100@gmail.com\",\r\n  \"phone\": \"7846943511\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STUD21230452\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/students"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"students"
+							]
+						}
 					},
 					"response": []
 				},
@@ -376,7 +564,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 15|IPeWMUSMcLnkwimlLmBwBlnTSU1U7EiQg4XCk348e9210769",
+								"value": "Bearer 24|AczMFKzT01knOzjqZqowCWEZwwEkyKI8tuDeQOmVb6a5f167",
 								"type": "text"
 							},
 							{
@@ -387,14 +575,27 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"biswajeet@gmail.com\",\r\n  \"phone\": \"7846943588\",\r\n  \"institution_id\": 2,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-09-18\",\r\n  \"roll_number\": \"STU1234\",\r\n//   Update Status by admin only\r\n  \"status\": 1\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet Mohanta\",\r\n  \"email\": \"biswajeetmohanta123@gmail.com\",\r\n  \"father_name\": \"Parameswar Mohanta\",\r\n  \"phone\": \"7846943580\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-09-18\",\r\n  \"roll_number\": \"STU143\",\r\n//   Update Status by admin only\r\n  \"status\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/students/10"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/students/29",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"students",
+								"29"
+							]
+						}
 					},
 					"response": []
 				},
@@ -423,7 +624,128 @@
 								}
 							}
 						},
-						"url": "http://localhost/bookhub/public/api/students/11"
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/students/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"students",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student By Institue & Class",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 23|2K571p259DO6ttYV2UptNNw4a87ISa3E6OFD1BDy84d2693f",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/getStudents?institution_id=20&class=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"getStudents"
+							],
+							"query": [
+								{
+									"key": "institution_id",
+									"value": "20"
+								},
+								{
+									"key": "class",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "Get Book Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 22|yPpIjXGyINieXtXbVXE2dtYONDiENmpcXRqJVtO4a55dce9e",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/book/lookup?isbn=9780061122415",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"book",
+								"lookup"
+							],
+							"query": [
+								{
+									"key": "isbn",
+									"value": "9780061122415"
+								}
+							]
+						}
 					},
 					"response": []
 				}
