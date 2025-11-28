@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\StudentApiController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\SalesController;
+use App\Http\Controllers\Api\SalesDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,4 +60,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sales/update-profile', [SalesController::class, 'updateProfile']);
     Route::get('/sales/bank-details', [SalesController::class, 'getBankDetails']);
     Route::put('/sales/update-bank', [SalesController::class, 'updateBankDetails']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/sales/today-institutes', [SalesDashboardController::class, 'todayInstitutes']);
+    Route::get('/sales/total-institutes', [SalesDashboardController::class, 'totalInstitutes']);
+
+    Route::get('/sales/today-students', [SalesDashboardController::class, 'todayStudents']);
+    Route::get('/sales/total-students', [SalesDashboardController::class, 'totalStudents']);
+
+    Route::get('/sales/graph-data', [SalesDashboardController::class, 'graphDashboard']);
 });

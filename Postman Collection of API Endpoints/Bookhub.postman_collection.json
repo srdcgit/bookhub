@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"ritik123@example.com\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"login\": \"ritik@example.com\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -25,14 +25,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/login",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/login",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"login"
 							]
@@ -79,7 +78,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 28|461prmAitMxiwHSo5K8e4DtU5m3V6MReqHBXmhYM634f4fe6",
+								"value": "Bearer 23|aTaBgP9NDjlxpBUGEYTYeh5j7kmd5bE4KF4z7sZm504898c7",
 								"type": "text"
 							},
 							{
@@ -240,19 +239,18 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 24|AczMFKzT01knOzjqZqowCWEZwwEkyKI8tuDeQOmVb6a5f167",
+								"value": "Bearer 27|h0jyZS76y6zDwBTkGPxHvWYCKK43p2oKsj7Y5LPT0e47cb2f",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/institutions",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/institutions",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"institutions"
 							]
@@ -272,19 +270,18 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 23|2K571p259DO6ttYV2UptNNw4a87ISa3E6OFD1BDy84d2693f",
+								"value": "Bearer 13|LW3v7drTU8treviMDOGsJGYEjvXezYDR6cLJKvw3731109cc",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/students",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/students",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"students"
 							]
@@ -537,7 +534,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Ritik Kumar\",\r\n  \"email\": \"ritik123@example.com\",\r\n  \"phone\": \"9876543210\",\r\n  \"password\": \"123456\",\r\n  \"password_confirmation\": \"123456\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"rb486373@gmail.com\",\r\n  \"phone\": \"6370775034\",\r\n  \"password\": \"223412\",\r\n  \"password_confirmation\": \"223412\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -545,14 +542,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/sales/register",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/sales/register",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"sales",
 								"register"
@@ -719,7 +715,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"value": "Bearer 27|h0jyZS76y6zDwBTkGPxHvWYCKK43p2oKsj7Y5LPT0e47cb2f",
 								"type": "text"
 							},
 							{
@@ -738,14 +734,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/sales/bank-details",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/sales/bank-details",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"sales",
 								"bank-details"
@@ -788,6 +783,126 @@
 								"update-bank"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Today Added Institutes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/today-institutes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"today-institutes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Today Added Student",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/today-students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"today-students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Institutes Added",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/total-institutes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"total-institutes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Students Added",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/total-students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"total-students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Graph Data",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
