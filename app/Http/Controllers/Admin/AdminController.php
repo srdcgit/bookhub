@@ -31,18 +31,18 @@ class AdminController extends Controller
 
         Session::put('page', 'dashboard');
 
-        $sectionsCount   = Section::where('status', 1)->count();
-        $categoriesCount = Category::where('status', 1)->count();
+        
+        $vendorsCount     = Vendor::count();;
+        $usersCount      = User::count();
+        $salesExecutivesCount = SalesExecutive::count();
         $productsCount   = Product::where('status', 1)->count();
         $ordersCount     = Order::count();
         $couponsCount    = Coupon::where('status', 1)->count();
-        $vendorsCount     = Vendor::count();;
-        $usersCount      = User::count();
         $logos = HeaderLogo::first();
         $headerLogo = HeaderLogo::first();
 
 
-        return view('admin/dashboard')->with(compact('sectionsCount', 'categoriesCount', 'productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount', 'logos', 'headerLogo')); // is the same as:    return view('admin.dashboard');
+        return view('admin/dashboard')->with(compact('productsCount', 'ordersCount', 'couponsCount', 'vendorsCount', 'usersCount', 'salesExecutivesCount', 'logos', 'headerLogo')); // is the same as:    return view('admin.dashboard');
     }
 
     public function login(Request $request)

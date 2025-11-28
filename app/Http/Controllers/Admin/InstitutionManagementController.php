@@ -336,4 +336,27 @@ class InstitutionManagementController extends Controller
 
         return $block->id;
     }
+
+    public function updateStatus(Request $request)
+    {
+        if (! $request->ajax()) {
+            abort(404);
+        }
+
+        $data = $request->validate([
+            'institution_id' => 'required|exists:institution_managements,id',
+            'status'         => 'required|in:0,1',
+        ]);
+
+        $institution = InstitutionManagement::findOrFail($data['institution_id']);
+        $institution->status = (int) $data['status'];
+        $institution->save();
+
+        return response()->json([
+            'success'         => true,
+            'status'          => (int) $institution->status,
+            'institution_id'  => $institution->id,
+            'message'         => 'Institution status updated successfully.',
+        ]);
+    }
 }

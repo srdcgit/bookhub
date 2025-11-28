@@ -134,6 +134,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
             'update'  => 'admin.institution_managements.update',
             'destroy' => 'admin.institution_managements.destroy',
         ]);
+        Route::post('update-institution-status', [InstitutionManagementController::class, 'updateStatus'])->name('admin.institution_managements.update_status');
 
         // Cities removed
 

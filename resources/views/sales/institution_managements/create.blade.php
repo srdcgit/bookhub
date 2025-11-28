@@ -302,7 +302,7 @@
                             name="block_id"
                             class="form-control"
                             id="block-input"
-                            placeholder="Enter block ID or name"
+                            placeholder="Enter block name"
                             value="{{ old('block_id') }}">
                         @error('block_id')
                             <div class="error-message">{{ $message }}</div>

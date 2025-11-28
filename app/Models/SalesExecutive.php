@@ -20,6 +20,7 @@ class SalesExecutive extends Authenticatable
         'phone',
         'address',
         'city',
+        'block',
         'district',
         'state',
         'pincode',

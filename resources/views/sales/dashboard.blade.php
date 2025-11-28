@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('title')
+    Sales Dashboard
+@endsection
 @section('content')
 <div class="container py-5">
     <div class="row mb-4">

@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('title')
+    Student Management
+@endsection
 @section('content')
 <div class="container-fluid py-4">
     <!-- DataTables CSS -->

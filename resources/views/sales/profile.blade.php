@@ -140,6 +140,10 @@
                                                 <input type="text" name="city" class="form-control" value="{{ old('city', $sales->city) }}">
                                             </div>
                                             <div class="col-md-4">
+                                                <label class="form-label fw-semibold">Block</label>
+                                                <input type="text" name="block" class="form-control" value="{{ old('block', $sales->block) }}">
+                                            </div>
+                                            <div class="col-md-4">
                                                 <label class="form-label fw-semibold">District</label>
                                                 <input type="text" name="district" class="form-control" value="{{ old('district', $sales->district) }}">
                                             </div>
@@ -197,7 +201,7 @@
                                             </div>
                                     </form>
                                 </div>
-                                
+
                                 <!-- Change Password Tab -->
                                 <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
                                     <form class="" method="POST" action="{{ route('sales.profile.update') }}" style="max-width: 520px;">
