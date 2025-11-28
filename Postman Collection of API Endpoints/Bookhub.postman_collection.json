@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"01255686414\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"login\": \"ritik@example.com\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -25,14 +25,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/login",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/login",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"login"
 							]
@@ -79,7 +78,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 28|461prmAitMxiwHSo5K8e4DtU5m3V6MReqHBXmhYM634f4fe6",
+								"value": "Bearer 23|aTaBgP9NDjlxpBUGEYTYeh5j7kmd5bE4KF4z7sZm504898c7",
 								"type": "text"
 							},
 							{
@@ -102,236 +101,12 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Register",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Ritik Kumar\",\r\n  \"email\": \"ritik@example.com\",\r\n  \"phone\": \"9876543210\",\r\n  \"password\": \"123456\",\r\n  \"password_confirmation\": \"123456\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://mybookhub.in/api/sales/register",
-							"protocol": "https",
-							"host": [
-								"mybookhub",
-								"in"
-							],
-							"path": [
-								"api",
-								"sales",
-								"register"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
 		{
 			"name": "Institution",
 			"item": [
-				{
-					"name": "Get Countries",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 23|urwnFOmWNREvR9iPgjauGFCDmJoTfud4y3g5t8P6c763f889",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://mybookhub.in/api/countries",
-							"protocol": "https",
-							"host": [
-								"mybookhub",
-								"in"
-							],
-							"path": [
-								"api",
-								"countries"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get State",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 14|hsKlvXAbVCvnNUfkmIgjdQpmyYohbaAAcDXPF5lW08bc8979",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://mybookhub.in/api/states/1",
-							"protocol": "https",
-							"host": [
-								"mybookhub",
-								"in"
-							],
-							"path": [
-								"api",
-								"states",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Block",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 5|kDsBnHTHPVafYgxFlWwjwMsGOOfYvcjLn20m0dYL28f28922",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost/bookhub/public/api/blocks/44",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"path": [
-								"bookhub",
-								"public",
-								"api",
-								"blocks",
-								"44"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Districts",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// Visualization Script",
-									"// Visualization Script",
-									"const template = `",
-									"<div style=\"max-width: 700px; margin: 0 auto;\">",
-									"  <h3>Districts for State ID 27</h3>",
-									"  <canvas id=\"districtChart\" height=\"300\"></canvas>",
-									"  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js\"></script>",
-									"  <script>",
-									"    pm.getData(function (err, value) {",
-									"      if (err) { return; }",
-									"      var ctx = document.getElementById('districtChart').getContext('2d');",
-									"      var chart = new Chart(ctx, {",
-									"        type: 'bar',",
-									"        data: {",
-									"          labels: value.districtNames,",
-									"          datasets: [{",
-									"            label: 'District ID',",
-									"            data: value.districtIds,",
-									"            backgroundColor: 'rgba(54, 162, 235, 0.6)',",
-									"            borderColor: 'rgba(54, 162, 235, 1)',",
-									"            borderWidth: 1",
-									"          }]",
-									"        },",
-									"        options: {",
-									"          scales: {",
-									"            xAxes: [{",
-									"              ticks: { autoSkip: false }",
-									"            }],",
-									"            yAxes: [{",
-									"              ticks: {",
-									"                beginAtZero: true,",
-									"                precision: 0",
-									"              }",
-									"            }]",
-									"          },",
-									"          legend: { display: false },",
-									"          title: {",
-									"            display: true,",
-									"            text: 'District Names and IDs'",
-									"          }",
-									"        }",
-									"      });",
-									"    });",
-									"  </script>",
-									"</div>`;",
-									"",
-									"function createPayload() {",
-									"  var data = pm.response.json();",
-									"  return {",
-									"    districtNames: data.map(d => d.name),",
-									"    districtIds: data.map(d => d.id)",
-									"  };",
-									"}",
-									"pm.visualizer.set(template, createPayload());"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"packages": {},
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 5|kDsBnHTHPVafYgxFlWwjwMsGOOfYvcjLn20m0dYL28f28922",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost/bookhub/public/api/districts/27",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"path": [
-								"bookhub",
-								"public",
-								"api",
-								"districts",
-								"27"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Add Institution",
 					"request": {
@@ -464,19 +239,18 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 14|Gplt1Ul06KR9NCOTAjIm1IQlpMiyTvMVy1lFB6nF1b328f5d",
+								"value": "Bearer 27|h0jyZS76y6zDwBTkGPxHvWYCKK43p2oKsj7Y5LPT0e47cb2f",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/institutions",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/institutions",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"institutions"
 							]
@@ -496,19 +270,18 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 19|8FJmFKcFWQoiXiEpnRMVeisFFcoTaKH0m0DKIapqde55f4cd",
+								"value": "Bearer 13|LW3v7drTU8treviMDOGsJGYEjvXezYDR6cLJKvw3731109cc",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/students",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/students",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"students"
 							]
@@ -534,7 +307,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"father_name\": \"Parameswar\",\r\n  \"email\": \"biswa126100@gmail.com\",\r\n  \"phone\": \"7846943511\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STUD21230452\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"father_name\": \"Parameswar\",\r\n  \"email\": \"\",\r\n  \"phone\": \"7846943511\",\r\n  \"institution_id\": 26,\r\n  \"class\": \"10th\",\r\n  \"gender\": \"male\",\r\n  \"dob\": \"2005-08-12\",\r\n  \"roll_number\": \"STUD21230452\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -606,7 +379,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 16|TL1Bgg555YgzkT7NcmpJZwhA9vy066jueWwhL7cw05b8b83b",
+								"value": "Bearer 24|AczMFKzT01knOzjqZqowCWEZwwEkyKI8tuDeQOmVb6a5f167",
 								"type": "text"
 							},
 							{
@@ -625,7 +398,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/students/11",
+							"raw": "http://localhost/bookhub/public/api/students/25",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -635,7 +408,7 @@
 								"public",
 								"api",
 								"students",
-								"11"
+								"25"
 							]
 						}
 					},
@@ -727,7 +500,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/book/lookup?isbn=9780061122415",
+							"raw": "http://localhost/bookhub/public/api/book/lookup?isbn=ISBN-109",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -742,8 +515,597 @@
 							"query": [
 								{
 									"key": "isbn",
-									"value": "9780061122415"
+									"value": "ISBN-109"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"rb486373@gmail.com\",\r\n  \"phone\": \"6370775034\",\r\n  \"password\": \"223412\",\r\n  \"password_confirmation\": \"223412\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://mybookhub.in/api/sales/register",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"sales",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Biswajeet Mohanta",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "biswajeetmohanta123@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "9876543211",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Bhubaneswar",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Bhubaneswar",
+									"type": "text"
+								},
+								{
+									"key": "district",
+									"value": "Mayurbhanj",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "Odisha",
+									"type": "text"
+								},
+								{
+									"key": "pincode",
+									"value": "757043",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "India",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "profile_picture",
+									"type": "file",
+									"src": "postman-cloud:///1f0b3ee3-0594-4330-b90b-90a8379f5ec0"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/update-profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"update-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bank Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 27|h0jyZS76y6zDwBTkGPxHvWYCKK43p2oKsj7Y5LPT0e47cb2f",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://mybookhub.in/api/sales/bank-details",
+							"protocol": "https",
+							"host": [
+								"mybookhub",
+								"in"
+							],
+							"path": [
+								"api",
+								"sales",
+								"bank-details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Bank Details",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"bank_name\": \"ICIC\",\r\n        \"account_number\": \"1234567891\",\r\n        \"ifsc_code\": \"ICIC0005\",\r\n        \"bank_branch\": \"Rairangpur\",\r\n        \"upi_id\": \"7846943580@ibl\"\r\n    }"
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/update-bank",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"update-bank"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Today Added Institutes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/today-institutes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"today-institutes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Today Added Student",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/today-students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"today-students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Institutes Added",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/total-institutes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"total-institutes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Students Added",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/total-students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"total-students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Graph Data",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ajax",
+			"item": [
+				{
+					"name": "Get Countries",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 30|tS9DgUi11dEKXxYKNMkRE62far5D6aWxIM5Jsp8D3fa39e27",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/countries",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"countries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get State",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 30|tS9DgUi11dEKXxYKNMkRE62far5D6aWxIM5Jsp8D3fa39e27",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/states/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"states",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Districts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Visualization Script",
+									"// Visualization Script",
+									"const template = `",
+									"<div style=\"max-width: 700px; margin: 0 auto;\">",
+									"  <h3>Districts for State ID 27</h3>",
+									"  <canvas id=\"districtChart\" height=\"300\"></canvas>",
+									"  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js\"></script>",
+									"  <script>",
+									"    pm.getData(function (err, value) {",
+									"      if (err) { return; }",
+									"      var ctx = document.getElementById('districtChart').getContext('2d');",
+									"      var chart = new Chart(ctx, {",
+									"        type: 'bar',",
+									"        data: {",
+									"          labels: value.districtNames,",
+									"          datasets: [{",
+									"            label: 'District ID',",
+									"            data: value.districtIds,",
+									"            backgroundColor: 'rgba(54, 162, 235, 0.6)',",
+									"            borderColor: 'rgba(54, 162, 235, 1)',",
+									"            borderWidth: 1",
+									"          }]",
+									"        },",
+									"        options: {",
+									"          scales: {",
+									"            xAxes: [{",
+									"              ticks: { autoSkip: false }",
+									"            }],",
+									"            yAxes: [{",
+									"              ticks: {",
+									"                beginAtZero: true,",
+									"                precision: 0",
+									"              }",
+									"            }]",
+									"          },",
+									"          legend: { display: false },",
+									"          title: {",
+									"            display: true,",
+									"            text: 'District Names and IDs'",
+									"          }",
+									"        }",
+									"      });",
+									"    });",
+									"  </script>",
+									"</div>`;",
+									"",
+									"function createPayload() {",
+									"  var data = pm.response.json();",
+									"  return {",
+									"    districtNames: data.map(d => d.name),",
+									"    districtIds: data.map(d => d.id)",
+									"  };",
+									"}",
+									"pm.visualizer.set(template, createPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 30|tS9DgUi11dEKXxYKNMkRE62far5D6aWxIM5Jsp8D3fa39e27",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/districts/27",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"districts",
+								"27"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Block",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 5|kDsBnHTHPVafYgxFlWwjwMsGOOfYvcjLn20m0dYL28f28922",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/blocks/44",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"blocks",
+								"44"
 							]
 						}
 					},
