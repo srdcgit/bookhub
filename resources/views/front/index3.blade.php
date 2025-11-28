@@ -36,6 +36,98 @@
             height: 100%;
             object-fit: cover;
         }
+
+        .carousel-item .p-3 {
+            padding: 1.5rem !important;
+        }
+
+        .carousel-item img {
+            border-radius: 10px !important;
+            padding: 0px !important;
+            background: #fff;
+        }
+
+
+
+        @media (min-width: 300px) and (max-width: 399px) {
+            .carousel-item .p-3 {
+                padding: 0.5rem !important;
+            }
+
+            .bookhub-carousel-image {
+                object-fit: cover;
+                height: 150px !important;
+            }
+        }
+
+        @media (min-width: 400px) and (max-width: 768px) {
+
+            .carousel-item .p-3 {
+                padding: 0.5rem !important;
+            }
+
+            .bookhub-carousel-image {
+                object-fit: cover;
+                height: 250px !important;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 992px) {
+
+            .carousel-item .p-3 {
+                padding: 0.5rem !important;
+            }
+
+            .bookhub-carousel-image {
+                object-fit: cover;
+                height: 350px !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1100px) {
+
+            .carousel-item .p-3 {
+                padding: 0.5rem !important;
+            }
+
+            .bookhub-carousel-image {
+                object-fit: cover;
+                height: 450px !important;
+            }
+        }
+
+        @media (min-width: 1101px) {
+
+            .carousel-item .p-3 {
+                padding: 0.5rem !important;
+            }
+
+            .bookhub-carousel-image {
+                object-fit: cover;
+                height: 550px !important;
+            }
+        }
+
+
+        /* book recommend  */
+        .book-grid-card {
+            transition: box-shadow .2s, transform .2s;
+        }
+
+        .book-grid-card:hover {
+            box-shadow: 0 8px 24px rgba(60, 80, 120, 0.13);
+            transform: translateY(-3px) scale(1.015);
+        }
+
+        .card-img-top {
+            border-radius: 20px 20px 0 0 !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .card-img-top {
+                height: 140px !important;
+            }
+        }
     </style>
     @php
         $hasSliderBanners = !empty($sliderBanners) && is_iterable($sliderBanners) && count($sliderBanners) > 0;
@@ -48,25 +140,25 @@
                         $image = $banner['image'] ?? null;
                         $alt = $banner['alt'] ?? ($banner['title'] ?? '');
                         $link = $banner['link'] ?? null;
+                        $title = $banner['title'] ?? '';
+                        $desc = $banner['description'] ?? '';
                     @endphp
                     @if (!empty($image))
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <a href="{{ !empty($link) ? url($link) : 'javascript:;' }}">
-                                <img src="{{ asset('front/images/banner_images/' . $image) }}" class="d-block w-100"
-                                    alt="{{ $alt }}">
-                            </a>
-                            @if (!empty($banner['title']))
-                                <div class="carousel-caption d-none d-md-block">
-                                    {{-- <h5>{{ $banner['title'] }}</h5> --}}
-                                </div>
-                            @endif
+                            <div class="p-3">
+                                <a href="{{ !empty($link) ? url($link) : 'javascript:;' }}">
+                                    <img src="{{ asset('front/images/banner_images/' . $image) }}"
+                                        class="d-block w-100 bookhub-carousel-image rounded-4 shadow"
+                                        alt="{{ $alt }}">
+                                </a>
+                            </div>
                         </div>
                     @endif
                 @endforeach
             @else
                 <div class="carousel-item active">
-                    <div style="height: 300px; background:#f2f2f2;"
-                        class="d-flex align-items-center justify-content-center">
+                    <div class="d-flex align-items-center justify-content-center p-3"
+                        style="height: 300px; background:#f2f2f2; border-radius:20px;">
                         <span>No banners available</span>
                     </div>
                 </div>
@@ -86,52 +178,51 @@
 
 
 
-   
 
-    <!--Recommend Section Start-->
-    <section class="content-inner-1 bg-grey reccomend">
 
+
+    <!-- Recommend Section Start -->
+    <section class="content-inner-1 bg-grey reccomend py-5">
         <div class="container">
-            <div class="section-head text-center">
-                <h2 class="title">Recomended For You</h2>
-                <p>Discover titles picked just for you—personalized recommendations to match your taste and help you find
-                    your next great read.</p>
+            <div class="section-head text-center mb-4">
+                <h2 class="title">Recommended For You</h2>
+                <p>Discover titles picked just for you — find your next great read from our curated list!</p>
             </div>
-            <!-- Swiper -->
-            <div class="swiper-container swiper-two">
-                <div class="swiper-wrapper">
-                    @foreach ($sliderProducts as $sliderProduct)
-                        <div class="swiper-slide">
-                            <div class="books-card style-1 wow fadeInUp" data-wow-delay="0.1s">
-                                <div class="dz-media">
-                                    <a href="{{ url('product/' . $sliderProduct['id']) }}">
-                                        <img src="{{ asset('front/images/product_images/small/' . $sliderProduct['product_image']) }}"
-                                            style="height: 250px; width: 200px; object-fit: cover !important;"
-                                            alt="book">
+            <div class="row g-4">
+                @foreach ($sliderProducts as $sliderProduct)
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+                        <div class="card flex-fill shadow-sm border-0 book-grid-card" style="border-radius:20px;">
+                            <a href="{{ url('product/' . $sliderProduct['id']) }}" class="d-block">
+                                <img src="{{ asset('front/images/product_images/small/' . $sliderProduct['product_image']) }}"
+                                    alt="book" class="card-img-top"
+                                    style="height:220px; object-fit:cover; border-radius:20px 20px 0 0;">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="mb-1 card-title" style="font-size:1.05rem;">
+                                    <a href="{{ url('product/' . $sliderProduct['id']) }}"
+                                        class="text-dark text-decoration-none">
+                                        {{ $sliderProduct['product_name'] }}
                                     </a>
-                                </div>
-                                <div class="dz-content">
-                                    <h4 class="title"><a
-                                            href="{{ url('product/' . $sliderProduct['id']) }}">{{ $sliderProduct['product_name'] }}</a>
-                                    </h4>
-                                    <span
-                                        class="price">₹{{ \App\Models\Product::getDiscountPrice($sliderProduct['id']) }}</span>
-                                    <form action="{{ url('cart/add') }}" method="POST" class="d-flex align-items-center">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $sliderProduct['id'] }}">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn btn-primary btnhover2"><i
-                                                class="flaticon-shopping-cart-1"></i> <span>&nbsp;&nbsp;Add to
-                                                cart</span></button>
-                                    </form>
-                                </div>
+                                </h5>
+                                <span
+                                    class="price mb-2 text-primary fw-bold fs-6">₹{{ \App\Models\Product::getDiscountPrice($sliderProduct['id']) }}</span>
+                                <form action="{{ url('cart/add') }}" method="POST" class="mt-auto">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $sliderProduct['id'] }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                                        <i class="flaticon-shopping-cart-1"></i> Add to cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
+
+
 
     <!-- icon-box1 -->
     <section class="content-inner-2">
@@ -1007,4 +1098,11 @@
         </div>
     </section>
     <!-- Sales Executive CTA End -->
+
+
+
+    {{-- Js Section  --}}
+
+    <script></script>
+
 @endsection

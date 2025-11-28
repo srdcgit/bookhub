@@ -165,11 +165,6 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 // AJAX route for getting location data based on pincode (outside admin middleware for AJAX access)
         Route::get('institution-location-data', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getLocationData'])->name('institution_location_data');
 
-// AJAX routes for cascading location dropdowns (outside admin middleware for AJAX access)
-        Route::get('institution-countries', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
-        Route::get('institution-states', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getStates'])->name('institution_states');
-        Route::get('institution-districts', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
-        Route::get('institution-blocks', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
 
         // Products
         Route::get('products/getauthors', [AdminProductsController::class, 'getAuthor']);
@@ -306,6 +301,13 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
 
     });
+
+    // AJAX routes for cascading location dropdowns (outside admin middleware for AJAX access)
+    Route::get('institution-countries', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getCountries'])->name('institution_countries');
+    Route::get('institution-states', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getStates'])->name('institution_states');
+    Route::get('institution-districts', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getDistricts'])->name('institution_districts');
+    Route::get('institution-blocks', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getBlocks'])->name('institution_blocks');
+
 });
 
 // User download order PDF invoice (We'll use the same viewPDFInvoice() function (but with different routes/URLs!) to render the PDF invoice for 'admin'-s in the Admin Panel and for the user to download it!) (we created this route outside outside the Admin Panel routes so that the user could use it!)
