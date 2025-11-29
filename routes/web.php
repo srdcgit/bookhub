@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Front\BookRequestController;
 use App\Http\Controllers\Front\IndexController;
 use App\Http\Controllers\Front\ProductsController;
+use App\Http\Controllers\Sales\SalesExecutiveAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -483,8 +484,9 @@ Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'da
 Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function () {
     Route::get('login', 'SalesExecutiveAuthController@showLogin')->name('sales.login');
     Route::post('login', 'SalesExecutiveAuthController@login')->name('sales.login.submit');
-    Route::get('register', 'SalesExecutiveAuthController@showRegister')->name('sales.register');
-    Route::post('register', 'SalesExecutiveAuthController@register')->name('sales.register.submit');
+    Route::get('/sales/register', [SalesExecutiveAuthController::class, 'showRegister'])->name('sales.register');
+    Route::post('/sales/send-otp', [SalesExecutiveAuthController::class, 'sendOtp'])->name('sales.otp.send');
+    Route::post('/sales/register', [SalesExecutiveAuthController::class, 'register'])->name('sales.register.submit');
 
     Route::group(['middleware' => ['sales']], function () {
         Route::get('dashboard', 'SalesExecutiveAuthController@dashboard')->name('sales.dashboard');
