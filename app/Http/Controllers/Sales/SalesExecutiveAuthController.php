@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use App\Models\HeaderLogo;
 use App\Models\SalesExecutive;
+use App\Models\InstitutionManagement;
+use App\Models\Student;
+use App\Models\InstitutionClass;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -143,8 +147,92 @@ class SalesExecutiveAuthController extends Controller
         $headerLogo = HeaderLogo::first();
         $logos      = $headerLogo;
 
-        return view('sales.dashboard', compact('logos', 'headerLogo'), [
-            'user' => auth('sales')->user()
+        $salesExecutive = auth('sales')->user();
+        $salesExecutiveId = $salesExecutive->id;
+
+        // Get income_per_target from sales executive
+        $incomePerTarget = $salesExecutive->income_per_target ?? 0;
+
+        // Calculate total institutions
+        $totalInstitutions = InstitutionManagement::where('added_by', $salesExecutiveId)->count();
+
+        // Calculate total students
+        $totalStudents = Student::where('added_by', $salesExecutiveId)->count();
+
+        // Calculate today's students
+        $todayStudents = Student::where('added_by', $salesExecutiveId)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+
+        // Calculate total classes (sum of classes from all institutions added by this sales executive)
+        $institutionIds = InstitutionManagement::where('added_by', $salesExecutiveId)->pluck('id');
+        $totalClasses = InstitutionClass::whereIn('institution_id', $institutionIds)->count();
+
+        // Calculate total blocks (distinct blocks from institutions)
+        $totalBlocks = InstitutionManagement::where('added_by', $salesExecutiveId)
+            ->whereNotNull('block_id')
+            ->distinct('block_id')
+            ->count('block_id');
+
+        // Calculate earnings
+        $totalEarning = $incomePerTarget * $totalStudents;
+        $todayEarning = $incomePerTarget * $todayStudents;
+
+        // Prepare graph data for last 30 days
+        $days = 30;
+        $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
+        
+        $dates = [];
+        $dateKeys = [];
+        for ($i = 0; $i < $days; $i++) {
+            $date = Carbon::now()->subDays($days - 1 - $i);
+            $dates[] = $date->format('d M');
+            $dateKeys[] = $date->format('Y-m-d');
+        }
+        
+        $studentData = Student::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('added_by', $salesExecutiveId)
+            ->whereDate('created_at', '>=', $startDate)
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+        
+        $institutionData = InstitutionManagement::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('added_by', $salesExecutiveId)
+            ->whereDate('created_at', '>=', $startDate)
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+        
+        $studentsCount = [];
+        $institutionsCount = [];
+        foreach ($dateKeys as $dateKey) {
+            $studentsCount[] = $studentData[$dateKey] ?? 0;
+            $institutionsCount[] = $institutionData[$dateKey] ?? 0;
+        }
+        
+        // Calculate earnings for graph (students * income_per_target)
+        $earningsData = [];
+        foreach ($studentsCount as $count) {
+            $earningsData[] = $count * $incomePerTarget;
+        }
+
+        return view('sales.dashboard', compact(
+            'logos',
+            'headerLogo',
+            'totalInstitutions',
+            'totalStudents',
+            'todayStudents',
+            'totalClasses',
+            'totalEarning',
+            'todayEarning',
+            'incomePerTarget',
+            'dates',
+            'studentsCount',
+            'institutionsCount',
+            'earningsData'
+        ), [
+            'user' => $salesExecutive
         ]);
     }
 

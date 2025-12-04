@@ -43,6 +43,16 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <x-nav-link :href="route('sales.reports.index')" :active="request()->routeIs('sales.reports.*')" class="nav-link">
+                        <i class="bi bi-file-earmark-text me-1"></i>{{ __('Reports') }}
+                    </x-nav-link>
+                </li>
+                <li class="nav-item">
+                    <x-nav-link :href="route('sales.withdrawals.index')" :active="request()->routeIs('sales.withdrawals.*')" class="nav-link">
+                        <i class="bi bi-wallet2 me-1"></i>{{ __('Withdrawals') }}
+                    </x-nav-link>
+                </li>
                 {{-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="salesBlocksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-lines-fill me-1"></i> Blocks

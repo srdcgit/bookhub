@@ -3,112 +3,366 @@
     Sales Dashboard
 @endsection
 @section('content')
-<div class="container py-5">
+<div class="container-fluid py-4">
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="fw-bold">Welcome {{ (Auth::guard('sales')->user()->name ?? ($user->name ?? 'Sales Executive')) }}</h3>
-            <h6 class="text-muted mb-0">All systems are running smoothly!</h6>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="page-title mb-0">Welcome, {{ Auth::guard('sales')->user()->name ?? 'Sales Executive' }}</h2>
+                    <p class="text-muted mb-0">Here's your performance overview</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row g-4">
-        {{-- First Column --}}
-        <div class="col-md-6">
-            <div class="row g-4">
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-building fs-2 text-primary"></i>
-                            </div>
-                            <p class="mb-1 text-muted">Total Institutions</p>
-                            <h3 class="fw-semibold">{{ number_format($sectionsCount ?? 0) }}</h3>
+
+    <!-- Key Metrics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Institutions</p>
+                            <h3 class="fw-bold mb-0">{{ number_format($totalInstitutions ?? 0) }}</h3>
                         </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-primary text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-person-lines-fill fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Students</p>
-                            <h3 class="fw-semibold">{{ number_format($categoriesCount ?? 0) }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-info text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-box2 fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Blocks</p>
-                            <h3 class="fw-semibold">{{ number_format($productsCount ?? 0) }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-danger text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-grid-3x3-gap fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Classes</p>
-                            <h3 class="fw-semibold">{{ number_format($vendorsCount ?? 0) }}</h3>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="bi bi-building fs-4 text-primary"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        {{-- Second Column --}}
-        <div class="col-md-6">
-            <div class="row g-4">
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-bag-fill fs-2 text-success"></i>
-                            </div>
-                            <p class="mb-1 text-muted">Total Orders</p>
-                            <h3 class="fw-semibold">{{ number_format($ordersCount ?? 0) }}</h3>
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100 bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Total Students</p>
+                            <h3 class="fw-bold mb-0">{{ number_format($totalStudents ?? 0) }}</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-people fs-4"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-primary text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-ticket-perforated-fill fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Coupons</p>
-                            <h3 class="fw-semibold">{{ number_format($couponsCount ?? 0) }}</h3>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100 bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Today's Students</p>
+                            <h3 class="fw-bold mb-0">{{ number_format($todayStudents ?? 0) }}</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-calendar fs-4"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-info text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-people-fill fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Users</p>
-                            <h3 class="fw-semibold">{{ number_format($usersCount ?? 0) }}</h3>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100 bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Total Classes</p>
+                            <h3 class="fw-bold mb-0">{{ number_format($totalClasses ?? 0) }}</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-book fs-4"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="card shadow-sm border-0 h-100 bg-danger text-white">
-                        <div class="card-body d-flex flex-column align-items-start">
-                            <div class="mb-2">
-                                <i class="bi bi-envelope-paper-fill fs-2"></i>
-                            </div>
-                            <p class="mb-1">Total Subscribers</p>
-                            <h3 class="fw-semibold">{{ number_format($subscribersCount ?? 0) }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Today's Earning</p>
+                            <h2 class="fw-bold mb-0">₹{{ number_format($todayEarning ?? 0, 2) }}</h2>
+                            <small class="mt-2 opacity-75 d-block">{{ number_format($todayStudents ?? 0) }} students enrolled today</small>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-cash-stack fs-4"></i>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Total Earning</p>
+                            <h2 class="fw-bold mb-0">₹{{ number_format($totalEarning ?? 0, 2) }}</h2>
+                            <small class="mt-2 opacity-75 d-block">{{ number_format($totalStudents ?? 0) }} total students</small>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-graph-up-arrow fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="mb-1 opacity-75 small">Income Per Target</p>
+                            <h2 class="fw-bold mb-0">₹{{ number_format($incomePerTarget ?? 0, 2) }}</h2>
+                            <small class="mt-2 opacity-75 d-block">Per student enrolled</small>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-tag fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Bar Graph -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart me-2 text-primary"></i>
+                        Performance Overview - Last 30 Days
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="dashboardBarChart" style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics Bar Graph -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart me-2 text-success"></i>
+                        Overall Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="summaryBarChart" style="max-height: 350px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Performance Bar Chart (Last 30 Days)
+    const ctx1 = document.getElementById('dashboardBarChart').getContext('2d');
+    
+    const labels = @json($dates ?? []);
+    const studentsData = @json($studentsCount ?? []);
+    const institutionsData = @json($institutionsCount ?? []);
+    const earningsData = @json($earningsData ?? []);
+    
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Students Enrolled',
+                    data: studentsData,
+                    backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                    borderColor: 'rgb(13, 110, 253)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Institutions Added',
+                    data: institutionsData,
+                    backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                    borderColor: 'rgb(255, 193, 7)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Earnings (₹)',
+                    data: earningsData,
+                    backgroundColor: 'rgba(25, 135, 84, 0.8)',
+                    borderColor: 'rgb(25, 135, 84)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.datasetIndex === 2) {
+                                label += '₹' + context.parsed.y.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                            } else {
+                                label += context.parsed.y;
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Earnings (₹)'
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Summary Statistics Bar Chart
+    const ctx2 = document.getElementById('summaryBarChart').getContext('2d');
+    
+    const summaryLabels = ['Institutions', 'Students', 'Classes', 'Total Earnings'];
+    const summaryData = [
+        {{ $totalInstitutions ?? 0 }},
+        {{ $totalStudents ?? 0 }},
+        {{ $totalClasses ?? 0 }},
+        {{ round($totalEarning ?? 0) }}
+    ];
+    
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: summaryLabels,
+            datasets: [
+                {
+                    label: 'Count',
+                    data: summaryData,
+                    backgroundColor: [
+                        'rgba(13, 110, 253, 0.8)',
+                        'rgba(25, 135, 84, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(13, 110, 253)',
+                        'rgb(25, 135, 84)',
+                        'rgb(255, 193, 7)',
+                        'rgb(220, 53, 69)'
+                    ],
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.dataIndex === 3) {
+                                label += '₹' + context.parsed.y.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                            } else {
+                                label += context.parsed.y.toLocaleString('en-IN');
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Count / Amount'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            if (value >= 1000) {
+                                return (value / 1000).toFixed(1) + 'K';
+                            }
+                            return value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 @endsection

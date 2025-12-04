@@ -161,6 +161,11 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
             'destroy' => 'admin.students.destroy',
         ]);
 
+        // Withdrawals Management
+        Route::get('withdrawals', 'WithdrawalController@index')->name('admin.withdrawals.index');
+        Route::get('withdrawals/{id}', 'WithdrawalController@show')->name('admin.withdrawals.show');
+        Route::post('withdrawals/{id}/update-status', 'WithdrawalController@updateStatus')->name('admin.withdrawals.updateStatus');
+
 // AJAX route for getting classes based on institution type (outside admin middleware for AJAX access)
         Route::get('institution-classes', [App\Http\Controllers\Admin\InstitutionManagementController::class, 'getClasses'])->name('institution_classes');
 
@@ -521,6 +526,16 @@ Route::prefix('/sales')->namespace('App\Http\Controllers\Sales')->group(function
         // Route::post('students/store-user-location', 'StudentController@storeUserLocation')->name('sales.students.store_user_location');
         // Route::post('students/store-institution-location', 'StudentController@storeInstitutionLocation')->name('sales.students.store_institution_location');
         // Route::get('students/institution/{institution}/address', 'StudentController@getInstitutionAddress')->name('sales.students.institution_address');
+
+        // Sales Reports
+        Route::get('reports', 'ReportController@index')->name('sales.reports.index');
+
+        // Sales Withdrawals
+        Route::resource('withdrawals', 'WithdrawalController')->names([
+            'index'   => 'sales.withdrawals.index',
+            'create'  => 'sales.withdrawals.create',
+            'store'   => 'sales.withdrawals.store',
+        ])->only(['index', 'create', 'store']);
 
 // Sales Blocks Management (similar to Admin)
         Route::resource('blocks', 'BlockController')->names([
