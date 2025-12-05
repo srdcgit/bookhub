@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\SalesDashboardController;
 // Public route: login (accessible without token)
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sales/register', [AuthController::class, 'register']);
+Route::post('/sales/verify-otp', [AuthController::class, 'verifyOtp']);
 
 // Protected routes: logout (requires valid Sanctum token)
 Route::middleware('auth:sanctum')->group(function () {
