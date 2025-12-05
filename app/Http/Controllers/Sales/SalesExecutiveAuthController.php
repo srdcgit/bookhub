@@ -11,8 +11,14 @@ use App\Models\InstitutionClass;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail; // ✅ IMPORTANT
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class SalesExecutiveAuthController extends Controller
 {
@@ -34,27 +40,46 @@ class SalesExecutiveAuthController extends Controller
 
         $loginInput   = trim($data['login']);
         $numericLogin = preg_replace('/\D/', '', $loginInput);
-        $credentials  = ['password' => $data['password']];
 
+        // Identify user by email or phone
         if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
-            $credentials['email'] = $loginInput;
+            $user = SalesExecutive::where('email', $loginInput)->first();
         } elseif (strlen($numericLogin) >= 10 && strlen($numericLogin) <= 11) {
-            $credentials['phone'] = $numericLogin;
+            $user = SalesExecutive::where('phone', $numericLogin)->first();
         } else {
             return back()
                 ->withErrors(['login' => 'Enter a valid email or 10/11-digit mobile number.'])
                 ->withInput();
         }
 
-        if (Auth::guard('sales')->attempt($credentials, $request->boolean('remember'))) {
+        if (!$user) {
+            return back()->withErrors([
+                'login' => 'The provided credentials do not match our records.',
+            ])->onlyInput('login');
+        }
+
+        if ($user->status == 0) {
+            return back()->withErrors([
+                'login' => 'Your account is not activated yet. Please contact admin.',
+            ])->onlyInput('login');
+        }
+
+        if (Auth::guard('sales')->attempt(
+            [
+                isset($user->email) ? 'email' : 'phone' => $user->email ?? $user->phone,
+                'password' => $data['password']
+            ],
+            $request->boolean('remember')
+        )) {
             $request->session()->regenerate();
             return redirect()->intended('/sales/dashboard');
         }
 
         return back()->withErrors([
-            'login' => 'The provided credentials do not match our records.',
+            'login' => 'Invalid password.',
         ])->onlyInput('login');
     }
+
 
     // REGISTER (SHOW FORM) ---------------------
     public function showRegister()
@@ -65,81 +90,136 @@ class SalesExecutiveAuthController extends Controller
         return view('sales.register', compact('logos', 'headerLogo'));
     }
 
-    // SEND OTP ---------------------
+    public function sendSMS($phone, $otp)
+    {
+        $to = '91' . preg_replace('/[^0-9]/', '', $phone);
+
+        try {
+            $client = new Client();
+
+            $payload = [
+                "template_id" => env('MSG91_TEMPLATE_ID'),
+                "recipients"  => [
+                    [
+                        "mobiles" => $to,
+                        "OTP"     => $otp
+                    ]
+                ]
+            ];
+
+            Log::info("MSG91 Payload:", $payload);
+
+            $response = $client->post("https://control.msg91.com/api/v5/flow/", [
+                'json' => $payload,
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authkey' => env('MSG91_AUTH_KEY'),
+                    'content-type' => 'application/json'
+                ],
+            ]);
+
+            Log::info("MSG91 Response:", [
+                'status' => $response->getStatusCode(),
+                'body'   => $response->getBody()->getContents()
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error("MSG91 ERROR: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function sendOtp(Request $request)
     {
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:sales_executives,email', // ✅ correct table
-            'phone' => 'required|string|max:20',
+        $validator = Validator::make($request->all(), [
+            'name'  => 'required|string|max:150',
+            'email' => 'required|email|unique:sales_executives,email',
+            'phone' => 'required|digits:10|unique:sales_executives,phone',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $otp = rand(100000, 999999);
 
+        DB::table('otps')->updateOrInsert(
+            ['phone' => $request->phone],
+            ['otp' => $otp, 'created_at' => now(), 'updated_at' => now()]
+        );
+
         session([
-            'otp'       => $otp,
-            'user_data' => $request->only('name', 'email', 'phone'),
+            'reg_name'  => $request->name,
+            'reg_email' => $request->email,
+            'reg_phone' => $request->phone,
         ]);
 
-        try {
-            Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
-                $message->to($request->email)->subject('Verify OTP - BookHub');
-            });
-        } catch (\Exception $e) {
-            // For debugging
-            logger()->error('Mail send failed: '.$e->getMessage());
 
+        $sent = $this->sendSMS($request->phone, $otp);
+
+        if (!$sent) {
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to send OTP. Please try again later.',
+                'status' => false,
+                'message' => 'OTP failed to send. Try again.',
             ], 500);
         }
 
         return response()->json([
-            'success' => true,
-            'message' => 'OTP sent to your email.',
+            'status'  => true,
+            'message' => 'OTP sent successfully!',
         ]);
     }
 
-    // FINAL REGISTER (VERIFY OTP + CREATE USER) -------------
     public function register(Request $request)
     {
-        // 1. Check OTP
-        if (!$request->otp || $request->otp != session('otp')) {
+        $request->validate([
+            'otp'                   => 'required',
+            'phone'                 => 'required',
+            'password'              => 'required|min:6|confirmed',
+        ]);
+
+        $otpRecord = DB::table('otps')
+            ->where('phone', $request->phone)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if (!$otpRecord) {
             return back()->with('error', 'Invalid OTP');
         }
 
-        // 2. Validate password fields
-        $data = $request->validate([
-            'password'              => ['required', 'min:6', 'confirmed'],
-            'password_confirmation' => ['required'],
-        ]);
+        $name  = session('reg_name');
+        $email = session('reg_email');
+        $phone = session('reg_phone');
 
-        // 3. Get user data from session
-        $userData = session('user_data');
-
-        if (!$userData) {
+        if (!$phone) {
             return back()->with('error', 'Session expired. Please register again.');
         }
 
-        // 4. Clear OTP/session
-        session()->forget('otp');
-        session()->forget('user_data');
+        $sales = SalesExecutive::create([
+            'name'     => $name,
+            'email'    => $email,
+            'phone'    => $phone,
+            'status'   => 0,
+            'password' => Hash::make($request->password),
+        ]);
 
-        // 5. Create Sales Executive
-        $sales = new SalesExecutive();
-        $sales->name     = $userData['name'];
-        $sales->email    = $userData['email'];
-        $sales->phone    = $userData['phone'];
-        $sales->status   = 0;
-        $sales->password = Hash::make($data['password']);
-        $sales->save();
+        DB::table('otps')->where('phone', $phone)->delete();
+        session()->forget(['reg_name', 'reg_email', 'reg_phone']);
 
-        // 6. Login
         Auth::guard('sales')->login($sales);
 
-        return redirect('/sales/dashboard')->with('success', 'Registration successful!');
+        // $headerLogo = HeaderLogo::first();
+        // $logos      = $headerLogo;
+
+        return redirect()->route('sales.login')->with('success', 'Registration successful plz wait for admin verification !');
+
+
     }
+
 
     // DASHBOARD ---------------------
     public function dashboard()
@@ -181,7 +261,7 @@ class SalesExecutiveAuthController extends Controller
         // Prepare graph data for last 30 days
         $days = 30;
         $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
-        
+
         $dates = [];
         $dateKeys = [];
         for ($i = 0; $i < $days; $i++) {
@@ -189,28 +269,28 @@ class SalesExecutiveAuthController extends Controller
             $dates[] = $date->format('d M');
             $dateKeys[] = $date->format('Y-m-d');
         }
-        
+
         $studentData = Student::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->where('added_by', $salesExecutiveId)
             ->whereDate('created_at', '>=', $startDate)
             ->groupBy('date')
             ->pluck('count', 'date')
             ->toArray();
-        
+
         $institutionData = InstitutionManagement::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->where('added_by', $salesExecutiveId)
             ->whereDate('created_at', '>=', $startDate)
             ->groupBy('date')
             ->pluck('count', 'date')
             ->toArray();
-        
+
         $studentsCount = [];
         $institutionsCount = [];
         foreach ($dateKeys as $dateKey) {
             $studentsCount[] = $studentData[$dateKey] ?? 0;
             $institutionsCount[] = $institutionData[$dateKey] ?? 0;
         }
-        
+
         // Calculate earnings for graph (students * income_per_target)
         $earningsData = [];
         foreach ($studentsCount as $count) {
