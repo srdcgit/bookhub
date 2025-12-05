@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"ritik@example.com\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"login\": \"ritikkumar12@gmail.com\", //Give email or mobile number\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -25,13 +25,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://mybookhub.in/api/login",
-							"protocol": "https",
+							"raw": "http://localhost/bookhub/public/api/login",
+							"protocol": "http",
 							"host": [
-								"mybookhub",
-								"in"
+								"localhost"
 							],
 							"path": [
+								"bookhub",
+								"public",
 								"api",
 								"login"
 							]
@@ -78,7 +79,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 23|aTaBgP9NDjlxpBUGEYTYeh5j7kmd5bE4KF4z7sZm504898c7",
+								"value": "Bearer 33|KFKcUUy933YEfzTLxAO22Ph2iQqdfhdo0sAOiydGb2300127",
 								"type": "text"
 							},
 							{
@@ -88,13 +89,14 @@
 							}
 						],
 						"url": {
-							"raw": "https://mybookhub.in/api/logout",
-							"protocol": "https",
+							"raw": "http://localhost/bookhub/public/api/logout",
+							"protocol": "http",
 							"host": [
-								"mybookhub",
-								"in"
+								"localhost"
 							],
 							"path": [
+								"bookhub",
+								"public",
 								"api",
 								"logout"
 							]
@@ -534,7 +536,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Biswajeet\",\r\n  \"email\": \"rb486373@gmail.com\",\r\n  \"phone\": \"6370775034\",\r\n  \"password\": \"223412\",\r\n  \"password_confirmation\": \"223412\"\r\n}",
+							"raw": "{\r\n  \"name\": \"Biswajeet Mohanta\",\r\n  \"email\": \"biswajeetmohanta123@gmail.com\",\r\n  \"phone\": \"7846943580\",\r\n  \"password\": \"123456\",\r\n  \"password_confirmation\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -542,16 +544,48 @@
 							}
 						},
 						"url": {
-							"raw": "https://mybookhub.in/api/sales/register",
-							"protocol": "https",
+							"raw": "http://localhost/bookhub/public/api/sales/register",
+							"protocol": "http",
 							"host": [
-								"mybookhub",
-								"in"
+								"localhost"
 							],
 							"path": [
+								"bookhub",
+								"public",
 								"api",
 								"sales",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": 7846943580,\r\n    \"otp\": \"433453\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/verify-otp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"verify-otp"
 							]
 						}
 					},
@@ -567,7 +601,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"value": "Bearer 23|aTaBgP9NDjlxpBUGEYTYeh5j7kmd5bE4KF4z7sZm504898c7",
 								"type": "text"
 							},
 							{
@@ -591,14 +625,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/sales/profile",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/sales/profile",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"sales",
 								"profile"
@@ -614,7 +647,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"value": "Bearer 13|LW3v7drTU8treviMDOGsJGYEjvXezYDR6cLJKvw3731109cc",
 								"type": "text"
 							},
 							{
@@ -689,14 +722,13 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/sales/update-profile",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/sales/update-profile",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"sales",
 								"update-profile"
@@ -756,7 +788,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer 31|ZcSGrJoU4JFU11nQ4NAGS60KreLIVbGzYVuDEIvydc7057c5",
+								"value": "Bearer 27|h0jyZS76y6zDwBTkGPxHvWYCKK43p2oKsj7Y5LPT0e47cb2f",
 								"type": "text"
 							},
 							{
@@ -770,14 +802,13 @@
 							"raw": "{\r\n        \"bank_name\": \"ICIC\",\r\n        \"account_number\": \"1234567891\",\r\n        \"ifsc_code\": \"ICIC0005\",\r\n        \"bank_branch\": \"Rairangpur\",\r\n        \"upi_id\": \"7846943580@ibl\"\r\n    }"
 						},
 						"url": {
-							"raw": "http://localhost/bookhub/public/api/sales/update-bank",
-							"protocol": "http",
+							"raw": "https://mybookhub.in/api/sales/update-bank",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"mybookhub",
+								"in"
 							],
 							"path": [
-								"bookhub",
-								"public",
 								"api",
 								"sales",
 								"update-bank"
@@ -902,7 +933,125 @@
 					"name": "Graph Data",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 32|sf4xa4Pw9HkPIBnaqTk9kdOBk2CDrFxDTNd5qYhpa614203f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/graph-data",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"graph-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 35|OPASFH0f4VITf7FpSipJNKwDOrxAiQkKnMVX6tMRc109b868",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdrawal Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 35|OPASFH0f4VITf7FpSipJNKwDOrxAiQkKnMVX6tMRc109b868",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/withdrawal-dashboard",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"withdrawal-dashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 35|OPASFH0f4VITf7FpSipJNKwDOrxAiQkKnMVX6tMRc109b868",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 10,\r\n  \"payment_method\": \"upi\",\r\n  \"remarks\": \"Send to UPI\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/bookhub/public/api/sales/withdraw-request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bookhub",
+								"public",
+								"api",
+								"sales",
+								"withdraw-request"
+							]
+						}
 					},
 					"response": []
 				}
@@ -1112,6 +1261,57 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "New Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authkey",
+						"value": "233158AfWDBTKZ65b28419P1",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"template_id\": \"650d9bf5d6fc0549b30705s\",\r\n  \"recipients\": [\r\n    {\r\n      \"mobiles\": \"917846943580\",\r\n      \"OTP\": \"123456\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://control.msg91.com/api/v5/flow/650d9bf5d6fc0549b30705s",
+					"protocol": "https",
+					"host": [
+						"control",
+						"msg91",
+						"com"
+					],
+					"path": [
+						"api",
+						"v5",
+						"flow",
+						"650d9bf5d6fc0549b30705s"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
