@@ -9,6 +9,12 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Client;
+
 
 class AuthController extends Controller
 {
@@ -85,8 +91,6 @@ class AuthController extends Controller
         ], 401);
     }
 
-
-
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
@@ -124,15 +128,55 @@ class AuthController extends Controller
         ]);
     }
 
+    public function sendSMS($phone, $otp)
+    {
+        $to = '91' . preg_replace('/[^0-9]/', '', $phone);
+
+        try {
+            $client = new Client();
+
+            // payload must match MSG91 flow template variables
+            $payload = [
+                "template_id" => env('MSG91_TEMPLATE_ID'),
+                "recipients" => [
+                    [
+                        "mobiles" => $to,
+                        "OTP" => $otp // This MUST match your template variable
+                    ]
+                ]
+            ];
+
+            Log::info("MSG91 Payload", $payload);
+
+            $response = $client->post("https://control.msg91.com/api/v5/flow/", [
+                'json' => $payload,
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authkey' => env('MSG91_AUTH_KEY'),
+                    'content-type' => 'application/json'
+                ],
+            ]);
+
+            Log::info("MSG91 Response", [
+                'status' => $response->getStatusCode(),
+                'body' => $response->getBody()->getContents()
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error("MSG91 ERROR: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:sales_executives,email',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:20|unique:sales_executives,phone',
             'password' => 'required|min:6|confirmed',
         ]);
-
 
         if ($validator->fails()) {
             return response()->json([
@@ -142,18 +186,116 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $sales = SalesExecutive::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'status' => '0',
-            'password' => Hash::make($request->password),
-        ]);
+        Cache::put('reg_name_' . $request->phone, $request->name, now()->addMinutes(10));
+        Cache::put('reg_email_' . $request->phone, $request->email, now()->addMinutes(10));
+        Cache::put('reg_phone_' . $request->phone, $request->phone, now()->addMinutes(10));
+        Cache::put('reg_password_' . $request->phone, Hash::make($request->password), now()->addMinutes(10));
+
+        $otp = rand(100000, 999999);
+
+        DB::table('otps')->updateOrInsert(
+            ['phone' => $request->phone],
+            ['otp' => $otp, 'created_at' => now(), 'updated_at' => now()]
+        );
+
+        $sendStatus = $this->sendSMS($request->phone, $otp);
+
+        if (!$sendStatus) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to send OTP. Try again.'
+            ], 500);
+        }
 
         return response()->json([
             'status' => true,
-            'message' => 'Sales Executive registered successfully. Please log in to continue.',
-            'data' => $sales,
-        ], 201);
+            'message' => 'OTP sent successfully via MSG91.'
+        ]);
     }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required',
+            'otp' => 'required'
+        ]);
+
+        $otpRecord = DB::table('otps')
+            ->where('phone', $request->phone)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if (!$otpRecord) {
+            return response()->json([
+                "status" => false,
+                "message" => "Invalid OTP"
+            ], 400);
+        }
+
+        $name = Cache::get('reg_name_' . $request->phone);
+        $email = Cache::get('reg_email_' . $request->phone);
+        $phone = Cache::get('reg_phone_' . $request->phone);
+        $password = Cache::get('reg_password_' . $request->phone);
+
+        if (!$phone) {
+            return response()->json( [
+                'status' => false,
+                'message' => 'Registration session expired'
+            ], 400);
+        }
+
+        $sales = SalesExecutive::create([
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'status' => '0',
+            'password' => $password,
+        ]);
+
+
+        Cache::forget('reg_name_' . $phone);
+        Cache::forget('reg_email_' . $phone);
+        Cache::forget('reg_phone_' . $phone);
+        Cache::forget('reg_password_' . $phone);
+
+        DB::table('otps')->where('phone', $phone)->delete();
+
+        return response()->json([
+            "status" => true,
+            "message" => "Registration successful!",
+            "data" => $sales
+        ]);
+    }
+
+    // public function register(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|email|max:255|unique:sales_executives,email',
+    //         'phone' => 'required|string|max:20',
+    //         'password' => 'required|min:6| ',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Validation failed',
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $sales = SalesExecutive::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'phone' => $request->phone,
+    //         'status' => '0',
+    //         'password' => Hash::make($request->password),
+    //     ]);
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Sales Executive registered successfully. Please log in to continue.',
+    //         'data' => $sales,
+    //     ], 201);
+    // }
 }
