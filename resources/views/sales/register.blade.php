@@ -110,68 +110,83 @@
                     <form method="POST" action="{{ route('sales.register.submit') }}">
                         @csrf
 
-                            {{-- Name --}}
-                            <div class="mb-3 text-start">
-                                <label class="form-label">Full Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" name="name" class="form-control" required>
-                                </div>
+                        {{-- Name --}}
+                        <div class="mb-3 text-start">
+                            <label class="form-label">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" name="name" class="form-control" required>
                             </div>
+                        </div>
 
-                            {{-- Email --}}
-                            <div class="mb-3 text-start">
-                                <label class="form-label">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control" required>
-                                </div>
+                        {{-- Email --}}
+                        <div class="mb-3 text-start">
+                            <label class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control" required
+                                    value="{{ old('email') }}">
                             </div>
+                            @error('email')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            {{-- Phone --}}
-                            <div class="mb-3 text-start">
-                                <label class="form-label">Phone Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    <input type="text" name="phone" class="form-control" required>
-                                </div>
+                        {{-- Phone --}}
+                        <div class="mb-3 text-start">
+                            <label class="form-label">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                <input type="text" name="phone" class="form-control" required
+                                    value="{{ old('phone') }}">
                             </div>
+                            @error('phone')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            {{-- OTP Input - Hidden initially --}}
-                            <div class="mb-3 text-start d-none" id="otpSection">
-                                <label class="form-label">Enter OTP</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
-                                    <input type="text" name="otp" class="form-control" placeholder="Enter OTP">
-                                </div>
+
+                        {{-- OTP Input - Hidden initially --}}
+                        <div class="mb-3 text-start d-none" id="otpSection">
+                            <label class="form-label">Enter OTP</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                                <input type="text" name="otp" class="form-control" placeholder="Enter OTP">
                             </div>
+                        </div>
 
-                            {{-- Password --}}
-                            <div class="mb-3 text-start d-none" id="passwordSection">
-                                <label class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password" class="form-control">
-                                </div>
+                        {{-- Password --}}
+                        <div class="mb-3 text-start d-none" id="passwordSection">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control">
                             </div>
+                            @error('password')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            {{-- Confirm Password --}}
-                            <div class="mb-4 text-start d-none" id="confirmPass">
-                                <label class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                    <input type="password" name="password_confirmation" class="form-control">
-                                </div>
+                        {{-- Confirm Password --}}
+                        <div class="mb-4 text-start d-none" id="confirmPass">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" name="password_confirmation" class="form-control">
                             </div>
+                            @error('password_confirmation')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            <button type="button" class="btn btn-primary w-100 mb-2" id="sendOtpBtn">
-                                Send OTP
-                            </button>
+                        <button type="button" class="btn btn-primary w-100 mb-2" id="sendOtpBtn">
+                            Send OTP
+                        </button>
 
-                            <button type="submit" class="btn btn-success w-100 d-none" id="verifyBtn">
-                                Verify OTP & Register
-                            </button>
-                        </form>
+                        <button type="submit" class="btn btn-success w-100 d-none" id="verifyBtn">
+                            Verify OTP & Register
+                        </button>
+                    </form>
 
                     <p class="small-text mb-0">
                         By registering, you agree to BookHub’s
@@ -189,15 +204,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#sendOtpBtn').click(function() {
-            // Call OTP Send API
-                $('#otpSection').removeClass('d-none');
-                $('#passwordSection').removeClass('d-none');
-                $('#confirmPass').removeClass('d-none');
-                $('#verifyBtn').removeClass('d-none');
-                $('#sendOtpBtn').addClass('d-none');
+        $('#sendOtpBtn').click(function(e) {
+            e.preventDefault();
+
+            let formData = {
+                name: $("input[name='name']").val(),
+                email: $("input[name='email']").val(),
+                phone: $("input[name='phone']").val(),
+                _token: "{{ csrf_token() }}"
+            };
+
+            $.ajax({
+                url: "{{ route('sales.otp.send') }}",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+
+                    if (response.status === true) {
+                        alert("OTP Sent Successfully");
+
+                        $("input[name='email']").prop('readonly', true);
+                        $("input[name='phone']").prop('readonly', true);
+                        // $("input[name='name']").prop('readonly', true);
+
+                        // Show OTP + Password fields
+                        $('#otpSection').removeClass('d-none');
+                        $('#passwordSection').removeClass('d-none');
+                        $('#confirmPass').removeClass('d-none');
+                        $('#verifyBtn').removeClass('d-none');
+                        $('#sendOtpBtn').addClass('d-none');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr) {
+
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+
+                        // Remove old error messages
+                        $('.text-danger').remove();
+
+                        // Email error
+                        if (errors.email) {
+                            $("input[name='email']")
+                                .closest('.mb-3')
+                                .append('<span class="text-danger small">' + errors.email[0] +
+                                    '</span>');
+                        }
+
+                        // Phone error
+                        if (errors.phone) {
+                            $("input[name='phone']")
+                                .closest('.mb-3')
+                                .append('<span class="text-danger small">' + errors.phone[0] +
+                                    '</span>');
+                        }
+                    }
+                }
             });
         });
-        </script>
+    </script>
 @endsection
