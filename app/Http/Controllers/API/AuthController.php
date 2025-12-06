@@ -260,12 +260,50 @@ class AuthController extends Controller
 
         DB::table('otps')->where('phone', $phone)->delete();
 
+        $this->sendRegistrationSuccessSMS($phone);
+
         return response()->json([
             "status" => true,
             "message" => "Registration successful!",
             "data" => $sales
         ]);
     }
+
+    public function sendRegistrationSuccessSMS($phone)
+{
+    $to = '91' . preg_replace('/[^0-9]/', '', $phone);
+
+    try {
+        $client = new Client();
+
+        $payload = [
+            "template_id" => env('MSG91_REG_SUCCESS_TEMPLATE_ID'), // NEW TEMPLATE ID
+            "recipients" => [
+                [
+                    "mobiles" => $to
+                ]
+            ]
+        ];
+
+        Log::info("Registration Success SMS Payload", $payload);
+
+        $response = $client->post("https://control.msg91.com/api/v5/flow/", [
+            'json' => $payload,
+            'headers' => [
+                'accept' => 'application/json',
+                'authkey' => env('MSG91_AUTH_KEY'),
+                'content-type' => 'application/json'
+            ],
+        ]);
+
+        return true;
+
+    } catch (\Exception $e) {
+        Log::error("Registration Success SMS ERROR: " . $e->getMessage());
+        return false;
+    }
+}
+
 
     // public function register(Request $request)
     // {
