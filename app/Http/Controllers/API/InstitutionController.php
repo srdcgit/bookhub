@@ -97,6 +97,7 @@ class InstitutionController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'board' => 'required|string|max:255',
+            'principal_name' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
             'country_id' => 'required',
             'state_id' => 'required',
@@ -187,6 +188,7 @@ class InstitutionController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'board' => 'required|string|max:255',
+            'principal_name' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
             'country_id' => 'required|integer',
             'state_id' => 'required|integer',
@@ -203,7 +205,7 @@ class InstitutionController extends Controller
             $validationRules['classes.*.strength'] = 'required|integer|min:1';
         }
 
-        // ✅ Superadmin can update status
+
         if ($type === 'superadmin') {
             $validationRules['status'] = 'boolean';
         }
@@ -211,15 +213,14 @@ class InstitutionController extends Controller
         $validated = $request->validate($validationRules);
         $updateData = $validated;
 
-        // ❌ Prevent sales from updating status
         if ($type !== 'superadmin') {
             unset($updateData['status']);
         }
 
-        // ✅ Update institution record
+
         $institution->update($updateData);
 
-        // ✅ Update classes (delete old and insert new)
+
         if ($request->has('classes')) {
             $institution->institutionClasses()->delete();
 
