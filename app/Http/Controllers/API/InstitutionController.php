@@ -121,6 +121,18 @@ class InstitutionController extends Controller
 
         $institution = InstitutionManagement::create($data);
 
+        // Create notification for admin if added by sales executive
+        if ($types === 'sales') {
+            \App\Models\Notification::create([
+                'type' => 'institution_added',
+                'title' => 'New Institution Added',
+                'message' => "Sales executive '{$user->name}' has added a new institution '{$institution->name}' ({$institution->type}) and is waiting for approval.",
+                'related_id' => $institution->id,
+                'related_type' => 'App\Models\InstitutionManagement',
+                'is_read' => false,
+            ]);
+        }
+
         if ($request->has('classes') && is_array($request->classes)) {
             foreach ($request->classes as $classData) {
                 if (!empty($classData['class_name']) && !empty($classData['strength'])) {

@@ -252,6 +252,15 @@ class AuthController extends Controller
             'password' => $password,
         ]);
 
+        // Create notification for admin
+        \App\Models\Notification::create([
+            'type' => 'sales_executive_registration',
+            'title' => 'New Sales Executive Registration',
+            'message' => "A new sales executive '{$name}' has registered and is waiting for approval.",
+            'related_id' => $sales->id,
+            'related_type' => 'App\Models\SalesExecutive',
+            'is_read' => false,
+        ]);
 
         Cache::forget('reg_name_' . $phone);
         Cache::forget('reg_email_' . $phone);

@@ -7,6 +7,7 @@ use App\Models\HeaderLogo;
 use App\Models\Withdrawal;
 use App\Models\Student;
 use App\Models\SalesExecutive;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -145,12 +146,22 @@ class WithdrawalController extends Controller
         }
 
         // Create withdrawal request
-        Withdrawal::create([
+        $withdrawal = Withdrawal::create([
             'sales_executive_id' => $salesExecutiveId,
             'amount' => $request->amount,
             'status' => 'pending',
             'payment_method' => $request->payment_method,
             'remarks' => $request->remarks,
+        ]);
+
+        // Create notification for admin
+        Notification::create([
+            'type' => 'withdrawal_request',
+            'title' => 'New Withdrawal Request',
+            'message' => "Sales executive '{$salesExecutive->name}' has requested a withdrawal of ₹{$request->amount} via {$request->payment_method}.",
+            'related_id' => $withdrawal->id,
+            'related_type' => 'App\Models\Withdrawal',
+            'is_read' => false,
         ]);
 
         return redirect()->route('sales.withdrawals.index')

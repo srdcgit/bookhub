@@ -359,4 +359,39 @@ class InstitutionManagementController extends Controller
             'message'         => 'Institution status updated successfully.',
         ]);
     }
+
+    /**
+     * Get institution details for modal (AJAX)
+     */
+    public function getDetails($id)
+    {
+        $institution = InstitutionManagement::with(['country', 'state', 'district', 'block', 'institutionClasses'])
+            ->findOrFail($id);
+        
+        $classes = $institution->institutionClasses->map(function($class) {
+            return [
+                'class_name' => $class->class_name,
+                'total_strength' => $class->total_strength,
+            ];
+        })->toArray();
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $institution->id,
+                'name' => $institution->name,
+                'type' => $institution->type,
+                'board' => $institution->board,
+                'contact_number' => $institution->contact_number,
+                'country' => $institution->country ? $institution->country->name : 'N/A',
+                'state' => $institution->state ? $institution->state->name : 'N/A',
+                'district' => $institution->district ? $institution->district->name : 'N/A',
+                'block' => $institution->block ? $institution->block->name : 'N/A',
+                'pincode' => $institution->pincode,
+                'status' => $institution->status,
+                'classes' => $classes,
+                'created_at' => $institution->created_at->format('M d, Y h:i A'),
+            ]
+        ]);
+    }
 }
