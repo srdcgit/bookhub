@@ -8,6 +8,7 @@ use App\Models\SalesExecutive;
 use App\Models\InstitutionManagement;
 use App\Models\Student;
 use App\Models\InstitutionClass;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -205,6 +206,16 @@ class SalesExecutiveAuthController extends Controller
             'phone'    => $phone,
             'status'   => 0,
             'password' => Hash::make($request->password),
+        ]);
+
+        // Create notification for admin
+        Notification::create([
+            'type' => 'sales_executive_registration',
+            'title' => 'New Sales Executive Registration',
+            'message' => "A new sales executive '{$name}' has registered and is waiting for approval.",
+            'related_id' => $sales->id,
+            'related_type' => 'App\Models\SalesExecutive',
+            'is_read' => false,
         ]);
 
         DB::table('otps')->where('phone', $phone)->delete();

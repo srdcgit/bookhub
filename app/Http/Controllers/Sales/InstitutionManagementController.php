@@ -9,6 +9,8 @@ use App\Models\District;
 use App\Models\HeaderLogo;
 use App\Models\InstitutionManagement;
 use App\Models\State;
+use App\Models\Notification;
+use App\Models\SalesExecutive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -56,9 +58,20 @@ class InstitutionManagementController extends Controller
 
         $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, $data['district_id'] ?? null);
         $data['status']   = 0;
-        $data['added_by'] = Auth::guard('sales')->user()->id;
+        $salesExecutive = Auth::guard('sales')->user();
+        $data['added_by'] = $salesExecutive->id;
 
-        InstitutionManagement::create($data);
+        $institution = InstitutionManagement::create($data);
+
+        // Create notification for admin
+        Notification::create([
+            'type' => 'institution_added',
+            'title' => 'New Institution Added',
+            'message' => "Sales executive '{$salesExecutive->name}' has added a new institution '{$institution->name}' ({$institution->type}) and is waiting for approval.",
+            'related_id' => $institution->id,
+            'related_type' => 'App\Models\InstitutionManagement',
+            'is_read' => false,
+        ]);
 
         return redirect()->route('sales.institution_managements.index')
             ->with('success_message', 'Institution has been added successfully');

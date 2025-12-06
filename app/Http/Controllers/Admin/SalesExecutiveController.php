@@ -107,13 +107,48 @@ class SalesExecutiveController extends Controller
             'sales_executive_id'  => 'required|integer|exists:sales_executives,id',
         ]);
 
-        $newStatus = $data['status'] === 'Active' ? 0 : 1;
+        // Fix: status 1 = Active, status 0 = Inactive
+        $newStatus = $data['status'] === 'Active' ? 1 : 0;
 
         SalesExecutive::where('id', $data['sales_executive_id'])->update(['status' => $newStatus]);
 
         return response()->json([
             'status'             => $newStatus,
             'sales_executive_id' => $data['sales_executive_id'],
+        ]);
+    }
+
+    /**
+     * Get sales executive details for modal (AJAX)
+     */
+    public function getDetails($id)
+    {
+        $salesExecutive = SalesExecutive::findOrFail($id);
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $salesExecutive->id,
+                'name' => $salesExecutive->name,
+                'email' => $salesExecutive->email,
+                'phone' => $salesExecutive->phone,
+                'address' => $salesExecutive->address,
+                'city' => $salesExecutive->city,
+                'district' => $salesExecutive->district,
+                'state' => $salesExecutive->state,
+                'pincode' => $salesExecutive->pincode,
+                'country' => $salesExecutive->country,
+                // 'bank_name' => $salesExecutive->bank_name,
+                // 'account_number' => $salesExecutive->account_number,
+                // 'ifsc_code' => $salesExecutive->ifsc_code,
+                // 'bank_branch' => $salesExecutive->bank_branch,
+                // 'upi_id' => $salesExecutive->upi_id,
+                // 'total_target' => $salesExecutive->total_target,
+                // 'completed_target' => $salesExecutive->completed_target,
+                // 'income_per_target' => $salesExecutive->income_per_target,
+                'status' => $salesExecutive->status,
+                'created_at' => $salesExecutive->created_at->format('M d, Y h:i A'),
+            ]
         ]);
     }
 }
