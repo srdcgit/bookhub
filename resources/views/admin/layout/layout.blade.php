@@ -20,6 +20,12 @@
     <link rel="stylesheet" href="{{ url('admin/vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
 
+    {{-- Font Awesome --}}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-LX1L+z..."
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
 
     <!-- Plugin css for this page (The icons from Skydash Admin Panel template) -->
     <link rel="stylesheet" href="{{ url('admin/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -95,7 +101,7 @@
     <!-- jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    
+
 
     <!-- Then DataTables -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -139,6 +145,8 @@
     <script src="{{ url('admin/js/custom.js') }}"></script>
 
     {{-- End: Our Custom Admin JS --}}
+
+    @stack('scripts')
 
 </body>
 

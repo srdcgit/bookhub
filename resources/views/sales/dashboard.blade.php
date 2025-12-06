@@ -17,16 +17,16 @@
 
     <!-- Key Metrics Cards -->
     <div class="row g-4 mb-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100">
+        <div class="col-md-6 col-lg-3" >
+            <div class="card shadow-sm border-0 h-100" style="background-color: #b3d9e1" !important>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
                             <p class="text-muted mb-1 small">Total Institutions</p>
                             <h3 class="fw-bold mb-0">{{ number_format($totalInstitutions ?? 0) }}</h3>
                         </div>
-                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                            <i class="bi bi-building fs-4 text-primary"></i>
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
+                            <i class="bi bi-building fs-4 text-light"></i>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                             <p class="mb-1 opacity-75 small">Total Students</p>
                             <h3 class="fw-bold mb-0">{{ number_format($totalStudents ?? 0) }}</h3>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-people fs-4"></i>
                         </div>
                     </div>
@@ -48,14 +48,14 @@
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 h-100 bg-success text-white">
+            <div class="card shadow-sm border-0 h-100 text-white" style="background-color: rgb(83 155 122)" !important>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
                             <p class="mb-1 opacity-75 small">Today's Students</p>
                             <h3 class="fw-bold mb-0">{{ number_format($todayStudents ?? 0) }}</h3>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-calendar fs-4"></i>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                             <p class="mb-1 opacity-75 small">Total Classes</p>
                             <h3 class="fw-bold mb-0">{{ number_format($totalClasses ?? 0) }}</h3>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-book fs-4"></i>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                             <h2 class="fw-bold mb-0">₹{{ number_format($todayEarning ?? 0, 2) }}</h2>
                             <small class="mt-2 opacity-75 d-block">{{ number_format($todayStudents ?? 0) }} students enrolled today</small>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-cash-stack fs-4"></i>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                             <h2 class="fw-bold mb-0">₹{{ number_format($totalEarning ?? 0, 2) }}</h2>
                             <small class="mt-2 opacity-75 d-block">{{ number_format($totalStudents ?? 0) }} total students</small>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-graph-up-arrow fs-4"></i>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 bg-warning text-white">
+            <div class="card shadow-sm border-0 h-100 text-white" style="background-color: #ab9461" !important>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
@@ -122,7 +122,7 @@
                             <h2 class="fw-bold mb-0">₹{{ number_format($incomePerTarget ?? 0, 2) }}</h2>
                             <small class="mt-2 opacity-75 d-block">Per student enrolled</small>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                        <div class="bg-secondary bg-opacity-20 rounded-circle p-3">
                             <i class="bi bi-tag fs-4"></i>
                         </div>
                     </div>
@@ -173,12 +173,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Performance Bar Chart (Last 30 Days)
     const ctx1 = document.getElementById('dashboardBarChart').getContext('2d');
-    
+
     const labels = @json($dates ?? []);
     const studentsData = @json($studentsCount ?? []);
     const institutionsData = @json($institutionsCount ?? []);
     const earningsData = @json($earningsData ?? []);
-    
+
     new Chart(ctx1, {
         type: 'bar',
         data: {
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Summary Statistics Bar Chart
     const ctx2 = document.getElementById('summaryBarChart').getContext('2d');
-    
+
     const summaryLabels = ['Institutions', 'Students', 'Classes', 'Total Earnings'];
     const summaryData = [
         {{ $totalInstitutions ?? 0 }},
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {{ $totalClasses ?? 0 }},
         {{ round($totalEarning ?? 0) }}
     ];
-    
+
     new Chart(ctx2, {
         type: 'bar',
         data: {

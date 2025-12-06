@@ -43,12 +43,12 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="padding-top: 4px;">
                     <x-nav-link :href="route('sales.reports.index')" :active="request()->routeIs('sales.reports.*')" class="nav-link">
                         <i class="bi bi-file-earmark-text me-1"></i>{{ __('Reports') }}
                     </x-nav-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="padding-top: 4px;">
                     <x-nav-link :href="route('sales.withdrawals.index')" :active="request()->routeIs('sales.withdrawals.*')" class="nav-link">
                         <i class="bi bi-wallet2 me-1"></i>{{ __('Withdrawals') }}
                     </x-nav-link>
