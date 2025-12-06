@@ -15,6 +15,7 @@ class InstitutionManagement extends Model
         'name',
         'type',
         'board',
+        'principal_name',
         'class',
         'contact_number',
         'country_id',

@@ -24,6 +24,7 @@
                             <th>Name</th>
                             <th>Type</th>
                             <th>Board</th>
+                            <th>Principal Name</th>
                             <th>Contact</th>
                             <th>Pincode</th>
                             <th>Action</th>
@@ -36,6 +37,7 @@
                                 <td>{{ $institution->name }}</td>
                                 <td>{{ $institution->type }}</td>
                                 <td>{{ $institution->board }}</td>
+                                <td>{{ $institution->principal_name }}</td>
                                 <td>{{ $institution->contact_number }}</td>
                                 <td>{{ $institution->pincode }}</td>
                                 <td>

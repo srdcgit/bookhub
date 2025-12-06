@@ -234,6 +234,7 @@
                                 @enderror
                             </div>
                         </div>
+                        
 
                         <div class="form-row">
                             <div class="form-group">
@@ -250,6 +251,16 @@
                                     <option value="Other" {{ old('board') == 'Other' ? 'selected' : '' }}>Other</option>
                                 </select>
                                 @error('board')
+                                    <div class="error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-user form-icon"></i>
+                                    Principal Name<span class="required">*</span>
+                                </label>
+                                <input type="text" name="principal_name" class="form-control" value="{{ old('principal_name') }}" placeholder="Enter principal name" required>
+                                @error('principal_name')
                                     <div class="error-message">{{ $message }}</div>
                                 @enderror
                             </div>

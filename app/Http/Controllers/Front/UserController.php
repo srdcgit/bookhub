@@ -267,6 +267,7 @@ class UserController extends Controller
 
             // Validation
             $request->validate([
+                'email'   => 'required|email|max:100|unique:users,email,' . Auth::id(),
                 'name'    => 'required|string|max:100',
                 'city'    => 'required|string|max:100',
                 'state'   => 'required|string|max:100',
@@ -277,6 +278,7 @@ class UserController extends Controller
             ]);
 
             User::where('id', Auth::id())->update([
+                'email'   => $data['email'],
                 'name'    => $data['name'],
                 'mobile'  => $data['mobile'],
                 'city'    => $data['city'],

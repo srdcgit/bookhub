@@ -456,10 +456,6 @@
                                         aria-selected="true">Dashboard</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#orders" class="nav-orders nav-link" id="orders-tab" data-bs-toggle="tab"
-                                        role="tab" aria-controls="orders" aria-selected="false">My Book Requests</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
                                     <a href="#edit-account" class="nav-edit-account nav-link" id="edit-account-tab"
                                         data-bs-toggle="tab" role="tab" aria-controls="edit-account"
                                         aria-selected="false">Account Details</a>
@@ -468,6 +464,10 @@
                                     <a href="#change-password" class="nav-change-password nav-link" id="change-password-tab"
                                         data-bs-toggle="tab" role="tab" aria-controls="change-password"
                                         aria-selected="false">Change Password</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a href="#orders" class="nav-orders nav-link" id="orders-tab" data-bs-toggle="tab"
+                                        role="tab" aria-controls="orders" aria-selected="false">My Book Requests</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#my-queries" class="nav-my-queries nav-link" id="my-queries-tab"
@@ -557,59 +557,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Orders/Requests Tab -->
-                                <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                    <div class="woocommerce-account-header">
-                                        <h1>My Book Requests</h1>
-                                        <p>View and track all your book requests from your account.</p>
-                                    </div>
-
-                                    @if ($requestedBooks->isEmpty())
-                                        <div class="empty-state">
-                                            <div class="empty-state-icon">📚</div>
-                                            <h3>No requests yet</h3>
-                                            <p>You haven't made any book requests yet.</p>
-                                            <a href="{{ route('requestbook.index') }}" class="woocommerce-Button">Browse
-                                                Books</a>
-                                        </div>
-                                    @else
-                                        <table class="woocommerce-orders-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Request ID</th>
-                                                    <th>Book Title</th>
-                                                    <th>Author</th>
-                                                    <th>Status</th>
-                                                    <th>Date</th>
-                                                    <th>Message</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($requestedBooks as $key => $book)
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}
-                                                        </td>
-                                                        <td>{{ $book->book_title }}</td>
-                                                        <td>{{ $book->author_name }}</td>
-                                                        <td>
-                                                            @if ($book->status == 0)
-                                                                <span class="status-badge status-pending">Pending</span>
-                                                            @elseif ($book->status == 1)
-                                                                <span class="status-badge status-available">Book
-                                                                    Available</span>
-                                                            @else
-                                                                <span
-                                                                    class="status-badge status-unavailable">Unavailable</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>{{ $book->created_at->format('M d, Y') }}</td>
-                                                        <td>{{ Str::limit($book->message, 30) }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    @endif
-                                </div>
+                               
 
                                 <!-- Account Details Tab -->
                                 <div class="tab-pane fade" id="edit-account" role="tabpanel"
@@ -638,8 +586,7 @@
                                         @csrf
                                         <div class="woocommerce-form-row woocommerce-form-row--wide">
                                             <label>Email address <span class="required">*</span></label>
-                                            <input type="email" value="{{ Auth::user()->email }}" readonly>
-                                            <small style="color: #666;">Email address cannot be changed</small>
+                                            <input type="email" id="user-email" name="email" value="{{ Auth::user()->email }}" required>
                                         </div>
 
                                         <div class="woocommerce-form-row woocommerce-form-row--wide">
@@ -742,6 +689,60 @@
                                             <button type="submit" class="woocommerce-Button">Update password</button>
                                         </div>
                                     </form>
+                                </div>
+
+                                 <!-- Orders/Requests Tab -->
+                                 <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                    <div class="woocommerce-account-header">
+                                        <h1>My Book Requests</h1>
+                                        <p>View and track all your book requests from your account.</p>
+                                    </div>
+
+                                    @if ($requestedBooks->isEmpty())
+                                        <div class="empty-state">
+                                            <div class="empty-state-icon">📚</div>
+                                            <h3>No requests yet</h3>
+                                            <p>You haven't made any book requests yet.</p>
+                                            <a href="{{ route('requestbook.index') }}" class="woocommerce-Button">Browse
+                                                Books</a>
+                                        </div>
+                                    @else
+                                        <table class="woocommerce-orders-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Request ID</th>
+                                                    <th>Book Title</th>
+                                                    <th>Author</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                    <th>Message</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($requestedBooks as $key => $book)
+                                                    <tr>
+                                                        <td>{{ $key + 1 }}
+                                                        </td>
+                                                        <td>{{ $book->book_title }}</td>
+                                                        <td>{{ $book->author_name }}</td>
+                                                        <td>
+                                                            @if ($book->status == 0)
+                                                                <span class="status-badge status-pending">Pending</span>
+                                                            @elseif ($book->status == 1)
+                                                                <span class="status-badge status-available">Book
+                                                                    Available</span>
+                                                            @else
+                                                                <span
+                                                                    class="status-badge status-unavailable">Unavailable</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $book->created_at->format('M d, Y') }}</td>
+                                                        <td>{{ Str::limit($book->message, 30) }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 </div>
 
                                 <!-- My Queries Tab -->
