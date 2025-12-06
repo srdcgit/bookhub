@@ -8,6 +8,9 @@ use App\Models\Student;
 use App\Models\Withdrawal;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class WithdrawalApiController extends Controller
 {
@@ -84,11 +87,21 @@ class WithdrawalApiController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:1|max:' . $availableBalance,
             'payment_method' => 'required|string|in:bank_transfer,upi',
             'remarks' => 'nullable|string|max:500',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         if ($validated['payment_method'] == 'bank_transfer') {
             if (
@@ -121,9 +134,46 @@ class WithdrawalApiController extends Controller
             'status' => 'pending'
         ]);
 
+        $this->sendWithdrawRequestSMS($sales->phone, $validated['amount']);
+
         return response()->json([
             'status' => true,
             'message' => 'Withdrawal request submitted successfully.',
         ], 201);
+    }
+
+    public function sendWithdrawRequestSMS($phone, $amount)
+    {
+        $to = '91' . preg_replace('/[^0-9]/', '', $phone);
+
+        try {
+            $client = new Client();
+
+            $payload = [
+                "template_id" => env('MSG91_WITHDRAW_REQUEST_TEMPLATE_ID'), // Your MSG91 Template ID
+                "recipients" => [
+                    [
+                        "mobiles" => $to,
+                        "amount" => $amount
+                    ]
+                ]
+            ];
+
+            Log::info("Withdrawal Request SMS Payload", $payload);
+
+            $client->post("https://control.msg91.com/api/v5/flow/", [
+                'json' => $payload,
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authkey' => env('MSG91_AUTH_KEY'),
+                    'content-type' => 'application/json'
+                ],
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error("Withdrawal Request SMS ERROR: " . $e->getMessage());
+            return false;
+        }
     }
 }
