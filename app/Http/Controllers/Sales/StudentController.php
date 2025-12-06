@@ -33,11 +33,12 @@ class StudentController extends Controller
      */
     public function create()
     {
+        $salesId = Auth::guard('sales')->id();
         $headerLogo = HeaderLogo::first();
         $logos = HeaderLogo::first();
         Session::put('page', 'students');
 
-        $institutions = InstitutionManagement::where('status', 1)->orderBy('name')->get();
+        $institutions = InstitutionManagement::where('status', 1)->where('added_by', $salesId)->orderBy('name')->get();
 
         return view('sales.students.create')->with(compact('institutions', 'logos', 'headerLogo'));
     }
