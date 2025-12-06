@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
@@ -17,19 +18,21 @@ class InstitutionManagementController extends Controller
 {
     public function index()
     {
-        // $id=Auth::guard('sales')->user()->name;
+        $salesId = Auth::guard('sales')->id();
         $logos = HeaderLogo::first();
         $headerLogo = HeaderLogo::first();
-        $institutions = InstitutionManagement::orderBy('id', 'desc')->paginate(20);
+        $institutions = InstitutionManagement::where('added_by', $salesId)
+            ->orderBy('id', 'desc')
+            ->paginate(20);
 
-        return view('sales.institution_managements.index', compact('institutions','logos','headerLogo'));
+        return view('sales.institution_managements.index', compact('institutions', 'logos', 'headerLogo'));
     }
 
     public function create()
     {
         $logos = HeaderLogo::first();
         $headerLogo = HeaderLogo::first();
-        return view('sales.institution_managements.create', compact('logos','headerLogo'));
+        return view('sales.institution_managements.create', compact('logos', 'headerLogo'));
     }
 
     public function store(Request $request)
@@ -156,17 +159,27 @@ class InstitutionManagementController extends Controller
 
         if ($type === 'school') {
             $classes = [
-                'Nursery', 'LKG', 'UKG',
-                'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5',
-                'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
-                'Class 11', 'Class 12',
+                'Nursery',
+                'LKG',
+                'UKG',
+                'Class 1',
+                'Class 2',
+                'Class 3',
+                'Class 4',
+                'Class 5',
+                'Class 6',
+                'Class 7',
+                'Class 8',
+                'Class 9',
+                'Class 10',
+                'Class 11',
+                'Class 12',
             ];
         } else {
             $classes = [];
         }
 
         return response()->json($classes);
-
     }
 
     public function getLocationData(Request $request)
