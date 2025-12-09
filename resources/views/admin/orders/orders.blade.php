@@ -87,3 +87,38 @@
         <!-- partial -->
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        // Destroy existing DataTable instance if it exists
+        if ($.fn.DataTable.isDataTable('#orders')) {
+            $('#orders').DataTable().destroy();
+        }
+
+        // Initialize DataTable
+        $('#orders').DataTable({
+            "order": [[0, "desc"]], // Sort by Order ID descending
+            "pageLength": 10, // Show 10 entries per page
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]], // Page length options
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(filtered from _MAX_ total entries)",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
+                }
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": [4, 8] }, // Disable sorting on Ordered Products and Actions columns
+                { "searchable": false, "targets": [8] } // Disable search on Actions column
+            ]
+        });
+    });
+</script>
+@endpush

@@ -46,6 +46,7 @@ class InstitutionManagementController extends Controller
             'name'           => 'required|string|max:255',
             'type'           => 'required|string|max:255',
             'board'          => 'required|string|max:255',
+            'principal_name' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
             'country_id'     => 'required|integer',
             'state_id'       => 'required|integer',
@@ -57,6 +58,10 @@ class InstitutionManagementController extends Controller
 
         $data['block_id'] = $this->prepareBlockId($data['block_id'] ?? null, $data['district_id'] ?? null);
         $data['status']   = 0;
+
+
+
+        
         $salesExecutive = Auth::guard('sales')->user();
         $data['added_by'] = $salesExecutive->id;
 
@@ -110,6 +115,7 @@ class InstitutionManagementController extends Controller
             'name'           => 'required|string|max:255',
             'type'           => 'required|string|max:255',
             'board'          => 'required|string|max:255',
+            'principal_name' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
             'district_id'    => 'required|string|max:255',
             'block_id'       => 'nullable|string|max:255',

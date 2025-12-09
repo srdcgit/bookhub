@@ -116,35 +116,33 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('studentEnrollmentChart').getContext('2d');
-    
+
     const labels = @json($dates);
     const studentsData = @json($studentsCount);
     const earningsData = @json($earningsData);
-    
+
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [
                 {
                     label: 'Students Enrolled',
                     data: studentsData,
+                    backgroundColor: 'rgba(13, 110, 253, 0.7)',
                     borderColor: 'rgb(13, 110, 253)',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    yAxisID: 'y'
+                    borderWidth: 1,
+                    yAxisID: 'y',
+                    order: 2
                 },
                 {
                     label: 'Earnings (₹)',
                     data: earningsData,
+                    backgroundColor: 'rgba(25, 135, 84, 0.7)',
                     borderColor: 'rgb(25, 135, 84)',
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    yAxisID: 'y1'
+                    borderWidth: 1,
+                    yAxisID: 'y1',
+                    order: 1
                 }
             ]
         },
@@ -179,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             scales: {
                 x: {
+                    stacked: false,
                     display: true,
                     title: {
                         display: true,

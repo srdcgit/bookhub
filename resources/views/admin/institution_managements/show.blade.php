@@ -151,6 +151,14 @@
                         </div>
                         <div class="detail-value">{{ $institution->board }}</div>
                     </div>
+                    <div class="detail-group">
+                        <div class="detail-label">
+                            <i class="fas fa-user detail-icon"></i>
+                            Principal Name
+                        </div>
+                        <div class="detail-value">{{ $institution->principal_name }}</div>
+                    </div>
+
 
                     <div class="detail-group">
                         <div class="detail-label">

@@ -238,7 +238,7 @@ class AuthController extends Controller
         $password = Cache::get('reg_password_' . $request->phone);
 
         if (!$phone) {
-            return response()->json( [
+            return response()->json([
                 'status' => false,
                 'message' => 'Registration session expired'
             ], 400);
@@ -279,39 +279,38 @@ class AuthController extends Controller
     }
 
     public function sendRegistrationSuccessSMS($phone)
-{
-    $to = '91' . preg_replace('/[^0-9]/', '', $phone);
+    {
+        $to = '91' . preg_replace('/[^0-9]/', '', $phone);
 
-    try {
-        $client = new Client();
+        try {
+            $client = new Client();
 
-        $payload = [
-            "template_id" => env('MSG91_REG_SUCCESS_TEMPLATE_ID'), // NEW TEMPLATE ID
-            "recipients" => [
-                [
-                    "mobiles" => $to
+            $payload = [
+                "template_id" => env('MSG91_REG_SUCCESS_TEMPLATE_ID'), // NEW TEMPLATE ID
+                "recipients" => [
+                    [
+                        "mobiles" => $to
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        Log::info("Registration Success SMS Payload", $payload);
+            Log::info("Registration Success SMS Payload", $payload);
 
-        $response = $client->post("https://control.msg91.com/api/v5/flow/", [
-            'json' => $payload,
-            'headers' => [
-                'accept' => 'application/json',
-                'authkey' => env('MSG91_AUTH_KEY'),
-                'content-type' => 'application/json'
-            ],
-        ]);
+            $response = $client->post("https://control.msg91.com/api/v5/flow/", [
+                'json' => $payload,
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authkey' => env('MSG91_AUTH_KEY'),
+                    'content-type' => 'application/json'
+                ],
+            ]);
 
-        return true;
-
-    } catch (\Exception $e) {
-        Log::error("Registration Success SMS ERROR: " . $e->getMessage());
-        return false;
+            return true;
+        } catch (\Exception $e) {
+            Log::error("Registration Success SMS ERROR: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
     // public function register(Request $request)

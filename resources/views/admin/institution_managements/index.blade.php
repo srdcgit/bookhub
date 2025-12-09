@@ -609,6 +609,7 @@
                                     <th>Institution Name</th>
                                     <th>Type</th>
                                     <th>Board</th>
+                                    <th>Principal Name</th>
                                     <th>Contact</th>
                                     <th>Location</th>
                                     <th class="text-center" style="width: 100px">Status</th>
@@ -630,6 +631,7 @@
                                             </span>
                                         </td>
                                         <td>{{ $institution->board ?? 'N/A' }}</td>
+                                        <td>{{ $institution->principal_name ?? 'N/A' }}</td>
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
                                                 <i class="fas fa-phone text-success"></i>
@@ -758,6 +760,10 @@
                     {
                         "width": "12%",
                         "targets": 4
+                    }, // Principal Name
+                    {
+                        "width": "12%",
+                        "targets": 5
                     }, // Contact
                     {
                         "width": "20%",

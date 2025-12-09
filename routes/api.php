@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\StudentApiController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\SalesController;
 use App\Http\Controllers\Api\SalesDashboardController;
+use App\Http\Controllers\Api\SalesReportController;
+use App\Http\Controllers\Api\WithdrawalApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,4 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sales/total-students', [SalesDashboardController::class, 'totalStudents']);
 
     Route::get('/sales/graph-data', [SalesDashboardController::class, 'graphDashboard']);
+    Route::get('/sales/report', [SalesReportController::class, 'getSalesReport']);
+    Route::get('/sales/withdrawal-dashboard', [WithdrawalApiController::class, 'dashboard']);
+    Route::post('/sales/withdraw-request', [WithdrawalApiController::class, 'requestWithdraw']);
 });

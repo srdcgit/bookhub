@@ -124,7 +124,7 @@ class SalesExecutiveController extends Controller
     public function getDetails($id)
     {
         $salesExecutive = SalesExecutive::findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => [
