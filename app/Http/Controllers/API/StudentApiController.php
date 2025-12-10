@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InstitutionManagement;
+use App\Models\Notification;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -114,6 +115,16 @@ class StudentApiController extends Controller
             'mobile' => $validated['phone'],              // ALWAYS INSERT MOBILE
             'status' => $studentStatus,
             'password' => Hash::make('12345678'),
+        ]);
+
+         // Create notification for admin
+         Notification::create([
+            'type' => 'student_added',
+            'title' => 'New Student Added',
+            'message' => "Sales executive '" . Auth::guard('sales')->user()->name . "' has added a new student '{$validated['name']}' and is waiting for approval.",
+            'related_id' => $student->id,
+            'related_type' => 'App\Models\Student',
+            'is_read' => false,
         ]);
 
         return response()->json([
