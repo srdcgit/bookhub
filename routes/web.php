@@ -168,6 +168,8 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
             'update'  => 'admin.students.update',
             'destroy' => 'admin.students.destroy',
         ]);
+        Route::get('students/{id}/details', 'StudentController@details')->name('admin.students.details');
+        Route::post('students/{id}/update-status', 'StudentController@updateStatus')->name('admin.students.updateStatus');
 
         // Withdrawals Management
         Route::get('withdrawals', 'WithdrawalController@index')->name('admin.withdrawals.index');

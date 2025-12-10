@@ -87,6 +87,11 @@
                                                                     <i style="font-size: 20px" class="mdi mdi-school text-primary"></i>
                                                                 </a>
                                                             @endif
+                                                            @if ($notification->related_type == 'App\Models\Student' && $notification->related_id)
+                                                                <a href="#" class="view-student" data-id="{{ $notification->related_id }}" data-notification-id="{{ $notification->id }}" title="View Student">
+                                                                    <i style="font-size: 20px" class="mdi mdi-account text-info"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -107,6 +112,36 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Details Modal -->
+    <div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="studentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentModalLabel">Student Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="studentModalBody">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="approveStudentBtn" style="display: none;">
+                        <i class="mdi mdi-check"></i> Approve
+                    </button>
+                    <button type="button" class="btn btn-danger" id="rejectStudentBtn" style="display: none;">
+                        <i class="mdi mdi-close"></i> Reject
+                    </button>
                 </div>
             </div>
         </div>
@@ -209,20 +244,22 @@
             var currentNotificationId = null;
             var currentInstitutionId = null;
             var currentInstitutionNotificationId = null;
+            var currentStudentId = null;
+            var currentStudentNotificationId = null;
 
             // Check if URL has parameters to open modal automatically
             var urlParams = new URLSearchParams(window.location.search);
             var viewSeId = urlParams.get('view-se');
             var notifId = urlParams.get('notif');
             var viewInstId = urlParams.get('view-inst');
-            
+
             if (viewSeId) {
                 currentSalesExecutiveId = viewSeId;
                 currentNotificationId = notifId;
                 $('#salesExecutiveModal').modal('show');
                 loadSalesExecutiveDetails(viewSeId);
             }
-            
+
             if (viewInstId) {
                 currentInstitutionId = viewInstId;
                 currentInstitutionNotificationId = notifId;
@@ -235,14 +272,14 @@
                 e.preventDefault();
                 currentInstitutionId = $(this).data('id');
                 currentInstitutionNotificationId = $(this).data('notification-id');
-                
+
                 // Reset modal state
                 $('#approveInstitutionBtn').hide();
                 $('#rejectInstitutionBtn').hide();
-                
+
                 // Show modal
                 $('#institutionModal').modal('show');
-                
+
                 // Load institution details
                 loadInstitutionDetails(currentInstitutionId, currentInstitutionNotificationId);
             });
@@ -254,12 +291,36 @@
                 $('#institutionModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
             });
 
+            // View Student Details Modal
+            $(document).on('click', '.view-student', function(e) {
+                e.preventDefault();
+                currentStudentId = $(this).data('id');
+                currentStudentNotificationId = $(this).data('notification-id');
+
+                // Reset modal state
+                $('#approveStudentBtn').hide();
+                $('#rejectStudentBtn').hide();
+
+                // Show modal
+                $('#studentModal').modal('show');
+
+                // Load student details
+                loadStudentDetails(currentStudentId, currentStudentNotificationId);
+            });
+
+            // Reset student modal when closed
+            $('#studentModal').on('hidden.bs.modal', function () {
+                currentStudentId = null;
+                currentStudentNotificationId = null;
+                $('#studentModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
+            });
+
             function loadInstitutionDetails(id, notificationId) {
                 if (notificationId) {
                     currentInstitutionNotificationId = notificationId;
                 }
                 $('#institutionModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
-                
+
                 $.ajax({
                     url: 'institution-management/' + id + '/details',
                     type: 'GET',
@@ -269,10 +330,10 @@
                     success: function(response) {
                         if (response.success) {
                             var data = response.data;
-                            var statusBadge = data.status == 1 
-                                ? '<span class="badge badge-success">Active</span>' 
+                            var statusBadge = data.status == 1
+                                ? '<span class="badge badge-success">Active</span>'
                                 : '<span class="badge badge-warning">Inactive (Pending Approval)</span>';
-                            
+
                             var classesHtml = '';
                             if (data.classes && data.classes.length > 0) {
                                 classesHtml = '<h6 class="font-weight-bold mt-3">Classes</h6><table class="table table-sm table-bordered"><thead><tr><th>Class Name</th><th>Total Strength</th></tr></thead><tbody>';
@@ -281,7 +342,7 @@
                                 });
                                 classesHtml += '</tbody></table>';
                             }
-                            
+
                             var html = `
                                 <div class="row">
                                     <div class="col-md-12">
@@ -343,9 +404,9 @@
                                 </div>
                                 ${classesHtml}
                             `;
-                            
+
                             $('#institutionModalBody').html(html);
-                            
+
                             // Show/hide status buttons based on current status
                             if (data.status == 0) {
                                 $('#approveInstitutionBtn').show().off('click').on('click', function() {
@@ -395,7 +456,7 @@
                                 }
                             });
                         }
-                        
+
                         // Reload the page to update everything
                         location.reload();
                     },
@@ -406,19 +467,149 @@
                 });
             }
 
-            // View Sales Executive Details Modal
+            function loadStudentDetails(id, notificationId) {
+                if (notificationId) {
+                    currentStudentNotificationId = notificationId;
+                }
+                $('#studentModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
+
+                $.ajax({
+                    url: 'students/' + id + '/details',
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            var data = response.data;
+                            var statusBadge = data.status == 1
+                                ? '<span class="badge badge-success">Approved</span>'
+                                : '<span class="badge badge-warning">Pending</span>';
+
+                            var html = `
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h6 class="font-weight-bold">Student Information</h6>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td><strong>Name:</strong></td>
+                                                <td>${data.name || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Email:</strong></td>
+                                                <td>${data.email || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Phone:</strong></td>
+                                                <td>${data.phone || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Class:</strong></td>
+                                                <td>${data.class || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Gender:</strong></td>
+                                                <td>${data.gender ? data.gender.charAt(0).toUpperCase() + data.gender.slice(1) : 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>DOB:</strong></td>
+                                                <td>${data.dob || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Roll No:</strong></td>
+                                                <td>${data.roll_number || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Institution:</strong></td>
+                                                <td>${data.institution || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Status:</strong></td>
+                                                <td>${statusBadge}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Added On:</strong></td>
+                                                <td>${data.created_at || 'N/A'}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            `;
+
+                            $('#studentModalBody').html(html);
+
+                            // Show/hide status buttons based on current status
+                            if (data.status == 0) {
+                                $('#approveStudentBtn').show().off('click').on('click', function() {
+                                    if (!confirm('Are you sure you want to approve this student?')) {
+                                        return;
+                                    }
+                                    updateStudentStatus(1, id, currentStudentNotificationId);
+                                });
+                                $('#rejectStudentBtn').hide();
+                            } else {
+                                $('#approveStudentBtn').hide();
+                                $('#rejectStudentBtn').show().off('click').on('click', function() {
+                                    if (!confirm('Are you sure you want to reject this student?')) {
+                                        return;
+                                    }
+                                    updateStudentStatus(0, id, currentStudentNotificationId);
+                                });
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#studentModalBody').html('<div class="alert alert-danger">Error loading student details.</div>');
+                        console.error('Error loading student details:', xhr);
+                    }
+                });
+            }
+
+            function updateStudentStatus(status, studentId, notificationId) {
+                $.ajax({
+                    url: 'students/' + studentId + '/update-status',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        status: status
+                    },
+                    success: function(response) {
+                        // Mark notification as read
+                        if (notificationId) {
+                            $.ajax({
+                                url: '/admin/notifications/' + notificationId + '/read',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        }
+
+                        // Reload page to reflect updates
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating student status:', xhr);
+                        alert('Error updating student status');
+                    }
+                });
+            }
+
+            // View Sales Executive Details Modal (same pattern as Institution modal)
             $(document).on('click', '.view-sales-executive', function(e) {
                 e.preventDefault();
                 currentSalesExecutiveId = $(this).data('id');
                 currentNotificationId = $(this).data('notification-id');
-                
+
                 // Reset modal state
                 $('#approveSalesExecutiveBtn').hide();
                 $('#rejectSalesExecutiveBtn').hide();
-                
+
                 // Show modal
                 $('#salesExecutiveModal').modal('show');
-                
+
                 // Load sales executive details
                 loadSalesExecutiveDetails(currentSalesExecutiveId);
             });
@@ -432,7 +623,7 @@
 
             function loadSalesExecutiveDetails(id) {
                 $('#salesExecutiveModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
-                
+
                 $.ajax({
                     url: '{{ url("admin/sales-executive") }}/' + id + '/details',
                     type: 'GET',
@@ -442,10 +633,10 @@
                     success: function(response) {
                         if (response.success) {
                             var data = response.data;
-                            var statusBadge = data.status == 1 
-                                ? '<span class="badge badge-success">Active</span>' 
+                            var statusBadge = data.status == 1
+                                ? '<span class="badge badge-success">Active</span>'
                                 : '<span class="badge badge-warning">Inactive (Pending Approval)</span>';
-                            
+
                             var html = `
                                 <div class="row">
                                     <div class="col-md-12">
@@ -473,13 +664,13 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                             `;
-                            
+
                             $('#salesExecutiveModalBody').html(html);
-                            
+
                             // Show/hide status buttons based on current status
                             if (data.status == 0) {
                                 $('#approveSalesExecutiveBtn').show();
@@ -502,7 +693,7 @@
                 if (!confirm('Are you sure you want to approve (activate) this sales executive?')) {
                     return;
                 }
-                
+
                 updateSalesExecutiveStatus('Active');
             });
 
@@ -511,7 +702,7 @@
                 if (!confirm('Are you sure you want to reject (deactivate) this sales executive?')) {
                     return;
                 }
-                
+
                 updateSalesExecutiveStatus('Inactive');
             });
 
@@ -537,7 +728,7 @@
                                 }
                             });
                         }
-                        
+
                         // Reload the page to update everything
                         location.reload();
                     },
@@ -567,7 +758,7 @@
                             row.find('strong').removeClass('font-weight-bold');
                             row.find('.badge-warning').replaceWith('<span class="badge badge-success">Read</span>');
                             row.find('.mark-as-read').remove();
-                            
+
                             // Show success message
                             alert('Notification marked as read');
                         }

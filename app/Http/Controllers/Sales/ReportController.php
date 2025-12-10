@@ -23,40 +23,43 @@ class ReportController extends Controller
 
         $salesExecutive = Auth::guard('sales')->user();
         $salesExecutiveId = $salesExecutive->id;
-        
+
         // Get income_per_target from sales executive
         $incomePerTarget = $salesExecutive->income_per_target ?? 0;
-        
+
+        // Only count approved students (status = 1) for stats/earnings
+        $approvedStudents = Student::where('added_by', $salesExecutiveId)
+            ->where('status', 1);
+
         // Calculate today's students
-        $todayStudentsCount = Student::where('added_by', $salesExecutiveId)
+        $todayStudentsCount = (clone $approvedStudents)
             ->whereDate('created_at', Carbon::today())
             ->count();
-        
+
         // Calculate weekly students (last 7 days)
-        $weeklyStudentsCount = Student::where('added_by', $salesExecutiveId)
+        $weeklyStudentsCount = (clone $approvedStudents)
             ->whereDate('created_at', '>=', Carbon::now()->startOfWeek())
             ->count();
-        
+
         // Calculate monthly students (current month)
-        $monthlyStudentsCount = Student::where('added_by', $salesExecutiveId)
+        $monthlyStudentsCount = (clone $approvedStudents)
             ->whereYear('created_at', Carbon::now()->year)
             ->whereMonth('created_at', Carbon::now()->month)
             ->count();
-        
+
         // Calculate total students
-        $totalStudentsCount = Student::where('added_by', $salesExecutiveId)
-            ->count();
-        
+        $totalStudentsCount = (clone $approvedStudents)->count();
+
         // Calculate earnings
         $todayEarning = $incomePerTarget * $todayStudentsCount;
         $weeklyEarning = $incomePerTarget * $weeklyStudentsCount;
         $monthlyEarning = $incomePerTarget * $monthlyStudentsCount;
         $totalEarning = $incomePerTarget * $totalStudentsCount;
-        
+
         // Prepare graph data for last 30 days
         $days = 30;
         $startDate = now()->subDays($days - 1)->startOfDay();
-        
+
         $dates = [];
         $dateKeys = [];
         for ($i = 0; $i < $days; $i++) {
@@ -64,19 +67,20 @@ class ReportController extends Controller
             $dates[] = $date->format('d M');
             $dateKeys[] = $date->format('Y-m-d');
         }
-        
+
         $studentData = Student::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->where('added_by', $salesExecutiveId)
+            ->where('status', 1)
             ->whereDate('created_at', '>=', $startDate)
             ->groupBy('date')
             ->pluck('count', 'date')
             ->toArray();
-        
+
         $studentsCount = [];
         foreach ($dateKeys as $dateKey) {
             $studentsCount[] = $studentData[$dateKey] ?? 0;
         }
-        
+
         // Calculate earnings for graph (students * income_per_target)
         $earningsData = [];
         foreach ($studentsCount as $count) {

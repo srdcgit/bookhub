@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Notification;
 use App\Models\Withdrawal;
 use App\Models\SalesExecutive;
 use Illuminate\Support\Facades\Auth;
@@ -126,12 +127,22 @@ class WithdrawalApiController extends Controller
             }
         }
 
-        Withdrawal::create([
+        $withdrawal = Withdrawal::create([
             'sales_executive_id' => $salesExecutiveId,
             'amount' => $validated['amount'],
             'payment_method' => $validated['payment_method'],
             'remarks' => $validated['remarks'] ?? null,
             'status' => 'pending'
+        ]);
+
+        // Notification for withdraw
+        Notification::create([
+            'type' => 'withdrawal_request',
+            'title' => 'New Withdrawal Request',
+            'message' => "Sales executive '{$sales->name}' has requested a withdrawal of ₹{$request->amount} via {$request->payment_method}.",
+            'related_id' => $withdrawal->id,
+            'related_type' => 'App\Models\Withdrawal',
+            'is_read' => false,
         ]);
 
         $this->sendWithdrawRequestSMS($sales->phone, $validated['amount']);

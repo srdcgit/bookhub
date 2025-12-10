@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use App\Models\HeaderLogo;
 use App\Models\InstitutionManagement;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\User;
@@ -65,13 +66,23 @@ class StudentController extends Controller
         $data['added_by'] = Auth::guard('sales')->user()->id;
 
 
-        Student::create($data);
+        $student = Student::create($data);
 
         User::create([
             'name'     => $data['name'],
             'email'    => $data['email'] ?? null,
             'mobile'   => $data['phone'],
             'password' => Hash::make('12345678'),
+        ]);
+
+        // Create notification for admin
+        Notification::create([
+            'type' => 'student_added',
+            'title' => 'New Student Added',
+            'message' => "Sales executive '" . Auth::guard('sales')->user()->name . "' has added a new student '{$data['name']}' and is waiting for approval.",
+            'related_id' => $student->id,
+            'related_type' => 'App\Models\Student',
+            'is_read' => false,
         ]);
 
         return redirect('sales/students')->with('success_message', 'Student has been added successfully');

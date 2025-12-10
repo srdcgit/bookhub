@@ -40,6 +40,7 @@
                             <th>Class</th>
                             <th>DOB</th>
                             <th>Institution</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -56,6 +57,13 @@
                                 <td>{{ $student->dob ? \Carbon\Carbon::parse($student->dob)->format('d M Y') : 'N/A' }}</td>
                                 <td>{{ $student->institution?->name ?? 'No Institution' }}</td>
                                 <td>
+                                    @if($student->status == 1)
+                                        <span class="badge bg-success">Approved</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <a href="{{ url('sales/students/'.$student->id.'/edit') }}" class="btn btn-sm btn-success">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -66,7 +74,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center py-4">No students found.</td>
+                                <td colspan="11" class="text-center py-4">No students found.</td>
                             </tr>
                         @endforelse
                     </tbody>

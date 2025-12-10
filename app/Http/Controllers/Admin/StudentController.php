@@ -111,4 +111,48 @@ class StudentController extends Controller
         return redirect('admin/students')->with('success_message', 'Student has been deleted successfully', 'logos');
         return view('admin.students.index', compact('students', 'logos', 'headerLogo'));
     }
+
+    /**
+     * Return student details for AJAX (used in notifications modal).
+     */
+    public function details($id)
+    {
+        $student = Student::with('institution')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'email' => $student->email,
+                'phone' => $student->phone,
+                'class' => $student->class,
+                'gender' => $student->gender,
+                'dob' => $student->dob,
+                'roll_number' => $student->roll_number,
+                'status' => $student->status,
+                'institution' => $student->institution?->name,
+                'created_at' => optional($student->created_at)->format('M d, Y h:i A'),
+            ],
+        ]);
+    }
+
+    /**
+     * Update student status (approve/reject) from notifications modal.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $data = $request->validate([
+            'status' => 'required|in:0,1',
+        ]);
+
+        $student = Student::findOrFail($id);
+        $student->status = (int) $data['status'];
+        $student->save();
+
+        return response()->json([
+            'success' => true,
+            'status' => $student->status,
+        ]);
+    }
 }
