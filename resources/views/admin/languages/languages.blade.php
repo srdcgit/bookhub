@@ -30,7 +30,7 @@
                                     @foreach($languages as $language)
                                     <tr>
                                         <td>{{ $language['id'] }}</td>
-                                        <td>{{ $language['name'] }}</td>
+                                        <td>{{ $language['name'] ?? 'N/A' }}</td>
                                         <td>
                                             @if($language['status']==1)
                                                 <a class="updateLanguageStatus" id="language-{{ $language['id'] }}" language_id="{{ $language['id'] }}" href="javascript:void(0)">
